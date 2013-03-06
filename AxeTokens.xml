@@ -1,0 +1,1288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+AxeTokens.xml
+Zachary Wassall (Runer112)
+runer112@gmail.com
+
+Distributed with TokenIDE with permission by
+Shaun McFall, Merthsoft Creations
+shaunm.mcfall@gmail.com
+
+With help from:
+- Shaun McFall
+- Christopher Mitchell
+- Weregoose
+
+Use of this file in other programs is permitted.
+If you do make changes, let me know! I'm happy 
+to include changes if they're better!
+-->
+<Tokens xmlns="http://merthsoft.com/Tokens">
+	<Groups>
+		<Group name="_default" comment="Not part of the standard Axe 1.2.1 language."/>
+		<Group name="System" comment="Compiler directives and system commands." site="http://axe.eeems.ca/Commands.html#systemCommands"/>
+		<Group name="Screen and Buffer" comment="Full screen and buffer commands." site="http://axe.eeems.ca/Commands.html#screenAndBufferCommands"/>
+		<Group name="Control Blocks" comment="Conditional/loop statements and terminators." site="http://axe.eeems.ca/Commands.html#controlBlocksCommands"/>
+		<Group name="Labels and Subroutines" comment="Label-based and general code flow commands." site="http://axe.eeems.ca/Commands.html#labelsAndSubroutinesCommands"/>
+		<Group name="Basic Math" comment="Basic math operators and commands." site="http://axe.eeems.ca/Commands.html#basicMathCommands"/>
+		<Group name="Advanced Math" comment="Advanced math operators and commands." site="http://axe.eeems.ca/Commands.html#advancedMathCommands"/>
+		<Group name="Drawing" comment="Pixel and geometric drawing commands." site="http://axe.eeems.ca/Commands.html#drawingCommands"/>
+		<Group name="Sprites" comment="Sprite drawing and manipulation commands." site="http://axe.eeems.ca/Commands.html#spritesCommands"/>
+		<Group name="Text" comment="Text display and formatting commands." site="http://axe.eeems.ca/Commands.html#textCommands"/>
+		<Group name="Data and Storage" comment="Data inclusion and interaction commands." site="http://axe.eeems.ca/Commands.html#dataAndStorageCommands"/>
+		<Group name="External Variables" comment="OS variable interaction commands." site="http://axe.eeems.ca/Commands.html#externalVariablesCommands"/>
+		<Group name="Interrupts" comment="Interrupt management commands." site="http://axe.eeems.ca/Commands.html#interruptsCommands"/>
+		<Group name="Link Port" comment="Serial port data transfer and sound commands." site="http://axe.eeems.ca/Commands.html#linkPortCommands"/>
+		<Group name="Miscellaneous" comment="Miscellaneous (mostly data and string processing) commands." site="http://axe.eeems.ca/Commands.html#miscellaneousCommands"/>
+		<Group name="Arguments" comment="Subroutine argument variables."/>
+		<Group name="Files" comment="(Un)Archived variable accessors."/>
+		<Group name="Trackers" comment="Auto-updated VAT entry and unarchived variable pointers."/>
+		<Group name="OS Variable Types" comment="Type prefixes for external variable names."/>
+		<Group name="Data Names" comment="Special data name initiators."/>
+		<Group name="Modifiers" comment="Command and number modifier tokens."/>
+	</Groups>
+
+	<Styles commentString="//" directiveString="@" >
+		<Style name="Comment" foreground="Green" />
+		<Style name="Default" foreground="DarkGray" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Default_Axe" foreground="Black" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="String" foreground="Maroon" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Variable" foreground="Black" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Number" foreground="Black" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Parentheses" foreground="Black" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Command" foreground="MediumBlue"/>
+		<Style name="Modifier" foreground="Red" minTokenLength="2" tokenUnderlineColor="DarkGray"/>
+		<Style name="Control" foreground="DarkOrange"/>
+		<Style name="Preprocessor" foreground="Gray"/>
+		<Style name="Data" foreground="Gray"/>
+	</Styles>
+
+	<Token byte="$00" string=""/>
+	<Token byte="$01" string="&gt;Tok" group="Text" style="Command">
+		<Alt string="►Tok"/>
+	</Token>
+	<Token byte="$02" string="&gt;Dec" group="Text" style="Command">
+		<Alt string="►Dec"/>
+	</Token>
+	<Token byte="$03" string="&gt;Char" group="Text" style="Command">
+		<Alt string="►Char"/>
+	</Token>
+	<Token byte="$04" string="-&gt;" group="Basic Math" style="Default_Axe">
+		<Alt string="→"/>
+	</Token>
+	<Token byte="$05" string="Boxplot"/>
+	<Token byte="$06" string="[" style="Data"/>
+	<Token byte="$07" string="]" style="Data"/>
+	<Token byte="$08" string="{" style="Parentheses"/>
+	<Token byte="$09" string="}" style="Parentheses"/>
+	<Token byte="$0A" string="^^r" group="Modifiers" style="Modifier">
+		<Alt string="ʳ"/>
+	</Token>
+	<Token byte="$0B" string="^^o" style="Default_Axe">
+		<Alt string="°"/>
+	</Token>
+	<Token byte="$0C" string="^^-1" group="Advanced Math" style="Default_Axe">
+		<Alt string="⁻¹"/>
+		<Alt string="ˉ¹"/>
+	</Token>
+	<Token byte="$0D" string="^^2" group="Basic Math" style="Default_Axe">
+		<Alt string="²"/>
+		<Token byte="$0A" string="^^2^^r" group="Advanced Math" style="Default_Axe">
+			<Alt string="²ʳ" />
+		</Token>
+	</Token>
+	<Token byte="$0E" string="^^T" group="Modifiers" style="Default_Axe">
+		<Alt string="ᵀ"/>
+	</Token>
+	<Token byte="$0F" string="^^3">
+		<Alt string="³"/>
+	</Token>
+	<Token byte="$10" string="(" style="Parentheses"/>
+	<Token byte="$11" string=")" style="Parentheses"/>
+	<Token byte="$12" string="round("/>
+	<Token byte="$13" string="pxl-Test(" group="Drawing" style="Command"/>
+	<Token byte="$14" string="augment("/>
+	<Token byte="$15" string="rowSwap("/>
+	<Token byte="$16" string="row+("/>
+	<Token byte="$17" string="*row("/>
+	<Token byte="$18" string="*row+("/>
+	<Token byte="$19" string="max(" group="Basic Math" style="Command"/>
+	<Token byte="$1A" string="min(" group="Basic Math" style="Command"/>
+	<Token byte="$1B" string="R&gt;Pr(">
+		<Alt string="R►Pr("/>
+	</Token>
+	<Token byte="$1C" string="R&gt;Ptheta(">
+		<Alt string="R►Ptheta("/>
+		<Alt string="R&gt;Pθ("/>
+		<Alt string="R►Pθ("/>
+	</Token>
+	<Token byte="$1D" string="P&gt;Rx(">
+		<Alt string="P►Rx("/>
+	</Token>
+	<Token byte="$1E" string="P&gt;Ry(">
+		<Alt string="P►Ry("/>
+	</Token>
+	<Token byte="$1F" string="median("/>
+	<Token byte="$20" string="randM("/>
+	<Token byte="$21" string="mean("/>
+	<Token byte="$22" string="solve("/>
+	<Token byte="$23" string="seq("/>
+	<Token byte="$24" string="fnInt(" group="Interrupts" style="Command"/>
+	<Token byte="$25" string="nDeriv("/>
+	<Token byte="$27" string="fMin("/>
+	<Token byte="$28" string="fMax("/>
+	<Token byte="$29" string=" " style="Default_Axe"/>
+	<Token byte="$2A" string="&quot;" stringStarter="true" stringTerminator="true" style="String"/>
+	<Token byte="$2B" string="," style="Default_Axe"/>
+	<Token byte="$2C" string="[i]" group="Text" style="Default_Axe"/>
+	<Token byte="$2D" string="!">
+		<Token byte="$CE" string="!If " group="Control Blocks" indentGroup="End Group" style="Control"/>
+	</Token>
+	<Token byte="$2E" string="CubicReg "/>
+	<Token byte="$2F" string="QuartReg "/>
+	<Token byte="$30" string="0" style="Number"/>
+	<Token byte="$31" string="1" style="Number"/>
+	<Token byte="$32" string="2" style="Number"/>
+	<Token byte="$33" string="3" style="Number"/>
+	<Token byte="$34" string="4" style="Number"/>
+	<Token byte="$35" string="5" style="Number"/>
+	<Token byte="$36" string="6" style="Number"/>
+	<Token byte="$37" string="7" style="Number"/>
+	<Token byte="$38" string="8" style="Number"/>
+	<Token byte="$39" string="9" style="Number"/>
+	<Token byte="$3A" string="." group="System" style="Preprocessor"/>
+	<Token byte="$3B" string="|E" group="Modifiers" style="Default_Axe">
+		<Alt string="ᴇ"/>
+	</Token>
+	<Token byte="$3C" string=" or " group="Basic Math" style="Default_Axe"/>
+	<Token byte="$3D" string=" xor " group="Basic Math" style="Default_Axe"/>
+	<Token byte="$3E" string=":" group="System" style="Default_Axe"/>
+	<Token byte="$3F" string="\n" stringTerminator="true" style="Default_Axe"/>
+	<Token byte="$40" string=" and " group="Basic Math" style="Default_Axe"/>
+	<Token byte="$41" string="A" style="Variable"/>
+	<Token byte="$42" string="B" style="Variable"/>
+	<Token byte="$43" string="C" style="Variable"/>
+	<Token byte="$44" string="D" style="Variable"/>
+	<Token byte="$45" string="E" style="Variable"/>
+	<Token byte="$46" string="F" style="Variable"/>
+	<Token byte="$47" string="G" style="Variable"/>
+	<Token byte="$48" string="H" style="Variable">
+		<Token byte="$9C" string="HLine(" group="Drawing" style="Command"/>
+	</Token>
+	<Token byte="$49" string="I" style="Variable">
+		<Token byte="$48" string="IH" style="Default_Axe">
+			<Token byte="$9C" string="IHLine(" group="Drawing" style="Command"/>
+		</Token>
+		<Token byte="$56" string="IV" style="Default_Axe">
+			<Token byte="$9C" string="IVLine(" group="Drawing" style="Command"/>
+		</Token>
+		<Token byte="$9C" string="ILine(" group="Drawing" style="Command"/>
+		<Token byte="$A5" string="ICircle(" group="Drawing" style="Command"/>
+		<Token byte="BB">
+			<Token byte="$2D" string="IRect(" group="Drawing" style="Command"/>
+		</Token>
+	</Token>
+	<Token byte="$4A" string="J" style="Variable"/>
+	<Token byte="$4B" string="K" style="Variable"/>
+	<Token byte="$4C" string="L" style="Variable"/>
+	<Token byte="$4D" string="M" style="Variable"/>
+	<Token byte="$4E" string="N" style="Variable"/>
+	<Token byte="$4F" string="O" style="Variable"/>
+	<Token byte="$50" string="P" style="Variable"/>
+	<Token byte="$51" string="Q" style="Variable"/>
+	<Token byte="$52" string="R" style="Variable"/>
+	<Token byte="$53" string="S" style="Variable"/>
+	<Token byte="$54" string="T" style="Variable"/>
+	<Token byte="$55" string="U" style="Variable"/>
+	<Token byte="$56" string="V" style="Variable">
+		<Token byte="$9C" string="VLine(" group="Drawing" style="Command"/>
+	</Token>
+	<Token byte="$57" string="W" style="Variable">
+		<Token byte="$48">
+			<Token byte="$9C" string="WHLine(" group="Drawing" style="Command"/>
+		</Token>
+		<Token byte="$56">
+			<Token byte="$9C" string="WVLine(" group="Drawing" style="Command"/>
+		</Token>
+		<Token byte="$9C" string="WLine(" group="Drawing" style="Command"/>
+		<Token byte="$A5" string="WCircle(" group="Drawing" style="Command"/>
+		<Token byte="BB">
+			<Token byte="$2D" string="WRect(" group="Drawing" style="Command"/>
+		</Token>
+	</Token>
+	<Token byte="$58" string="X" style="Variable"/>
+	<Token byte="$59" string="Y" style="Variable"/>
+	<Token byte="$5A" string="Z" style="Variable"/>
+	<Token byte="$5B" string="theta" style="Variable">
+		<Alt string="θ"/>
+	</Token>
+	<Token byte="$5C">
+		<Token byte="$00" string="[A]"/>
+		<Token byte="$01" string="[B]"/>
+		<Token byte="$02" string="[C]"/>
+		<Token byte="$03" string="[D]"/>
+		<Token byte="$04" string="[E]"/>
+		<Token byte="$05" string="[F]"/>
+		<Token byte="$06" string="[G]"/>
+		<Token byte="$07" string="[H]"/>
+		<Token byte="$08" string="[I]"/>
+		<Token byte="$09" string="[J]"/>
+	</Token>
+	<Token byte="$5D">
+		<Token byte="$00" string="L1" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₁"/>
+		</Token>
+		<Token byte="$01" string="L2" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₂"/>
+		</Token>
+		<Token byte="$02" string="L3" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₃"/>
+		</Token>
+		<Token byte="$03" string="L4" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₄"/>
+		</Token>
+		<Token byte="$04" string="L5" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₅"/>
+		</Token>
+		<Token byte="$05" string="L6" group="Data and Storage" style="Default_Axe">
+			<Alt string="L₆"/>
+		</Token>
+	</Token>
+	<Token byte="$5E">
+		<Token byte="$10" string="{Y1}" group="Files" style="Variable">
+			<Alt string="Y₁"/>
+		</Token>
+		<Token byte="$11" string="{Y2}" group="Files" style="Variable">
+			<Alt string="Y₂"/>
+		</Token>
+		<Token byte="$12" string="{Y3}" group="Files" style="Variable">
+			<Alt string="Y₃"/>
+		</Token>
+		<Token byte="$13" string="{Y4}" group="Files" style="Variable">
+			<Alt string="Y₄"/>
+		</Token>
+		<Token byte="$14" string="{Y5}" group="Files" style="Variable">
+			<Alt string="Y₅"/>
+		</Token>
+		<Token byte="$15" string="{Y6}" group="Files" style="Variable">
+			<Alt string="Y₆"/>
+		</Token>
+		<Token byte="$16" string="{Y7}" group="Files" style="Variable">
+			<Alt string="Y₇"/>
+		</Token>
+		<Token byte="$17" string="{Y8}" group="Files" style="Variable">
+			<Alt string="Y₈"/>
+		</Token>
+		<Token byte="$18" string="{Y9}" group="Files" style="Variable">
+			<Alt string="Y₉"/>
+		</Token>
+		<Token byte="$19" string="{Y0}" group="Files" style="Variable">
+			<Alt string="Y₀"/>
+		</Token>
+		<Token byte="$20" string="{X1T}" group="Trackers" style="Variable">
+			<Alt string="X₁ᴛ"/>
+		</Token>
+		<Token byte="$21" string="{Y1T}" group="Trackers" style="Variable">
+			<Alt string="Y₁ᴛ"/>
+		</Token>
+		<Token byte="$22" string="{X2T}" group="Trackers" style="Variable">
+			<Alt string="X₂ᴛ"/>
+		</Token>
+		<Token byte="$23" string="{Y2T}" group="Trackers" style="Variable">
+			<Alt string="Y₂ᴛ"/>
+		</Token>
+		<Token byte="$24" string="{X3T}" style="Variable">
+			<Alt string="X₃ᴛ"/>
+		</Token>
+		<Token byte="$25" string="{Y3T}" style="Variable">
+			<Alt string="Y₃ᴛ"/>
+		</Token>
+		<Token byte="$26" string="{X4T}" style="Variable">
+			<Alt string="X₄ᴛ"/>
+		</Token>
+		<Token byte="$27" string="{Y4T}" style="Variable">
+			<Alt string="Y₄ᴛ"/>
+		</Token>
+		<Token byte="$28" string="{X5T}" style="Variable">
+			<Alt string="X₅ᴛ"/>
+		</Token>
+		<Token byte="$29" string="{Y5T}" style="Variable">
+			<Alt string="Y₅ᴛ"/>
+		</Token>
+		<Token byte="$2A" string="{X6T}" style="Variable">
+			<Alt string="X₆ᴛ"/>
+		</Token>
+		<Token byte="$2B" string="{Y6T}" style="Variable">
+			<Alt string="Y₆ᴛ"/>
+		</Token>
+		<Token byte="$40" string="{r1}" group="Arguments" style="Variable">
+			<Alt string="r₁"/>
+		</Token>
+		<Token byte="$41" string="{r2}" group="Arguments" style="Variable">
+			<Alt string="r₂"/>
+		</Token>
+		<Token byte="$42" string="{r3}" group="Arguments" style="Variable">
+			<Alt string="r₃"/>
+		</Token>
+		<Token byte="$43" string="{r4}" group="Arguments" style="Variable">
+			<Alt string="r₄"/>
+		</Token>
+		<Token byte="$44" string="{r5}" group="Arguments" style="Variable">
+			<Alt string="r₅"/>
+		</Token>
+		<Token byte="$45" string="{r6}" group="Arguments" style="Variable">
+			<Alt string="r₆"/>
+		</Token>
+		<Token byte="$80" string="var" group="OS Variable Types" style="Default_Axe"/>
+		<Token byte="$81" string="appv" group="OS Variable Types" style="Default_Axe"/>
+		<Token byte="$82" string="tmp" group="OS Variable Types" style="Default_Axe"/>
+	</Token>
+	<Token byte="$5F" string="prgm" group="System" style="Preprocessor"/>
+	<Token byte="$60">
+		<Token byte="$00" string="Pic1" group="Data Names" style="Variable"/>
+		<Token byte="$01" string="Pic2" group="Data Names" style="Variable"/>
+		<Token byte="$02" string="Pic3" group="Data Names" style="Variable"/>
+		<Token byte="$03" string="Pic4" group="Data Names" style="Variable"/>
+		<Token byte="$04" string="Pic5" group="Data Names" style="Variable"/>
+		<Token byte="$05" string="Pic6" group="Data Names" style="Variable"/>
+		<Token byte="$06" string="Pic7" group="Data Names" style="Variable"/>
+		<Token byte="$07" string="Pic8" group="Data Names" style="Variable"/>
+		<Token byte="$08" string="Pic9" group="Data Names" style="Variable"/>
+		<Token byte="$09" string="Pic0" group="Data Names" style="Variable"/>
+	</Token>
+	<Token byte="$61">
+		<Token byte="$00" string="GDB1" group="Data Names" style="Variable"/>
+		<Token byte="$01" string="GDB2" group="Data Names" style="Variable"/>
+		<Token byte="$02" string="GDB3" group="Data Names" style="Variable"/>
+		<Token byte="$03" string="GDB4" group="Data Names" style="Variable"/>
+		<Token byte="$04" string="GDB5" group="Data Names" style="Variable"/>
+		<Token byte="$05" string="GDB6" group="Data Names" style="Variable"/>
+		<Token byte="$06" string="GDB7" group="Data Names" style="Variable"/>
+		<Token byte="$07" string="GDB8" group="Data Names" style="Variable"/>
+		<Token byte="$08" string="GDB9" group="Data Names" style="Variable"/>
+		<Token byte="$09" string="GDB0" group="Data Names" style="Variable"/>
+	</Token>
+	<Token byte="$62">
+		<Token byte="$01" string="[RegEQ]"/>
+		<Token byte="$02" string="[n]"/>
+		<Token byte="$03" string="[xhat]">
+			<Alt string="ẋ"/>
+		</Token>
+		<Token byte="$04" string="[Sigmax]">
+			<Alt string="Σx"/>
+		</Token>
+		<Token byte="$05" string="[Sigmax^2]">
+			<Alt string="Σx^2"/>
+			<Alt string="sigmax²"/>
+			<Alt string="Σx²"/>
+		</Token>
+		<Token byte="$06" string="[Sx]"/>
+		<Token byte="$07" string="[sigmax]">
+			<Alt string="σx"/>
+		</Token>
+		<Token byte="$08" string="[minX]"/>
+		<Token byte="$09" string="[maxX]"/>
+		<Token byte="$0A" string="[minY]"/>
+		<Token byte="$0B" string="[maxY]"/>
+		<Token byte="$0C" string="[yhat]">
+			<Alt string="ȳ"/>
+		</Token>
+		<Token byte="$0D" string="[Sigmay]">
+			<Alt string="Σy"/>
+		</Token>
+		<Token byte="$0E" string="[Sigmay^2]">
+			<Alt string="Σy^2"/>
+			<Alt string="sigmay²"/>
+			<Alt string="Σy²"/>
+		</Token>
+		<Token byte="$0F" string="[Sy]"/>
+		<Token byte="$10" string="[sigmay]">
+			<Alt string="σy"/>
+		</Token>
+		<Token byte="$11" string="[Sigmaxy]">
+			<Alt string="Σxy"/>
+		</Token>
+		<Token byte="$12" string="[r]"/>
+		<Token byte="$13" string="[Med]"/>
+		<Token byte="$14" string="[Q1]"/>
+		<Token byte="$15" string="[Q3]"/>
+		<Token byte="$16" string="[|a]"/>
+		<Token byte="$17" string="[|b]"/>
+		<Token byte="$18" string="[|c]"/>
+		<Token byte="$19" string="[|d]"/>
+		<Token byte="$1A" string="[|e]"/>
+		<Token byte="$1B" string="[x1]">
+			<Alt string="x₁"/>
+		</Token>
+		<Token byte="$1C" string="[x2]">
+			<Alt string="x₂"/>
+		</Token>
+		<Token byte="$1D" string="[x3]">
+			<Alt string="x₃"/>
+		</Token>
+		<Token byte="$1E" string="[y1]">
+			<Alt string="y₁"/>
+		</Token>
+		<Token byte="$1F" string="[y2]">
+			<Alt string="y₂"/>
+		</Token>
+		<Token byte="$20" string="[y3]">
+			<Alt string="y₃"/>
+		</Token>
+		<Token byte="$21" string="[recursiven]"/>
+		<Token byte="$22" string="[p]"/>
+		<Token byte="$23" string="[z]"/>
+		<Token byte="$24" string="[t]"/>
+		<Token byte="$25" string="[chi^2]">
+			<Alt string="χ^2"/>
+			<Alt string="chi²"/>
+			<Alt string="χ²"/>
+		</Token>
+		<Token byte="$26" string="[|F]"/>
+		<Token byte="$27" string="[df]"/>
+		<Token byte="$28" string="[phat]">
+			<Alt string="[ṗ]"/>
+		</Token>
+		<Token byte="$29" string="[phat1]">
+			<Alt string="ṗ1"/>
+			<Alt string="phat₁"/>
+			<Alt string="ṗ₁"/>
+		</Token>
+		<Token byte="$2A" string="[phat2]">
+			<Alt string="ṗ2"/>
+			<Alt string="phat₂"/>
+			<Alt string="ṗ₂"/>
+		</Token>
+		<Token byte="$2B" string="[xhat1]">
+			<Alt string="ẋ1"/>
+			<Alt string="xhat₁"/>
+			<Alt string="ẋ₁"/>
+		</Token>
+		<Token byte="$2C" string="[Sx1]">
+			<Alt string="Sx₁"/>
+		</Token>
+		<Token byte="$2D" string="[n1]">
+			<Alt string="n₁"/>
+		</Token>
+		<Token byte="$2E" string="[xhat2]">
+			<Alt string="ẋ2"/>
+			<Alt string="xhat₂"/>
+			<Alt string="ẋ₂"/>
+		</Token>
+		<Token byte="$2F" string="[Sx2]">
+			<Alt string="Sx₂"/>
+		</Token>
+		<Token byte="$30" string="[n2]">
+			<Alt string="n₂"/>
+		</Token>
+		<Token byte="$31" string="[Sxp]"/>
+		<Token byte="$32" string="[lower]"/>
+		<Token byte="$33" string="[upper]"/>
+		<Token byte="$34" string="[s]"/>
+		<Token byte="$35" string="[r^2]">
+			<Alt string="r²"/>
+		</Token>
+		<Token byte="$36" string="[R^2]">
+			<Alt string="R²"/>
+		</Token>
+		<Token byte="$37" string="[factordf]"/>
+		<Token byte="$38" string="[factorSS]"/>
+		<Token byte="$39" string="[factorMS]"/>
+		<Token byte="$3A" string="[errordf]"/>
+		<Token byte="$3B" string="[errorSS]"/>
+		<Token byte="$3C" string="[errorMS]"/>
+	</Token>
+	<Token byte="$63">
+		<Token byte="$00" string="ZXscl"/>
+		<Token byte="$01" string="ZYscl"/>
+		<Token byte="$02" string="Xscl"/>
+		<Token byte="$03" string="Yscl"/>
+		<Token byte="$04" string="u(nMin)"/>
+		<Token byte="$05" string="v(nMin)"/>
+		<Token byte="$06" string="Un-1">
+			<Alt string="Un-₁"/>
+		</Token>
+		<Token byte="$07" string="Vn-1">
+			<Alt string="Vn-₁"/>
+		</Token>
+		<Token byte="$08" string="Zu(nmin)"/>
+		<Token byte="$09" string="Zv(nmin)"/>
+		<Token byte="$0A" string="Xmin"/>
+		<Token byte="$0B" string="Xmax"/>
+		<Token byte="$0C" string="Ymin"/>
+		<Token byte="$0D" string="Ymax"/>
+		<Token byte="$0E" string="Tmin"/>
+		<Token byte="$0F" string="Tmax"/>
+		<Token byte="$10" string="thetaMin">
+			<Alt string="θMin"/>
+		</Token>
+		<Token byte="$11" string="thetaMax">
+			<Alt string="θMax"/>
+		</Token>
+		<Token byte="$12" string="ZXmin"/>
+		<Token byte="$13" string="ZXmax"/>
+		<Token byte="$14" string="ZYmin"/>
+		<Token byte="$15" string="ZYmax"/>
+		<Token byte="$16" string="Zthetamin">
+			<Alt string="Zθmin"/>
+		</Token>
+		<Token byte="$17" string="Zthetamax">
+			<Alt string="Zθmax"/>
+		</Token>
+		<Token byte="$18" string="ZTmin"/>
+		<Token byte="$19" string="ZTmax"/>
+		<Token byte="$1A" string="TblStart"/>
+		<Token byte="$1B" string="PlotStart"/>
+		<Token byte="$1C" string="ZPlotStart"/>
+		<Token byte="$1D" string="nMax"/>
+		<Token byte="$1E" string="ZnMax"/>
+		<Token byte="$1F" string="nMin"/>
+		<Token byte="$20" string="ZnMin"/>
+		<Token byte="$21" string="DeltaTbl">
+			<Alt string="∆Tbl"/>
+		</Token>
+		<Token byte="$22" string="Tstep"/>
+		<Token byte="$23" string="thetastep">
+			<Alt string="θstep"/>
+		</Token>
+		<Token byte="$24" string="ZTstep"/>
+		<Token byte="$25" string="Zthetastep">
+			<Alt string="Zθstep"/>
+		</Token>
+		<Token byte="$26" string="DeltaX">
+			<Alt string="∆X"/>
+		</Token>
+		<Token byte="$27" string="DeltaY">
+			<Alt string="∆Y"/>
+		</Token>
+		<Token byte="$28" string="XFact"/>
+		<Token byte="$29" string="YFact"/>
+		<Token byte="$2A" string="TblInput"/>
+		<Token byte="$2B" string="|N"/>
+		<Token byte="$2C" string="I%"/>
+		<Token byte="$2D" string="PV"/>
+		<Token byte="$2E" string="PMT"/>
+		<Token byte="$2F" string="FV"/>
+		<Token byte="$30" string="|P/Y"/>
+		<Token byte="$31" string="|C/Y"/>
+		<Token byte="$32" string="w(nMin)"/>
+		<Token byte="$33" string="Zw(nMin)"/>
+		<Token byte="$34" string="PlotStep"/>
+		<Token byte="$35" string="ZPlotStep"/>
+		<Token byte="$36" string="Xres"/>
+		<Token byte="$37" string="ZXres"/>
+	</Token>
+	<Token byte="$64" string="Radian"/>
+	<Token byte="$65" string="Degree"/>
+	<Token byte="$66" string="Normal" group="System" style="Command"/>
+	<Token byte="$67" string="Sci"/>
+	<Token byte="$68" string="Eng"/>
+	<Token byte="$69" string="Float" group="External Variables"/>
+	<Token byte="$6A" string="=" group="Basic Math" style="Default_Axe">
+		<Token byte="$6A" string="==" group="Advanced Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$6B" string="&lt;" group="Basic Math" style="Default_Axe">
+		<Token byte="$6B" string="&lt;&lt;" group="Advanced Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$6C" string="&gt;" group="Basic Math" style="Default_Axe">
+		<Token byte="$6C" string="&gt;&gt;" group="Advanced Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$6D" string="&lt;=" group="Basic Math" style="Default_Axe">
+		<Alt string="≤"/>
+		<Token byte="$6D" string="&lt;=&lt;=" group="Advanced Math" style="Default_Axe">
+			<!--<Alt string="≤≤" />-->
+		</Token>
+	</Token>
+	<Token byte="$6E" string="&gt;=" group="Basic Math" style="Default_Axe">
+		<Alt string="≥"/>
+		<Token byte="$6E" string="&gt;=&gt;=" group="Advanced Math" style="Default_Axe">
+			<!--<Alt string="≥≥" />-->
+		</Token>
+	</Token>
+	<Token byte="$6F" string="!=" group="Basic Math" style="Default_Axe">
+		<Alt string="≠"/>
+		<Token byte="$6F" string="!=!=" group="Advanced Math" style="Default_Axe">
+			<!--<Alt string="≠≠" />-->
+		</Token>
+	</Token>
+	<Token byte="$70" string="+" group="Basic Math" style="Default_Axe">
+		<Token byte="$70" string="++" group="Basic Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$71" string="-" group="Basic Math" style="Default_Axe">
+		<Token byte="$71" string="--" group="Basic Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$72" string="Ans" group="External Variables" style="Default_Axe"/>
+	<Token byte="$73" string="Fix " group="Text" style="Command"/>
+	<Token byte="$74" string="Horiz"/>
+	<Token byte="$75" string="Full" group="System" style="Command"/>
+	<Token byte="$76" string="Func"/>
+	<Token byte="$77" string="Param"/>
+	<Token byte="$78" string="Polar"/>
+	<Token byte="$79" string="Seq"/>
+	<Token byte="$7A" string="IndpntAuto"/>
+	<Token byte="$7B" string="IndpntAsk"/>
+	<Token byte="$7C" string="DependAuto"/>
+	<Token byte="$7D" string="DependAsk"/>
+	<Token byte="$7E">
+		<Token byte="$00" string="Sequential"/>
+		<Token byte="$01" string="Simul"/>
+		<Token byte="$02" string="PolarGC"/>
+		<Token byte="$03" string="RectGC"/>
+		<Token byte="$04" string="CoordOn"/>
+		<Token byte="$05" string="CoordOff"/>
+		<Token byte="$06" string="Connected"/>
+		<Token byte="$07" string="Dot"/>
+		<Token byte="$08" string="AxesOn"/>
+		<Token byte="$09" string="AxesOff"/>
+		<Token byte="$0A" string="GridOn"/>
+		<Token byte="$0B" string="GridOff"/>
+		<Token byte="$0C" string="LabelOn"/>
+		<Token byte="$0D" string="LabelOff"/>
+		<Token byte="$0E" string="Web"/>
+		<Token byte="$0F" string="Time"/>
+		<Token byte="$10" string="uvAxes"/>
+		<Token byte="$11" string="vwAxes"/>
+		<Token byte="$12" string="uwAxes"/>
+	</Token>
+	<Token byte="$7F" string="plotsquare" group="Advanced Math" style="Default_Axe">
+		<Alt string="squareplot"/>
+		<Alt string="□"/>
+	</Token>
+	<Token byte="$80" string="plotcross" group="Advanced Math" style="Default_Axe">
+		<Alt string="crossplot"/>
+		<Alt string="﹢"/>
+	</Token>
+	<Token byte="$81" string="plotdot" group="Advanced Math" style="Default_Axe">
+		<Alt string="dotplot"/>
+		<Alt string="·"/>
+	</Token>
+	<Token byte="$82" string="*" group="Basic Math" style="Default_Axe">
+		<Token byte="$82" string="**" group="Advanced Math" style="Default_Axe"/>
+		<Token byte="$F0" string="*^" group="Advanced Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$83" string="/" group="Basic Math" style="Default_Axe">
+		<Token byte="$82" string="/*" group="Advanced Math" style="Default_Axe"/>
+		<Token byte="$83" string="//" group="Advanced Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$84" string="Trace"/>
+	<Token byte="$85" string="ClrDraw" group="Screen and Buffer" style="Command"/>
+	<Token byte="$86" string="ZStandard"/>
+	<Token byte="$87" string="ZTrig"/>
+	<Token byte="$88" string="ZBox"/>
+	<Token byte="$89" string="Zoom In"/>
+	<Token byte="$8A" string="Zoom Out"/>
+	<Token byte="$8B" string="ZSquare"/>
+	<Token byte="$8C" string="ZInteger"/>
+	<Token byte="$8D" string="ZPrevious"/>
+	<Token byte="$8E" string="ZDecimal"/>
+	<Token byte="$8F" string="ZoomStat"/>
+	<Token byte="$90" string="ZoomRcl"/>
+	<Token byte="$91" string="PrintScreen"/>
+	<Token byte="$92" string="ZoomSto"/>
+	<Token byte="$93" string="Text(" group="Text" style="Command"/>
+	<Token byte="$94" string=" nPr "/>
+	<Token byte="$95" string=" nCr "/>
+	<Token byte="$96" string="FnOn " group="Interrupts" style="Command"/>
+	<Token byte="$97" string="FnOff " group="Interrupts" style="Command"/>
+	<Token byte="$98" string="StorePic" group="Screen and Buffer" style="Command"/>
+	<Token byte="$99" string="RecallPic" group="Screen and Buffer" style="Command"/>
+	<Token byte="$9A" string="StoreGDB " group="Screen and Buffer" style="Command"/>
+	<Token byte="$9B" string="RecallGDB "/>
+	<Token byte="$9C" string="Line(" group="Drawing" style="Command"/>
+	<Token byte="$9D" string="Vertical">
+		<Token byte="$70" string="Vertical+" group="Screen and Buffer" style="Command"/>
+		<Token byte="$71" string="Vertical-" group="Screen and Buffer" style="Command"/>
+	</Token>
+	<Token byte="$9E" string="Pt-On(" group="Sprites" style="Command"/>
+	<Token byte="$9F" string="Pt-Off(" group="Sprites" style="Command"/>
+	<Token byte="$A0" string="Pt-Change(" group="Sprites" style="Command"/>
+	<Token byte="$A1" string="Pxl-On(" group="Drawing" style="Command"/>
+	<Token byte="$A2" string="Pxl-Off(" group="Drawing" style="Command"/>
+	<Token byte="$A3" string="Pxl-Change(" group="Drawing" style="Command"/>
+	<Token byte="$A4" string="Shade(" group="Screen and Buffer" style="Command"/>
+	<Token byte="$A5" string="Circle(" group="Drawing" style="Command"/>
+	<Token byte="$A6" string="Horizontal">
+		<Token byte="$70" string="Horizontal+" group="Screen and Buffer" style="Command"/>
+		<Token byte="$71" string="Horizontal-" group="Screen and Buffer" style="Command"/>
+	</Token>
+	<Token byte="$A7" string="Bitmap(" group="Sprites" style="Command"/>
+	<Token byte="$A8" string="DrawInv" group="Screen and Buffer" style="Command"/>
+	<Token byte="$A9" string="Text " group="Text" style="Command"/>
+	<Token byte="$AA">
+		<Token byte="$00" string="Str1" group="Data Names" style="Variable"/>
+		<Token byte="$01" string="Str2" group="Data Names" style="Variable"/>
+		<Token byte="$02" string="Str3" group="Data Names" style="Variable"/>
+		<Token byte="$03" string="Str4" group="Data Names" style="Variable"/>
+		<Token byte="$04" string="Str5" group="Data Names" style="Variable"/>
+		<Token byte="$05" string="Str6" group="Data Names" style="Variable"/>
+		<Token byte="$06" string="Str7" group="Data Names" style="Variable"/>
+		<Token byte="$07" string="Str8" group="Data Names" style="Variable"/>
+		<Token byte="$08" string="Str9" group="Data Names" style="Variable"/>
+		<Token byte="$09" string="Str0" group="Data Names" style="Variable"/>
+	</Token>
+	<Token byte="$AB" string="rand" group="Basic Math" style="Command"/>
+	<Token byte="$AC" string="pi" group="Modifiers" style="Default_Axe">
+		<Alt string="π"/>
+	</Token>
+	<Token byte="$AD" string="getKey" group="System" style="Command"/>
+	<Token byte="$AE" string="'" style="Default_Axe"/>
+	<Token byte="$AF" string="?" group="Basic Math" style="Default_Axe">
+		<Token byte="$AF" string="??" group="Basic Math" style="Default_Axe"/>
+	</Token>
+	<Token byte="$B0" string="~" group="Basic Math" style="Default_Axe">
+		<Alt string="|-"/>
+		<Alt string="⁻"/>
+	</Token>
+	<Token byte="$B1" string="sign{" group="Data and Storage" style="Command"/>
+	<Token byte="$B2" string="abs(" group="Advanced Math" style="Command"/>
+	<Token byte="$B3" string="Buff(" group="Data and Storage" style="Data"/>
+	<Token byte="$B4" string="#Icon(" group="System" style="Preprocessor"/>
+	<Token byte="$B5" string="dim("/>
+	<Token byte="$B6" string="sum("/>
+	<Token byte="$B7" string="prod("/>
+	<Token byte="$B8" string="not(" group="Basic Math" style="Command"/>
+	<Token byte="$B9" string="nib{" group="Data and Storage" style="Command"/>
+	<Token byte="$BA" string="float{" group="External Variables" style="Command"/>
+	<Token byte="$BB">
+		<Token byte="$00" string="npv("/>
+		<Token byte="$01" string="irr("/>
+		<Token byte="$02" string="bal("/>
+		<Token byte="$03" string="SigmaPrn(">
+			<Alt string="ΣPrn("/>
+		</Token>
+		<Token byte="$04" string="SigmaInt(">
+			<Alt string="ΣInt("/>
+		</Token>
+		<Token byte="$05" string="&gt;Nom(">
+			<Alt string="►Nom("/>
+		</Token>
+		<Token byte="$06" string="&gt;Eff(">
+			<Alt string="►Eff("/>
+		</Token>
+		<Token byte="$07" string="dbd("/>
+		<Token byte="$08" string="lcm("/>
+		<Token byte="$09" string="gcd("/>
+		<Token byte="$0A" string="randInt("/>
+		<Token byte="$0B" string="randBin("/>
+		<Token byte="$0C" string="sub(" group="Labels and Subroutines" style="Command"/>
+		<Token byte="$0D" string="stdDev(" group="Miscellaneous" style="Command"/>
+		<Token byte="$0E" string="variance("/>
+		<Token byte="$0F" string="inData(" group="Miscellaneous" style="Command"/>
+		<Token byte="$10" string="normalcdf("/>
+		<Token byte="$11" string="invNorm("/>
+		<Token byte="$12" string="tcdf("/>
+		<Token byte="$13" string="chi^2cdf(">
+			<Alt string="χ^2cdf("/>
+			<Alt string="chi²cdf("/>
+			<Alt string="χ²cdf("/>
+		</Token>
+		<Token byte="$14" string="Fcdf("/>
+		<Token byte="$15" string="binompdf("/>
+		<Token byte="$16" string="binomcdf("/>
+		<Token byte="$17" string="poissonpdf("/>
+		<Token byte="$18" string="poissoncdf("/>
+		<Token byte="$19" string="geometpdf("/>
+		<Token byte="$1A" string="geometcdf("/>
+		<Token byte="$1B" string="normalpdf("/>
+		<Token byte="$1C" string="tpdf("/>
+		<Token byte="$1D" string="chi^2pdf(">
+			<Alt string="χ^2pdf("/>
+			<Alt string="chi²pdf("/>
+			<Alt string="χ²pdf("/>
+		</Token>
+		<Token byte="$1E" string="Fpdf("/>
+		<Token byte="$1F" string="randNorm("/>
+		<Token byte="$20" string="tvm_Pmt"/>
+		<Token byte="$21" string="tvm_I%"/>
+		<Token byte="$22" string="tvm_PV"/>
+		<Token byte="$23" string="tvm_N"/>
+		<Token byte="$24" string="tvm_FV"/>
+		<Token byte="$25" string="Copy(" group="Data and Storage" style="Command"/>
+		<Token byte="$26" string="#Realloc(" group="System" style="Preprocessor"/>
+		<Token byte="$27" string="imag("/>
+		<Token byte="$28" string="angle("/>
+		<Token byte="$29" string="cumSum(" group="Miscellaneous" style="Command"/>
+		<Token byte="$2A" string="Exch(" group="Data and Storage" style="Command"/>
+		<Token byte="$2B" string="length(" group="Miscellaneous" style="Command"/>
+		<Token byte="$2C" string="Data(" group="Data and Storage" style="Data"/>
+		<Token byte="$2D" string="Rect(" group="Drawing" style="Command"/>
+		<Token byte="$2E" string="RectI(" style="Command"/>
+		<Token byte="$2F" string="&gt;Hex" group="Text" style="Command">
+			<Alt string="►Hex"/>
+		</Token>
+		<Token byte="$30" string="&gt;Polar">
+			<Alt string="►Polar"/>
+		</Token>
+		<Token byte="$31" string="[e]" group="Advanced Math" style="Default_Axe">
+			<Token byte="$BB">
+				<Token byte="$31" string="[e][e]" group="Advanced Math" style="Default_Axe"/>
+			</Token>
+		</Token>
+		<Token byte="$32" string="Freq(" group="Link Port" style="Command"/>
+		<Token byte="$33" string="Logistic "/>
+		<Token byte="$34" string="LinRegTTest "/>
+		<Token byte="$35" string="rotC(" group="Sprites" style="Command"/>
+		<Token byte="$36" string="rotCC(" group="Sprites" style="Command"/>
+		<Token byte="$37" string="flipV(" group="Sprites" style="Command"/>
+		<Token byte="$38" string="flipH(" group="Sprites" style="Command"/>
+		<Token byte="$39" string="Matr&gt;list(">
+			<Alt string="Matr►list("/>
+		</Token>
+		<Token byte="$3A" string="List&gt;matr(">
+			<Alt string="List►matr("/>
+		</Token>
+		<Token byte="$3B" string="Z-Test(" group="Labels and Subroutines" style="Command"/>
+		<Token byte="$3C" string="T-Test "/>
+		<Token byte="$3D" string="2-SampZTest("/>
+		<Token byte="$3E" string="1-PropZTest("/>
+		<Token byte="$3F" string="2-PropZTest("/>
+		<Token byte="$40" string="chi^2-Test(">
+			<Alt string="χ^2-Test("/>
+			<Alt string="chi²-Test("/>
+			<Alt string="χ²-Test("/>
+		</Token>
+		<Token byte="$41" string="ZInterval"/>
+		<Token byte="$42" string="2-SampZInt("/>
+		<Token byte="$43" string="1-PropZInt("/>
+		<Token byte="$44" string="2-PropZInt("/>
+		<Token byte="$45" string="GraphStyle("/>
+		<Token byte="$46" string="2-SampTTest "/>
+		<Token byte="$47" string="2-SampFTest "/>
+		<Token byte="$48" string="TInterval "/>
+		<Token byte="$49" string="2-SampTInt "/>
+		<Token byte="$4A" string="SetUpEditor "/>
+		<Token byte="$4B" string="Pmt_End"/>
+		<Token byte="$4C" string="Pmt_Bgn"/>
+		<Token byte="$4D" string="Real"/>
+		<Token byte="$4E" string="re^thetai">
+			<Alt string="re^θi"/>
+		</Token>
+		<Token byte="$4F" string="a+bi"/>
+		<Token byte="$50" string="#ExprOn" group="System" style="Preprocessor"/>
+		<Token byte="$51" string="#ExprOff" group="System" style="Preprocessor"/>
+		<Token byte="$52" string="ClrAllLists"/>
+		<Token byte="$53" string="GetCalc(" group="External Variables" style="Command"/>
+		<Token byte="$54" string="DelVar " group="External Variables" style="Command"/>
+		<Token byte="$55" string="Equ&gt;String(" group="Miscellaneous" style="Command">
+			<Alt string="Equ►String("/>
+		</Token>
+		<Token byte="$56" string="String&gt;Equ(">
+			<Alt string="String►Equ("/>
+		</Token>
+		<Token byte="$57" string="Clear Entries"/>
+		<Token byte="$58" string="Select(" group="Miscellaneous" style="Command"/>
+		<Token byte="$59" string="ANOVA("/>
+		<Token byte="$5A" string="ModBoxPlot"/>
+		<Token byte="$5B" string="NormProbPlot"/>
+		<Token byte="$64" string="G-T"/>
+		<Token byte="$65" string="ZoomFit"/>
+		<Token byte="$66" string="DiagnosticOn" group="System" style="Command"/>
+		<Token byte="$67" string="DiagnosticOff" group="System" style="Command"/>
+		<Token byte="$68" string="Archive " group="External Variables" style="Command"/>
+		<Token byte="$69" string="UnArchive " group="External Variables" style="Command"/>
+		<Token byte="$6A" string="Asm(" group="System" style="Data"/>
+		<Token byte="$6B" string="#Axiom(" group="System" style="Preprocessor"/>
+		<Token byte="$6C" string="AsmPrgm"/>
+		<Token byte="$6E" string="Á"/>
+		<Token byte="$6F" string="À"/>
+		<Token byte="$70" string="Â"/>
+		<Token byte="$71" string="Ä"/>
+		<Token byte="$72" string="á"/>
+		<Token byte="$73" string="à"/>
+		<Token byte="$74" string="â"/>
+		<Token byte="$75" string="ä"/>
+		<Token byte="$76" string="É"/>
+		<Token byte="$77" string="È"/>
+		<Token byte="$78" string="Ê"/>
+		<Token byte="$79" string="Ë"/>
+		<Token byte="$7A" string="é"/>
+		<Token byte="$7B" string="è"/>
+		<Token byte="$7C" string="ê"/>
+		<Token byte="$7D" string="ë"/>
+		<Token byte="$7F" string="Ì"/>
+		<Token byte="$80" string="Î"/>
+		<Token byte="$81" string="Ï"/>
+		<Token byte="$82" string="í"/>
+		<Token byte="$83" string="ì"/>
+		<Token byte="$84" string="î"/>
+		<Token byte="$85" string="ï"/>
+		<Token byte="$86" string="Ó"/>
+		<Token byte="$87" string="Ò"/>
+		<Token byte="$88" string="Ô"/>
+		<Token byte="$89" string="Ö"/>
+		<Token byte="$8A" string="ó"/>
+		<Token byte="$8B" string="ò"/>
+		<Token byte="$8C" string="ô"/>
+		<Token byte="$8D" string="ö"/>
+		<Token byte="$8E" string="Ú"/>
+		<Token byte="$8F" string="Ù"/>
+		<Token byte="$90" string="Û"/>
+		<Token byte="$91" string="Ü"/>
+		<Token byte="$92" string="ú"/>
+		<Token byte="$93" string="ù"/>
+		<Token byte="$94" string="û"/>
+		<Token byte="$95" string="ü"/>
+		<Token byte="$96" string="Ç"/>
+		<Token byte="$97" string="ç"/>
+		<Token byte="$98" string="Ñ"/>
+		<Token byte="$99" string="ñ"/>
+		<Token byte="$9A" string="^^'">
+			<Alt string="|'"/>
+			<Alt string="´"/>
+		</Token>
+		<Token byte="$9B" string="^^`">
+			<Alt string="|`"/>
+		</Token>
+		<Token byte="$9C" string="^^:">
+			<Alt string="|:"/>
+			<Alt string="¨"/>
+		</Token>
+		<Token byte="$9D" string="|?">
+			<Alt string="¿"/>
+		</Token>
+		<Token byte="$9E" string="|!">
+			<Alt string="¡"/>
+		</Token>
+		<Token byte="$9F" string="alpha">
+			<Alt string="α"/>
+		</Token>
+		<Token byte="$A0" string="beta">
+			<Alt string="β"/>
+		</Token>
+		<Token byte="$A1" string="gamma">
+			<Alt string="γ"/>
+		</Token>
+		<Token byte="$A2" string="Delta">
+			<Alt string="Δ"/>
+		</Token>
+		<Token byte="$A3" string="delta">
+			<Alt string="δ"/>
+		</Token>
+		<Token byte="$A4" string="epsilon">
+			<Alt string="ε"/>
+		</Token>
+		<Token byte="$A5" string="lambda">
+			<Alt string="λ"/>
+		</Token>
+		<Token byte="$A6" string="mu">
+			<Alt string="μ"/>
+		</Token>
+		<Token byte="$A7" string="greek_pi">
+			<Alt string="|π"/>
+		</Token>
+		<Token byte="$A8" string="rho">
+			<Alt string="ρ"/>
+		</Token>
+		<Token byte="$A9" string="Sigma">
+			<Alt string="Σ"/>
+		</Token>
+		<Token byte="$AB" string="Phi">
+			<Alt string="Φ"/>
+		</Token>
+		<Token byte="$AC" string="Omega">
+			<Alt string="Ω"/>
+		</Token>
+		<Token byte="$AD" string="phat">
+			<Alt string="ṗ"/>
+		</Token>
+		<Token byte="$AE" string="chi">
+			<Alt string="χ"/>
+		</Token>
+		<Token byte="$AF" string="|F"/>
+		<Token byte="$B0" string="a" style="Variable"/>
+		<Token byte="$B1" string="b" style="Variable"/>
+		<Token byte="$B2" string="c" style="Variable"/>
+		<Token byte="$B3" string="d" style="Variable"/>
+		<Token byte="$B4" string="e" style="Variable"/>
+		<Token byte="$B5" string="f" style="Variable"/>
+		<Token byte="$B6" string="g" style="Variable"/>
+		<Token byte="$B7" string="h" style="Variable"/>
+		<Token byte="$B8" string="i" style="Variable"/>
+		<Token byte="$B9" string="j" style="Variable"/>
+		<Token byte="$BA" string="k" style="Variable"/>
+		<Token byte="$BC" string="l" style="Variable"/>
+		<Token byte="$BD" string="m" style="Variable"/>
+		<Token byte="$BE" string="n" style="Variable"/>
+		<Token byte="$BF" string="o" style="Variable"/>
+		<Token byte="$C0" string="p" style="Variable"/>
+		<Token byte="$C1" string="q" style="Variable"/>
+		<Token byte="$C2" string="r" style="Variable"/>
+		<Token byte="$C3" string="s" style="Variable"/>
+		<Token byte="$C4" string="t" style="Variable"/>
+		<Token byte="$C5" string="u" style="Variable"/>
+		<Token byte="$C6" string="v" style="Variable"/>
+		<Token byte="$C7" string="w" style="Variable"/>
+		<Token byte="$C8" string="x" style="Variable"/>
+		<Token byte="$C9" string="y" style="Variable"/>
+		<Token byte="$CA" string="z" style="Variable"/>
+		<Token byte="$CB" string="sigma">
+			<Alt string="σ"/>
+		</Token>
+		<Token byte="$CC" string="tau">
+			<Alt string="τ"/>
+		</Token>
+		<Token byte="$CD" string="Í"/>
+		<Token byte="$CE" string="GarbageCollect"/>
+		<Token byte="$CF" string="|~"/>
+		<Token byte="$D1" string="@"/>
+		<Token byte="$D2" string="#"/>
+		<Token byte="$D3" string="$"/>
+		<Token byte="$D4" string="&amp;"/>
+		<Token byte="$D5" string="`"/>
+		<Token byte="$D6" string=";"/>
+		<Token byte="$D7" string="\"/>
+		<Token byte="$D8" string="|"/>
+		<Token byte="$D9" string="_"/>
+		<Token byte="$DA" string="%"/>
+		<Token byte="$DB" string="[...]">
+			<Alt string="…"/>
+		</Token>
+		<Token byte="$DC" string="|&lt;">
+			<Alt string="∠"/>
+		</Token>
+		<Token byte="$DD" string="sharps">
+			<Alt string="ß"/>
+		</Token>
+		<Token byte="$DE" string="^^x">
+			<Alt string="ˣ"/>
+		</Token>
+		<Token byte="$DF" string="smallT">
+			<Alt string="ᴛ"/>
+		</Token>
+		<Token byte="$E0" string="small0">
+			<Alt string="₀"/>
+		</Token>
+		<Token byte="$E1" string="small1">
+			<Alt string="₁"/>
+		</Token>
+		<Token byte="$E2" string="small2">
+			<Alt string="₂"/>
+		</Token>
+		<Token byte="$E3" string="small3">
+			<Alt string="₃"/>
+		</Token>
+		<Token byte="$E4" string="small4">
+			<Alt string="₄"/>
+		</Token>
+		<Token byte="$E5" string="small5">
+			<Alt string="₅"/>
+		</Token>
+		<Token byte="$E6" string="small6">
+			<Alt string="₆"/>
+		</Token>
+		<Token byte="$E7" string="small7">
+			<Alt string="₇"/>
+		</Token>
+		<Token byte="$E8" string="small8">
+			<Alt string="₈"/>
+		</Token>
+		<Token byte="$E9" string="small9">
+			<Alt string="₉"/>
+		</Token>
+		<Token byte="$EA" string="small10">
+			<Alt string="₁₀"/>
+		</Token>
+		<Token byte="$EB" string="&lt;|">
+			<Alt string="◄"/>
+		</Token>
+		<Token byte="$EC" string="|&gt;">
+			<Alt string="►"/>
+		</Token>
+		<Token byte="$ED" string="uparrow">
+			<Alt string="↑"/>
+		</Token>
+		<Token byte="$EE" string="downarrow">
+			<Alt string="↓"/>
+		</Token>
+		<Token byte="$F0" string="xmark">
+			<Alt string="×"/>
+		</Token>
+		<Token byte="$F1" string="integral">
+			<Alt string="∫"/>
+		</Token>
+		<Token byte="$F2" string="bolduparrow"/>
+		<Token byte="$F3" string="bolddownarrow"/>
+		<Token byte="$F4" string="squareroot">
+			<Alt string="√"/>
+		</Token>
+		<Token byte="$F5" string="invertedequal"/>
+	</Token>
+	<Token byte="$BC" string="sqrt(" group="Basic Math" style="Command">
+		<Alt string="√("/>
+	</Token>
+	<Token byte="$BD" string="cuberoot(">
+		<Alt string="³√("/>
+	</Token>
+	<Token byte="$BE" string="ln(" group="Advanced Math" style="Command"/>
+	<Token byte="$BF" string="e^(" group="Advanced Math" style="Command"/>
+	<Token byte="$C0" string="lambda(" group="Labels and Subroutines" style="Data">
+		<Alt string="λ("/>
+	</Token>
+	<Token byte="$C1" string="10^">
+		<Alt string="₁₀^("/>
+	</Token>
+	<Token byte="$C2" string="sin(" group="Basic Math" style="Command"/>
+	<Token byte="$C3" string="sin^-1(">
+		<Alt string="sin⁻¹("/>
+	</Token>
+	<Token byte="$C4" string="cos(" group="Basic Math" style="Command"/>
+	<Token byte="$C5" string="cos^-1(">
+		<Alt string="cos⁻¹("/>
+	</Token>
+	<Token byte="$C6" string="tan("/>
+	<Token byte="$C7" string="tan^-1(" group="Basic Math" style="Command">
+		<Alt string="tan⁻¹("/>
+	</Token>
+	<Token byte="$C8" string="sinh("/>
+	<Token byte="$C9" string="sinh^-1(">
+		<Alt string="sinh⁻¹("/>
+	</Token>
+	<Token byte="$CA" string="cosh("/>
+	<Token byte="$CB" string="cosh^-1(">
+		<Alt string="soch⁻¹("/>
+	</Token>
+	<Token byte="$CC" string="tanh("/>
+	<Token byte="$CD" string="tanh^-1(">
+		<Alt string="tanh⁻¹("/>
+	</Token>
+	<Token byte="$CE" string="If " group="Control Blocks" indentGroup="End Group" style="Control"/>
+	<Token byte="$CF" string="Then"/>
+	<Token byte="$D0" string="Else" group="Control Blocks" style="Control">
+		<Token byte="$2D">
+			<Token byte="$CE" string="Else!If " group="Control Blocks" style="Control"/>
+		</Token>
+		<Token byte="$CE" string="ElseIf " group="Control Blocks" style="Control"/>
+	</Token>
+	<Token byte="$D1" string="While " group="Control Blocks" indentGroup="End Group" style="Control"/>
+	<Token byte="$D2" string="Repeat " group="Control Blocks" indentGroup="End Group" style="Control"/>
+	<Token byte="$D3" string="For(" group="Control Blocks" indentGroup="End Group" style="Control"/>
+	<Token byte="$D4" string="End" group="Control Blocks" indentGroup="End Group" indentGroupTerminator="true" style="Control">
+		<Token byte="$2D">
+			<Token byte="$CE" string="End!If " group="Control Blocks" indentGroup="End Group" indentGroupTerminator="true" style="Control"/>
+		</Token>
+		<Token byte="$CE" string="EndIf " group="Control Blocks" indentGroup="End Group" indentGroupTerminator="true" style="Control"/>
+	</Token>
+	<Token byte="$D5" string="Return" group="Labels and Subroutines" style="Control">
+		<Token byte="$2D">
+			<Token byte="$CE" string="Return!If " group="Labels and Subroutines" style="Control"/>
+		</Token>
+		<Token byte="$CE" string="ReturnIf " group="Labels and Subroutines" style="Control"/>
+	</Token>
+	<Token byte="$D6" string="Lbl " group="Labels and Subroutines" style="Control"/>
+	<Token byte="$D7" string="Goto " group="Labels and Subroutines" style="Control"/>
+	<Token byte="$D8" string="Pause " group="System" style="Command"/>
+	<Token byte="$D9" string="Stop" group="Interrupts" style="Command"/>
+	<Token byte="$DA" string="IS&gt;("/>
+	<Token byte="$DB" string="DS&lt;(" group="Control Blocks" indentGroup="End Group" style="Command"/>
+	<Token byte="$DC" string="input" group="Text" style="Command"/>
+	<Token byte="$DD" string="Prompt "/>
+	<Token byte="$DE" string="Disp " group="Text" style="Command"/>
+	<Token byte="$DF" string="DispGraph" group="Screen and Buffer" style="Command">
+		<Token byte="$85" string="DispGraphClrDraw" group="Screen and Buffer" style="Command"/>
+		<Token byte="$99" string="DispGraphRecallPic" group="Screen and Buffer" style="Command"/>
+	</Token>
+	<Token byte="$E0" string="Output(" group="Text" style="Command"/>
+	<Token byte="$E1" string="ClrHome" group="Text" style="Command"/>
+	<Token byte="$E2" string="Fill(" group="Data and Storage" style="Command"/>
+	<Token byte="$E3" string="SortA("/>
+	<Token byte="$E4" string="SortD(" group="Miscellaneous" style="Command"/>
+	<Token byte="$E5" string="DispTable"/>
+	<Token byte="$E6" string="Menu("/>
+	<Token byte="$E7" string="Send(" group="Link Port" style="Command"/>
+	<Token byte="$E8" string="Get" group="Link Port" style="Command"/>
+	<Token byte="$E9" string="PlotsOn "/>
+	<Token byte="$EA" string="PlotsOff "/>
+	<Token byte="$EB" string="|L" group="Modifiers" style="Default_Axe">
+		<Alt string="smallL"/>
+		<Alt string="˪"/>
+	</Token>
+	<Token byte="$EC" string="Pt-Mask(" group="Sprites" style="Command"/>
+	<Token byte="$ED" string="pt-Get(" group="Sprites" style="Command"/>
+	<Token byte="$EE" string="Pt-And(" group="Sprites" style="Command"/>
+	<Token byte="$EF">
+		<Token byte="$00" string="setDate("/>
+		<Token byte="$01" string="setTime("/>
+		<Token byte="$02" string="checkTmr("/>
+		<Token byte="$03" string="setDtFmt("/>
+		<Token byte="$04" string="setTmFmt("/>
+		<Token byte="$05" string="timeCnv("/>
+		<Token byte="$06" string="dayOfWk("/>
+		<Token byte="$07" string="getDtStr"/>
+		<Token byte="$08" string="getTmStr("/>
+		<Token byte="$09" string="getDate"/>
+		<Token byte="$0A" string="getTime"/>
+		<Token byte="$0B" string="startTmr"/>
+		<Token byte="$0C" string="getDtFmt"/>
+		<Token byte="$0D" string="getTmFmt"/>
+		<Token byte="$0E" string="isClockOn"/>
+		<Token byte="$0F" string="ClockOff"/>
+		<Token byte="$10" string="ClockOn"/>
+		<Token byte="$11" string="OpenLib("/>
+		<Token byte="$12" string="ExecLib"/>
+		<Token byte="$13" string="invT("/>
+		<Token byte="$14" string="chi^2GOF-Test(">
+			<Alt string="χ^2GOF-Test("/>
+			<Alt string="chi²GOF-Test("/>
+			<Alt string="χ²GOF-Test("/>
+		</Token>
+		<Token byte="$15" string="LinRegTInt "/>
+		<Token byte="$16" string="Manual-Fit "/>
+		<Token byte="$17" string="ZQuadrant1"/>
+		<Token byte="$18" string="ZFrac1/2"/>
+		<Token byte="$19" string="ZFrac1/3"/>
+		<Token byte="$1A" string="ZFrac1/4"/>
+		<Token byte="$1B" string="ZFrac1/5"/>
+		<Token byte="$1C" string="ZFrac1/8"/>
+		<Token byte="$1D" string="ZFrac1/10"/>
+		<Token byte="$1E" string="mathprintbox"/>
+		<Token byte="$2E" string="n/d">
+			<Alt string="⁄"/>
+		</Token>
+		<Token byte="$2F" string="Un/d">
+			<Alt string="ᵤ"/>
+		</Token>
+		<Token byte="$30" string="&gt;n/d&lt;&gt;Un/d">
+			<Alt string="►n/d◄►Un/d"/>
+			<Alt string="&gt;n⁄d&lt;&gt;Un⁄d"/>
+			<Alt string="►n⁄d◄►Un⁄d"/>
+		</Token>
+		<Token byte="$31" string="&gt;F&lt;&gt;D">
+			<Alt string="►F◄►D"/>
+		</Token>
+		<Token byte="$32" string="remainder("/>
+		<Token byte="$33" string="Sigma(">
+			<Alt string="Σ("/>
+		</Token>
+		<Token byte="$34" string="logBASE("/>
+		<Token byte="$35" string="randIntNoRep("/>
+		<Token byte="$37" string="[MATHPRINT]"/>
+		<Token byte="$38" string="[CLASSIC]"/>
+		<Token byte="$39" string="[n/d]">
+			<Alt string="n⁄d"/>
+		</Token>
+		<Token byte="$3A" string="[Un/d]">
+			<Alt string="Un⁄d"/>
+		</Token>
+		<Token byte="$3B" string="[AUTO]"/>
+		<Token byte="$3C" string="[DEC]"/>
+		<Token byte="$3D" string="[FRAC]"/>
+	</Token>
+	<Token byte="$F0" string="^" group="Basic Math" style="Default_Axe"/>
+	<Token byte="$F1" string="xroot">
+		<Alt string="ˣ√"/>
+	</Token>
+	<Token byte="$F2" string="1-Var Stats "/>
+	<Token byte="$F3" string="2-Var Stats"/>
+	<Token byte="$F4" string="LinReg(a+bx) "/>
+	<Token byte="$F5" string="ExpReg "/>
+	<Token byte="$F6" string="LnReg" group="Interrupts" style="Command"/>
+	<Token byte="$F7" string="PwrReg "/>
+	<Token byte="$F8" string="Med-Med "/>
+	<Token byte="$F9" string="QuadReg "/>
+	<Token byte="$FA" string="ClrList "/>
+	<Token byte="$FB" string="port" group="Link Port" style="Command"/>
+	<Token byte="$FC" string="Histogram"/>
+	<Token byte="$FD" string="xyLine"/>
+	<Token byte="$FE" string="Scatter"/>
+	<Token byte="$FF" string="LinReg(ax+b) "/>
+</Tokens>

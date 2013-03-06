@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B4597C80-3F38-4708-9077-8377B0957B64}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TokenIDE</RootNamespace>
+    <AssemblyName>TokenIDE</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>36D5C5DEB49B520EECCAFD2B251C479DB2C43AA9</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>TokenIDE_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoWin32Manifest>true</NoWin32Manifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Tokens.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CropImageDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CropImageDialog.Designer.cs">
+      <DependentUpon>CropImageDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DCSGUIDesigner.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DCSGUIDesigner.Designer.cs">
+      <DependentUpon>DCSGUIDesigner.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GroupStats.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GroupStats.Designer.cs">
+      <DependentUpon>GroupStats.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IEditWindow.cs" />
+    <Compile Include="List8xEditWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="List8xEditWindow.Designer.cs">
+      <DependentUpon>List8xEditWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Options.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Options.Designer.cs">
+      <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PreprocessorException.cs" />
+    <Compile Include="Prog8xEditWindow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Prog8xEditWindow.Designer.cs">
+      <DependentUpon>Prog8xEditWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HexSprite.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HexSprite.Designer.cs">
+      <DependentUpon>HexSprite.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ImageEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImageEditor.Designer.cs">
+      <DependentUpon>ImageEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project.cs">
+      <DependentUpon>Project.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="ProjectItem.cs" />
+    <Compile Include="Tokens.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tokens.Designer.cs">
+      <DependentUpon>Tokens.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TokensProject.cs" />
+    <Compile Include="TokenStyle.cs" />
+    <Compile Include="XmlValidator.cs" />
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CropImageDialog.resx">
+      <DependentUpon>CropImageDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DCSGUIDesigner.resx">
+      <DependentUpon>DCSGUIDesigner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GroupStats.resx">
+      <DependentUpon>GroupStats.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="List8xEditWindow.resx">
+      <DependentUpon>List8xEditWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Options.resx">
+      <DependentUpon>Options.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Prog8xEditWindow.resx">
+      <DependentUpon>Prog8xEditWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HexSprite.resx">
+      <DependentUpon>HexSprite.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImageEditor.resx">
+      <DependentUpon>ImageEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Tokens.resx">
+      <DependentUpon>Tokens.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Project.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\Test_Token.datasource" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="TI-83P Font.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TokenIDE.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Tokens.xsd">
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\Icons\icon_appvar.png" />
+    <None Include="Assets\Icons\icon_blank.png" />
+    <None Include="Assets\Icons\icon_calc.png" />
+    <None Include="Assets\Icons\icon_files.png" />
+    <None Include="Assets\Icons\icon_guiedit.png" />
+    <None Include="Assets\Icons\icon_hexsprite.png" />
+    <None Include="Assets\Icons\icon_list.png" />
+    <None Include="Assets\Icons\icon_mat.png" />
+    <None Include="Assets\Icons\icon_open.png" />
+    <None Include="Assets\Icons\icon_pic.png" />
+    <None Include="Assets\Icons\icon_prog.png" />
+    <None Include="Assets\Icons\icon_save.png" />
+    <None Include="Assets\Icons\Project\icon_project.png" />
+    <None Include="Assets\Icons\Project\icon_project_appvars.png" />
+    <None Include="Assets\Icons\Project\icon_project_blank.png" />
+    <None Include="Assets\Icons\Project\icon_project_lists.png" />
+    <None Include="Assets\Icons\Project\icon_project_matrices.png" />
+    <None Include="Assets\Icons\Project\icon_project_pics.png" />
+    <None Include="Assets\Icons\Project\icon_project_progs.png" />
+    <Content Include="Assets\logo-curved.png" />
+    <Content Include="TI-73.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TI-84+CSE.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TI-82.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="GrammerTokens.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NoLib.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Prizm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Project.xml" />
+    <Content Include="Tokens.ico" />
+    <None Include="Assets\Tokens.png" />
+    <Content Include="Tokens.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="AxeTokens.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
+      <Project>{762E8292-3E30-41CE-B874-BB6D9D0319DC}</Project>
+      <Name>Merthsoft.DynamicConfig</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FastColoredTextBox\FastColoredTextBox.csproj">
+      <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
+      <Name>FastColoredTextBox</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merthsoft.CalcData\Merthsoft.CalcData.csproj">
+      <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
+      <Name>Merthsoft.CalcData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+      <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
+      <Name>Merthsoft.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj">
+      <Project>{009E5F29-42B3-4FC4-ACBE-38B72B2E33AF}</Project>
+      <Name>Merthsoft.Tokens.DCSGUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Merthsoft.Tokens\Merthsoft.Tokens.csproj">
+      <Project>{E48E4413-1396-4271-B095-07C46A7EE212}</Project>
+      <Name>Merthsoft.Tokens</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+  rename TokenIDE.exe Tokens.exe
+  "C:\ILRepack.exe" /targetplatform:v4 /out:TokenIDE.exe Tokens.exe FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
+  del *.pdb
+  del *.manifest
+  del *.application
+  del *.config
+  del *.dll
+  del Tokens.exe
+)</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

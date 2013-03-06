@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+Tokens.xsd
+Shaun McFall, Merthsoft Creations
+shaunm.mcfall@gmail.com
+
+Schema file for TokenIDE
+-->
+<xs:schema id="Tokens" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+					 targetNamespace="http://merthsoft.com/Tokens"
+					 xmlns="http://merthsoft.com/Tokens"
+>
+	<xs:element name="Token">
+		<xs:complexType mixed="true">
+			<xs:sequence minOccurs="0">
+				<xs:element name="Alt" maxOccurs="unbounded" minOccurs="0">
+					<xs:complexType>
+						<xs:attribute name="string" type="xs:string" />
+					</xs:complexType>
+				</xs:element>
+				<xs:element ref="Token" maxOccurs="unbounded" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="byte" type="xs:string" />
+			<xs:attribute name="string" type="xs:string" />
+			<xs:attribute name="comment" type="xs:string" />
+			<xs:attribute name="group" type="xs:string" />
+			<xs:attribute name="site" type="xs:string" />
+			<xs:attribute name="stringStarter" type="xs:boolean" />
+			<xs:attribute name="stringTerminator" type="xs:boolean" />
+			<xs:attribute name="style" type="xs:string" />
+			<xs:attribute name="indentGroup" type="xs:string" />
+			<xs:attribute name="indentGroupTerminator" type="xs:boolean" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Groups">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Group" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Group">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" />
+			<xs:attribute name="comment" type="xs:string" />
+			<xs:attribute name="site" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Styles">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Style" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="commentString" type="xs:string" default="//" use="optional" />
+			<xs:attribute name="directiveString" type="xs:string" default="#" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Style">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" />
+			<xs:attribute name="minTokenLength" type="xs:int" />
+			<xs:attribute name="foreground" type="xs:string" />
+			<xs:attribute name="background" type="xs:string" />
+			<xs:attribute name="tokenUnderlineColor" type="xs:string" />
+			<xs:attribute name="bold" type="xs:boolean" />
+			<xs:attribute name="underline" type="xs:boolean" />
+			<xs:attribute name="italic" type="xs:boolean" />
+			<xs:attribute name="strike" type="xs:boolean" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="Tokens">
+		<xs:complexType>
+			<xs:sequence maxOccurs="unbounded">
+				<xs:element ref="Groups" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="Styles" minOccurs="0" maxOccurs="16" />
+				<xs:element ref="Token" minOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
