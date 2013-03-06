@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TokenIDE", "TokenIDE.csproj", "{B4597C80-3F38-4708-9077-8377B0957B64}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Tokens", "..\Merthsoft.Tokens\Merthsoft.Tokens.csproj", "{E48E4413-1396-4271-B095-07C46A7EE212}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Tokens", "Merthsoft.Tokens\Merthsoft.Tokens.csproj", "{E48E4413-1396-4271-B095-07C46A7EE212}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Tokens.DCSGUI", "..\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj", "{009E5F29-42B3-4FC4-ACBE-38B72B2E33AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Tokens.DCSGUI", "Merthsoft.Tokens\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj", "{009E5F29-42B3-4FC4-ACBE-38B72B2E33AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.CalcData", "..\Merthsoft.CalcData\Merthsoft.CalcData.csproj", "{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.CalcData", "Merthsoft.CalcData\Merthsoft.CalcData.csproj", "{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Extensions", "..\Merthsoft.Extensions\Merthsoft.Extensions.csproj", "{98D91010-0405-48CB-82D8-FD707B22779C}"
 EndProject
