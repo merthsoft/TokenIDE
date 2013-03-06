@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.CalcData", "Merth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.Extensions", "..\Merthsoft.Extensions\Merthsoft.Extensions.csproj", "{98D91010-0405-48CB-82D8-FD707B22779C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastColoredTextBox", FastColoredTextBox\FastColoredTextBox.csproj", "{6DD14A85-CCFC-4774-BD26-0F5772512319}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastColoredTextBox", "FastColoredTextBox\FastColoredTextBox.csproj", "{6DD14A85-CCFC-4774-BD26-0F5772512319}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.DynamicConfig", "..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj", "{762E8292-3E30-41CE-B874-BB6D9D0319DC}"
 EndProject
