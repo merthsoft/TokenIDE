@@ -55,7 +55,7 @@
     <Compile Include="TI\Var8x.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+    <ProjectReference Include="..\..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
       <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>

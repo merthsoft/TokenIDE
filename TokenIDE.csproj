@@ -296,7 +296,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
+    <ProjectReference Include="..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
       <Project>{762E8292-3E30-41CE-B874-BB6D9D0319DC}</Project>
       <Name>Merthsoft.DynamicConfig</Name>
     </ProjectReference>
@@ -304,7 +304,7 @@
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.CalcData\Merthsoft.CalcData.csproj">
+    <ProjectReference Include="Merthsoft.CalcData\Merthsoft.CalcData.csproj">
       <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
       <Name>Merthsoft.CalcData</Name>
     </ProjectReference>
@@ -312,11 +312,11 @@
       <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj">
+    <ProjectReference Include="Merthsoft.Tokens\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj">
       <Project>{009E5F29-42B3-4FC4-ACBE-38B72B2E33AF}</Project>
       <Name>Merthsoft.Tokens.DCSGUI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.Tokens\Merthsoft.Tokens.csproj">
+    <ProjectReference Include="Merthsoft.Tokens\Merthsoft.Tokens.csproj">
       <Project>{E48E4413-1396-4271-B095-07C46A7EE212}</Project>
       <Name>Merthsoft.Tokens</Name>
     </ProjectReference>

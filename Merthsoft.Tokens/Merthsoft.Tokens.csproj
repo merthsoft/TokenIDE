@@ -54,11 +54,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\FastColoredTextBox\FastColoredTextBox.csproj">
+    <ProjectReference Include="..\FastColoredTextBox\FastColoredTextBox.csproj">
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+    <ProjectReference Include="..\..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
       <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>

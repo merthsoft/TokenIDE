@@ -540,7 +540,7 @@ namespace TokenIDE {
 			string fileName = FileName;
 			if (!FileName.EndsWith(".txt")) { fileName = FileName + ".txt"; }
 			using (StreamWriter sw = new StreamWriter(fileName, false)) {
-				sw.Write(ProgramText.Replace("\n", Environment.NewLine));
+				sw.Write(ProgramText.Replace("\r", "").Replace("\n", Environment.NewLine));
 			}
 			Dirty = false;
 		}

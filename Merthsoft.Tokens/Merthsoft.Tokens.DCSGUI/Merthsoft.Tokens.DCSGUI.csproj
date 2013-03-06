@@ -67,11 +67,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+    <ProjectReference Include="..\..\..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
       <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.Tokens\Merthsoft.Tokens.csproj">
+    <ProjectReference Include="..\Merthsoft.Tokens.csproj">
       <Project>{E48E4413-1396-4271-B095-07C46A7EE212}</Project>
       <Name>Merthsoft.Tokens</Name>
     </ProjectReference>
