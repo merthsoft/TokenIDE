@@ -129,9 +129,6 @@ namespace TokenIDE {
 				if (ParentTabPage != null) {
 					ParentTabPage.Text = _programName;
 				}
-				//if (ParentTabPage != null)
-				//    ParentTabPage.Text = ProgramName;
-				//FileName = _programName;
 			}
 		}
 

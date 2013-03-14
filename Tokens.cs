@@ -108,6 +108,7 @@ namespace TokenIDE {
 				case ".83p":
 				case ".82p":
 				case ".73p":
+				case ".85p":
 					TokenData tokenData = new Merthsoft.Tokens.TokenData((string)((IDictionary<string, object>)(config.Extensions))[ext.Substring(1)]);
 					currWindow = ewProg = new Prog8xEditWindow(tokenData, fileName);
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
@@ -225,6 +226,9 @@ namespace TokenIDE {
 					break;
 				case Var8x.CalcType.Calc73:
 					prefix = "73";
+					break;
+				case Var8x.CalcType.Calc85:
+					prefix = "85";
 					break;
 				default:
 					break;
@@ -790,6 +794,10 @@ namespace TokenIDE {
 			dumpTokens(data.Tokens, sb);
 
 			window.ProgramText = sb.ToString();
+		}
+
+		private void tokenize85pToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc85);
 		}
 	}
 }

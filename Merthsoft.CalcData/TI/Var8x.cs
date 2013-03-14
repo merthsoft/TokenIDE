@@ -11,6 +11,8 @@ namespace Merthsoft.CalcData {
 			Calc83 = 1,
 			Calc82 = 2,
 			Calc73 = 3,
+			Calc85 = 4,
+			Calc86 = 5,
 		}
 
 		protected static List<string> SIGSTRING = new List<string>() { 
@@ -18,41 +20,43 @@ namespace Merthsoft.CalcData {
 			"**TI83**",
 			"**TI82**",
 			"**TI73**",
+			"**TI85**",
+			"**TI86**",
 		};
 
 		public enum VarType {
-			RealNumber		= 0x00,
-			RealList		= 0x01,
-			Matrix			= 0x02,
-			YVar			= 0x03,
-			String			= 0x04,
-			Program			= 0x05,
-			ProgramLocked	= 0x06,
-			Picture			= 0x07,
-			GDB				= 0x08,
-			WindowSettings1	= 0x0B,
-			ComplexNumber	= 0x0C,
-			ComplexList		= 0x0D,
-			WindowSettings2	= 0x0F,
-			SavedWinSettings= 0x10,
-			TableSetup		= 0x11,
-			Backup			= 0x13,
-			DelFlashApp		= 0x14,
-			AppVar			= 0x15,
-			GroupVar		= 0x17,
-			Directory		= 0x19,
-			FashOS			= 0x23,
-			FlashAPP		= 0x24,
-			IDList			= 0x26,
-			GetCertificate	= 0x27,
-			Clock			= 0x29
+			RealNumber = 0x00,
+			RealList = 0x01,
+			Matrix = 0x02,
+			YVar = 0x03,
+			String = 0x04,
+			Program = 0x05,
+			ProgramLocked = 0x06,
+			Picture = 0x07,
+			GDB = 0x08,
+			WindowSettings1 = 0x0B,
+			ComplexNumber = 0x0C,
+			ComplexList = 0x0D,
+			WindowSettings2 = 0x0F,
+			SavedWinSettings = 0x10,
+			TableSetup = 0x11,
+			Backup = 0x13,
+			DelFlashApp = 0x14,
+			AppVar = 0x15,
+			GroupVar = 0x17,
+			Directory = 0x19,
+			FashOS = 0x23,
+			FlashAPP = 0x24,
+			IDList = 0x26,
+			GetCertificate = 0x27,
+			Clock = 0x29
 		}
 
 		protected enum VarPrefix : byte {
-			Matrix	= 0x5C,
-			List	= 0x5D,
+			Matrix = 0x5C,
+			List = 0x5D,
 			Picture = 0x60,
-			String	= 0xAA
+			String = 0xAA
 		}
 
 		protected byte FlagUnArchived = 0x00;
@@ -85,7 +89,7 @@ namespace Merthsoft.CalcData {
 		//public short DataLength { get { return dataLength; } }
 
 		public string Comment { get { return new string(comment.ToCharArray()); } }
-		public VarType ID { get { return varID; } set { varID = value; } }
+		public VarType ID { get { return Calc == CalcType.Calc85 ? (VarType)0x05 : varID; } set { varID = value; } }
 		public string Name { get { return name; } set { name = value; } }
 
 		public CalcType Calc { get; set; }
@@ -103,7 +107,11 @@ namespace Merthsoft.CalcData {
 
 		public Var8x(VarType typeID, string name, CalcType calcType = Var8x.CalcType.Calc8x) {
 			sigArray = SIGSTRING[(int)calcType].ToByteArray();
-			fsigArray = new byte[3] { 0x1A, 0x0A, 0x00 };
+			if (calcType != CalcType.Calc85) {
+				fsigArray = new byte[3] { 0x1A, 0x0A, 0x00 };
+			} else {
+				fsigArray = new byte[3] { 0x1A, 0x0C, 0x00 };
+			}
 			flag1 = new byte[2] { 0x0D, 0x00 };
 			comment = "Merthsoft TokenIDE";
 			commentArray = new byte[42];
@@ -112,86 +120,6 @@ namespace Merthsoft.CalcData {
 			varID = typeID;
 			archFlag = 0;
 			Calc = calcType;
-		}
-
-		//public static Var8x FromBinaryReader(BinaryReader b) {
-		//	Var8x ret = new Var8x(b);
-		//	return ret;
-
-			//#region Header
-			//// Header section
-			//var sigArray = b.ReadBytes(8);
-			//string sig = Encoding.ASCII.GetString(sigArray);
-			//int type = SIGSTRING.IndexOf(sig);
-			//if (type == -1) {
-			//	throw new Exception(string.Format("File is not valid, {0} is not a valid signature string.", sig));
-			//}
-			//CalcType calcType = (CalcType)type;
-
-			//var fsigArray = b.ReadBytes(3);
-			//var commentArray = b.ReadBytes(42);
-			//var comment = ASCIIEncoding.ASCII.GetString(commentArray);
-			//var lenArray = b.ReadBytes(2);
-			//var length = BitConverter.ToInt16(lenArray, 0);
-			//#endregion
-			//#region Data
-			//// Data section
-			//var flag1 = b.ReadBytes(2);
-			//var dataLenArray = b.ReadBytes(2);
-			//var dataLength = BitConverter.ToInt16(dataLenArray, 0);
-			//var varID = b.ReadBytes(1);
-			//var ID = (VarType)varID[0];
-			//var varNameArray = b.ReadBytes(8);
-			//var name = ASCIIEncoding.ASCII.GetString(varNameArray);
-
-			//byte[] version = null;
-			//byte archFlag = 0;
-			//if (calcType == CalcType.Calc8x) {
-			//	version = b.ReadBytes(1);
-			//	archFlag = b.ReadByte();
-			//}
-			//// Skip next two bytes, they are a repeat of dataLength
-			//b.ReadBytes(2);
-			//switch (ID) {
-			//	case VarType.Program:
-			//	case VarType.ProgramLocked:
-			//		ret = new Prog8x();
-			//		break;
-			//	case VarType.Picture:
-			//		ret = new Pic8x();
-			//		break;
-			//}
-			//ret.ReadData(b, dataLength);
-			//#endregion
-			//// Checksum
-			//var checksumArray = b.ReadBytes(2);
-			
-			//ret.sigArray = sigArray;
-			//ret.Calc = calcType;
-
-			//ret.fsigArray = fsigArray;
-			//ret.commentArray = commentArray;
-			//ret.comment = comment;
-			//ret.lenArray = lenArray;
-			//ret.length = length;
-			//ret.flag1 = flag1;
-			//ret.dataLenArray = dataLenArray;
-			//ret.dataLength = dataLength;
-			//if (calcType == CalcType.Calc8x) {
-			//	ret.version = version;
-			//	ret.archFlag = archFlag;
-			//}
-			//ret.checksumArray = checksumArray;
-
-			//return ret;
-		//}
-
-		public int SumNumbers(int from, int to) {
-			return from > to ? 0 : from + SumNumbers(from + 1, to);
-		}
-
-		public int AggregateNumbers(int from, int to, int init, Func<int, int, int> op) {
-			return from > to ? init : op(from, AggregateNumbers(from+1, to, init, op));
 		}
 
 		public Var8x(BinaryReader b) {
@@ -218,7 +146,14 @@ namespace Merthsoft.CalcData {
 			dataLength = (short)(BitConverter.ToInt16(dataLenArray, 0) - 2);
 			varIDArray = b.ReadBytes(1);
 			varID = (VarType)varIDArray[0];
-			varNameArray = b.ReadBytes(8);
+			if (Calc != CalcType.Calc85) {
+				varNameArray = b.ReadBytes(8);
+			} else {
+				if (varID == (VarType)0x12) {
+					varID = VarType.Program;
+				}
+				varNameArray = b.ReadBytes(BitConverter.ToInt16(flag1, 0));
+			}
 			name = ASCIIEncoding.ASCII.GetString(varNameArray);
 			if (Calc == CalcType.Calc8x) {
 				version = b.ReadBytes(1);
@@ -248,10 +183,20 @@ namespace Merthsoft.CalcData {
 			#region Data
 			List<byte> dataBuffer = new List<byte>();
 			// Data section
-			dataBuffer.AddRange(flag1);
+			short nameLength = (short)Name.Length;
+			if (Calc != CalcType.Calc85) {
+				dataBuffer.AddRange(flag1);
+			} else {
+				dataBuffer.AddRange(((short)(nameLength + 4)).ToByteArray());
+			}
 			dataBuffer.AddRange(((short)(DataLength)).GetBytes());
 			dataBuffer.Add((byte)ID);
-			dataBuffer.AddRange(Name.ToByteArray(8));
+			if (Calc != CalcType.Calc85) {
+				dataBuffer.AddRange(Name.ToByteArray(8));
+			} else {
+				dataBuffer.Add((byte)nameLength);
+				dataBuffer.AddRange(Name.ToByteArray());
+			}
 			if (Calc == CalcType.Calc8x) {
 				dataBuffer.Add(0);
 				dataBuffer.Add(archFlag);

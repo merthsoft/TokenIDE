@@ -1025,7 +1025,7 @@ to include changes if they're better!
 	<Token byte="$BE" string="ln(" />
 	<Token byte="$BF" string="e^(" />
 	<Token byte="$C0" string="log(" />
-	<Token byte="$C1" string="10^">
+	<Token byte="$C1" string="10^(">
 		<Alt string="₁₀^(" />
 	</Token>
 	<Token byte="$C2" string="sin(" />
@@ -1187,14 +1187,14 @@ to include changes if they're better!
 			<Alt string="DARKGREY" />
 		</Token>
 		<Token byte="$5A" string="GridLine " group="Graph Commands" />
-		<Token byte="$5B" string="BackgroundOn" group="Graph Commands" />
+		<Token byte="$5B" string="BackgroundOn " group="Graph Commands" />
 		<Token byte="$6A" string="DetectAsymOn" group="Graph Commands" />
 		<Token byte="$6B" string="DetectAsymOff" group="Graph Commands" />
 		<Token byte="$64" string="BackgroundOff" group="Graph Commands" />
 		<Token byte="$65" string="GraphColor(" group="Graph Commands" />
 		<Token byte="$67" string="TextColor(" group="Drawing Commands" /> 
 		<Token byte="$68" string="Asm84CPrgm" />
-		<Token byte="$6C" string="BorderColor" group="Graph Commands" />
+		<Token byte="$6C" string="BorderColor " group="Graph Commands" />
 		<Token byte="$74" string="Thin" group="Graph Styles" />
 		<Token byte="$75" string="Dot-Thin" group="Graph Styles" />
 	</Token>
