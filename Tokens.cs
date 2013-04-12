@@ -13,6 +13,7 @@ using TokenIDE.Project;
 using System.Linq;
 using Merthsoft.DynamicConfig;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace TokenIDE {
 	public partial class Tokens : Form {
@@ -77,6 +78,54 @@ namespace TokenIDE {
 			}
 
 			projects = new List<TokensProject>();
+
+			IDictionary<string, object> tools = config.Tools;
+			int keyNumber = 0;
+			foreach (var tool in tools) {
+				string value = tool.Value.ToString();
+				char split = value[0];
+				string[] vals = value.Split(new[] { split }, StringSplitOptions.RemoveEmptyEntries);
+				ToolStripMenuItem t = new ToolStripMenuItem(vals[0]);
+				Keys key = (Keys)((int)Keys.D1 + (keyNumber++ % 10));
+				if (keyNumber > 9) {
+					key = key | Keys.Shift;
+				}
+				if (keyNumber > 19) {
+					MessageBox.Show("You can't have more than 20 external tools.");
+					break;
+				}
+
+				t.ShortcutKeys = Keys.Control | key;
+				t.ShowShortcutKeys = true;
+				t.Tag = vals;
+				t.Click += new EventHandler(t_Click);
+
+				externalToolsToolStripMenuItem.DropDownItems.Add(t);
+			}
+		}
+
+		void t_Click(object sender, EventArgs e) {
+			ToolStripMenuItem t = (ToolStripMenuItem)sender;
+			string[] vals = (string[])t.Tag;
+			string program = replaceTokens(vals[1]);
+			string args = replaceTokens(vals[2]);
+			//MessageBox.Show(args, program);
+			Process.Start(program, args);
+		}
+
+		private string replaceTokens(string val) {
+			val = val.Replace("%file%", Path.Combine(currWindow.SaveDirectory, currWindow.FileName));
+			val = val.Replace("%tokendir%", Application.StartupPath);
+			if (val.Contains("%files%")) {
+				StringBuilder sb = new StringBuilder();
+				foreach (TabPage page in EditWindows.TabPages) {
+					IEditWindow window = (IEditWindow)(page.Controls[0]);
+					sb.AppendFormat("\"{0}\" ", Path.Combine(window.SaveDirectory, window.FileName));
+				}
+				val = val.Replace("%files%", sb.ToString());
+			}
+
+			return val;
 		}
 
 		private void openFileToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -119,7 +168,8 @@ namespace TokenIDE {
 										string.Format("{0} is an assembly program, are you sure you want to open it?", fileName), 
 										"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
 									) == System.Windows.Forms.DialogResult.No) {
-									return;
+										currWindow = prevWindow;
+										return;
 								}
 							}
 							ewProg.Program = newProg8x;
@@ -176,7 +226,7 @@ namespace TokenIDE {
 				prevWindow.ParentTabPage.Text == "new file" && prevWindow.FirstFileFlag) {
 				EditWindows.TabPages.Remove(prevWindow.ParentTabPage);
 			}
-
+			currWindow.SaveDirectory = fi.Directory.FullName;
 			//currWindow.DragEnter += TokenIDE_DragEnter;
 			//currWindow.DragDrop += TokenIDE_DragDrop;
 			//} catch (Exception ex) {
@@ -197,7 +247,7 @@ namespace TokenIDE {
 				return;
 			}
 			try {
-				build(varType, calcType, currWindow.OnCalcName, dir, new object[2] { currWindow.NumTokens.ToString(), data });
+				build(varType, calcType, currWindow, dir, new object[2] { currWindow.NumTokens.ToString(), data });
 				statusLabel.Text = "Build succeeded";
 			} catch (Exception ex) {
 				statusLabel.Text = string.Concat("Build failed: ", ex.ToString());
@@ -247,9 +297,17 @@ namespace TokenIDE {
 			return "." + prefix + suffix;
 		}
 
-		public void build(Var8x.VarType varType, Var8x.CalcType calcType, string name, string dir, object[] data) {
+		public void build(Var8x.VarType varType, Var8x.CalcType calcType, IEditWindow window, string dir, object[] data) {
+			string name = window.OnCalcName;
 			Var8x var = null;
 			string ext = getExtension(varType, calcType);
+			
+			FileInfo fi = new FileInfo(window.FileName);
+			if (!string.IsNullOrWhiteSpace(fi.Extension)) {
+				window.FileName = window.FileName.Remove(window.FileName.Length - fi.Extension.Length);
+			}
+			window.FileName += ext;
+
 			if (varType == Var8x.VarType.AppVar) {
 				var = new AppVar8x(name, calcType);
 			} else {
@@ -798,6 +856,15 @@ namespace TokenIDE {
 
 		private void tokenize85pToolStripMenuItem_Click(object sender, EventArgs e) {
 			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc85);
+		}
+
+		private void statusLabel_TextChanged(object sender, EventArgs e) {
+			if (statusLabel.Text == "") { return; }
+			statusLabelClear.Start();
+		}
+
+		private void statusLabelClear_Tick(object sender, EventArgs e) {
+			statusLabel.Text = "";
 		}
 	}
 }
