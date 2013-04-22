@@ -160,21 +160,21 @@ namespace TokenIDE {
 				case ".85p":
 					TokenData tokenData = new Merthsoft.Tokens.TokenData((string)((IDictionary<string, object>)(config.Extensions))[ext.Substring(1)]);
 					currWindow = ewProg = new Prog8xEditWindow(tokenData, fileName);
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
-						using (BinaryReader preader = new BinaryReader(pstream)) {
-							Prog8x newProg8x = new Prog8x(preader);
-							if (newProg8x.IsAsm) {
-								if (MessageBox.Show(
-										string.Format("{0} is an assembly program, are you sure you want to open it?", fileName), 
-										"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
-									) == System.Windows.Forms.DialogResult.No) {
-										currWindow = prevWindow;
-										return;
-								}
+					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) 
+					using (BinaryReader preader = new BinaryReader(pstream)) {
+						Prog8x newProg8x = new Prog8x(preader);
+						if (newProg8x.IsAsm) {
+							if (MessageBox.Show(
+									string.Format("{0} is an assembly program, are you sure you want to open it?", fileName), 
+									"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
+								) == System.Windows.Forms.DialogResult.No) {
+									currWindow = prevWindow;
+									return;
 							}
-							ewProg.Program = newProg8x;
 						}
+						ewProg.Program = newProg8x;
 					}
+				
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
@@ -187,6 +187,21 @@ namespace TokenIDE {
 					using (StreamReader sr = new StreamReader(fileName)) {
 						ewProg.ProgramText = sr.ReadToEnd();
 					}
+					ewProg.RefreshBytes();
+					ewProg.FullHighlightRefresh();
+					tp.Controls.Add(ewProg);
+					ewProg.ParentTabPage = tp;
+					ewProg.ProgramTextBox.Font = editorFont;
+					break;
+				case ".bin":
+					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+					ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
+
+					using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+					using (BinaryReader preader = new BinaryReader(pstream)) {
+						ewProg.ProgramText = TokenData.Detokenize(preader.ReadBytes((int)preader.BaseStream.Length));
+					}
+
 					ewProg.RefreshBytes();
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
@@ -240,14 +255,14 @@ namespace TokenIDE {
 			buildFile(varType, calcType);
 		}
 
-		private void buildFile(Var8x.VarType varType, Var8x.CalcType calcType) {
+		private void buildFile(Var8x.VarType? varType, Var8x.CalcType? calcType) {
 			string dir;
 			byte[] data = setUpSave(out dir);
 			if (data == null) {
 				return;
 			}
 			try {
-				build(varType, calcType, currWindow, dir, new object[2] { currWindow.NumTokens.ToString(), data });
+				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data);
 				statusLabel.Text = "Build succeeded";
 			} catch (Exception ex) {
 				statusLabel.Text = string.Concat("Build failed: ", ex.ToString());
@@ -261,7 +276,11 @@ namespace TokenIDE {
 
 		}
 
-		public string getExtension(Var8x.VarType varType, Var8x.CalcType calcType) {
+		public string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
+			if (varType == null && calcType == null) {
+				return ".bin";
+			}
+			
 			string prefix = null;
 			string suffix = null;
 			switch (calcType) {
@@ -297,26 +316,29 @@ namespace TokenIDE {
 			return "." + prefix + suffix;
 		}
 
-		public void build(Var8x.VarType varType, Var8x.CalcType calcType, IEditWindow window, string dir, object[] data) {
+		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData) {
 			string name = window.OnCalcName;
 			Var8x var = null;
 			string ext = getExtension(varType, calcType);
-			
+
 			FileInfo fi = new FileInfo(window.FileName);
 			if (!string.IsNullOrWhiteSpace(fi.Extension)) {
 				window.FileName = window.FileName.Remove(window.FileName.Length - fi.Extension.Length);
 			}
 			window.FileName += ext;
 
-			if (varType == Var8x.VarType.AppVar) {
-				var = new AppVar8x(name, calcType);
-			} else {
-				var = new Prog8x(name, calcType);
-			}
-			var.SetData(data);
-
 			using (StreamWriter s = new StreamWriter(Path.Combine(dir, name + ext))) {
-				var.Save(new BinaryWriter(s.BaseStream));
+				if (!(varType.HasValue && calcType.HasValue)) {
+					s.BaseStream.Write(rawData, 0, rawData.Length);
+				} else {
+					if (varType == Var8x.VarType.AppVar) {
+						var = new AppVar8x(name, calcType.Value);
+					} else {
+						var = new Prog8x(name, calcType.Value);
+					}
+					var.SetData(new object[] { numTokens.ToString(), rawData });
+					var.Save(new BinaryWriter(s.BaseStream));
+				}
 			}
 		}
 
@@ -865,6 +887,10 @@ namespace TokenIDE {
 
 		private void statusLabelClear_Tick(object sender, EventArgs e) {
 			statusLabel.Text = "";
+		}
+
+		private void binaryFileToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(null, null);
 		}
 	}
 }

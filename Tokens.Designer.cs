@@ -85,10 +85,11 @@
 			this.projectIconList = new System.Windows.Forms.ImageList(this.components);
 			this.shaunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
+			this.externalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.shaunToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainToolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.externalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusLabelClear = new System.Windows.Forms.Timer(this.components);
+			this.binaryFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -250,7 +251,8 @@
             this.toolStripMenuItem2,
             this.toolStripMenuItem3,
             this.toolStripMenuItem4,
-            this.toolStripMenuItem5});
+            this.toolStripMenuItem5,
+            this.binaryFileToolStripMenuItem});
 			this.buildToolStripMenuItem.Name = "buildToolStripMenuItem";
 			this.buildToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
 			this.buildToolStripMenuItem.Text = "Build";
@@ -518,7 +520,7 @@
 			this.ReferenceTab.Controls.Add(this.splitContainer2);
 			this.ReferenceTab.Location = new System.Drawing.Point(4, 22);
 			this.ReferenceTab.Name = "ReferenceTab";
-			this.ReferenceTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+			this.ReferenceTab.Padding = new System.Windows.Forms.Padding(3);
 			this.ReferenceTab.Size = new System.Drawing.Size(170, 480);
 			this.ReferenceTab.TabIndex = 1;
 			this.ReferenceTab.Text = "Reference";
@@ -607,8 +609,8 @@
 			this.ProjectTab.Controls.Add(this.projectTree);
 			this.ProjectTab.Location = new System.Drawing.Point(4, 22);
 			this.ProjectTab.Name = "ProjectTab";
-			this.ProjectTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-			this.ProjectTab.Size = new System.Drawing.Size(171, 489);
+			this.ProjectTab.Padding = new System.Windows.Forms.Padding(3);
+			this.ProjectTab.Size = new System.Drawing.Size(170, 480);
 			this.ProjectTab.TabIndex = 2;
 			this.ProjectTab.Text = "Project";
 			this.ProjectTab.UseVisualStyleBackColor = true;
@@ -621,7 +623,7 @@
 			this.projectTree.Location = new System.Drawing.Point(3, 3);
 			this.projectTree.Name = "projectTree";
 			this.projectTree.SelectedImageIndex = 0;
-			this.projectTree.Size = new System.Drawing.Size(165, 483);
+			this.projectTree.Size = new System.Drawing.Size(164, 474);
 			this.projectTree.TabIndex = 0;
 			this.projectTree.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterExpand);
 			this.projectTree.DoubleClick += new System.EventHandler(this.projectTree_DoubleClick);
@@ -665,22 +667,29 @@
 			this.mainMenuStrip.TabIndex = 1;
 			this.mainMenuStrip.Text = "menuStrip1";
 			// 
-			// shaunToolStripMenuItem1
-			// 
-			this.shaunToolStripMenuItem1.Name = "shaunToolStripMenuItem1";
-			this.shaunToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
-			this.shaunToolStripMenuItem1.Text = "Shaun";
-			// 
 			// externalToolsToolStripMenuItem
 			// 
 			this.externalToolsToolStripMenuItem.Name = "externalToolsToolStripMenuItem";
 			this.externalToolsToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
 			this.externalToolsToolStripMenuItem.Text = "External Tools";
 			// 
+			// shaunToolStripMenuItem1
+			// 
+			this.shaunToolStripMenuItem1.Name = "shaunToolStripMenuItem1";
+			this.shaunToolStripMenuItem1.Size = new System.Drawing.Size(52, 20);
+			this.shaunToolStripMenuItem1.Text = "Shaun";
+			// 
 			// statusLabelClear
 			// 
 			this.statusLabelClear.Interval = 5000;
 			this.statusLabelClear.Tick += new System.EventHandler(this.statusLabelClear_Tick);
+			// 
+			// binaryFileToolStripMenuItem
+			// 
+			this.binaryFileToolStripMenuItem.Name = "binaryFileToolStripMenuItem";
+			this.binaryFileToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
+			this.binaryFileToolStripMenuItem.Text = "Raw .bin";
+			this.binaryFileToolStripMenuItem.Click += new System.EventHandler(this.binaryFileToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 
@@ -789,6 +798,7 @@
 		private System.Windows.Forms.ToolStripMenuItem tokenize85pToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem externalToolsToolStripMenuItem;
 		private System.Windows.Forms.Timer statusLabelClear;
+		private System.Windows.Forms.ToolStripMenuItem binaryFileToolStripMenuItem;
 	}
 }
 
