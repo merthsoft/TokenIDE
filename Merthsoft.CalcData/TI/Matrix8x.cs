@@ -33,8 +33,8 @@ namespace Merthsoft.CalcData {
 			}
 		}
 
-		public override short DataLength {
-			get { return (short)(2 + NumCols + NumRows); }
+		public override ushort DataLength {
+			get { return (ushort)(2 + NumCols + NumRows); }
 		}
 
 		public override byte[] Data {
@@ -82,7 +82,7 @@ namespace Merthsoft.CalcData {
 			}
 		}
 
-		public override short SetData(object[] data) {
+		public override ushort SetData(object[] data) {
 			throw new NotImplementedException();
 		}
 	}

@@ -36,8 +36,8 @@ namespace Merthsoft.CalcData {
 			}
 		}
 
-		public override short DataLength {
-			get { return (short)(2 + listContents.Count); }
+		public override ushort DataLength {
+			get { return (ushort)(2 + listContents.Count); }
 		}
 
 		public int NumElements {
@@ -78,7 +78,7 @@ namespace Merthsoft.CalcData {
 			}
 		}
 
-		public override short SetData(object[] data) {
+		public override ushort SetData(object[] data) {
 			throw new NotImplementedException();
 		}
 	}

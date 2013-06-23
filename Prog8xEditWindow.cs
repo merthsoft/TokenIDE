@@ -50,7 +50,16 @@ namespace TokenIDE {
 
 		public bool Opening { get; set; }
 
-		public bool LiveUpdate { get; set; }
+		private bool liveUpdate;
+		public bool LiveUpdate {
+			get {
+				return liveUpdate;
+			}
+			set {
+				liveUpdate = value;
+				liveUpdateCheckBox.Checked = value;
+			}
+		}
 
 		private int NumberOfLines { get; set; }
 

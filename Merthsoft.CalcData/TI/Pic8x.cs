@@ -24,7 +24,7 @@ namespace Merthsoft.CalcData {
 		}
 
 		// [TODO] figure this shit out.
-		public override short DataLength {
+		public override ushort DataLength {
 			get { return 770; }
 		}
 
@@ -44,10 +44,10 @@ namespace Merthsoft.CalcData {
 			_data = b.ReadBytes(_size);
 		}
 
-		public override short SetData(object[] data) {
+		public override ushort SetData(object[] data) {
 			_size = short.Parse((string)data[0]);
 			_data = (byte[])(data[1]);
-			return (short)(2 + _size);
+			return (ushort)(2 + _size);
 		}
 
 		public Bitmap GetBitmap() {

@@ -160,6 +160,9 @@ namespace TokenIDE {
 				case ".85p":
 					TokenData tokenData = new Merthsoft.Tokens.TokenData((string)((IDictionary<string, object>)(config.Extensions))[ext.Substring(1)]);
 					currWindow = ewProg = new Prog8xEditWindow(tokenData, fileName);
+					if (fi.Length > short.MaxValue / 4) {
+						ewProg.LiveUpdate = false;
+					}
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) 
 					using (BinaryReader preader = new BinaryReader(pstream)) {
 						Prog8x newProg8x = new Prog8x(preader);
@@ -183,6 +186,9 @@ namespace TokenIDE {
 					break;
 				case ".txt":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+					if (fi.Length > short.MaxValue / 4) {
+						ewProg.LiveUpdate = false;
+					}
 					ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
 					using (StreamReader sr = new StreamReader(fileName)) {
 						ewProg.ProgramText = sr.ReadToEnd();
@@ -195,6 +201,9 @@ namespace TokenIDE {
 					break;
 				case ".bin":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+					if (fi.Length > short.MaxValue / 4) {
+						ewProg.LiveUpdate = false;
+					}
 					ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
 
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open))
@@ -210,6 +219,9 @@ namespace TokenIDE {
 					break;
 				case ".8xv":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+					if (fi.Length > short.MaxValue / 4) {
+						ewProg.LiveUpdate = false;
+					}
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
 						using (BinaryReader preader = new BinaryReader(pstream)) {
 							ewProg.Program = new AppVar8x(preader);
@@ -256,6 +268,8 @@ namespace TokenIDE {
 		}
 
 		private void buildFile(Var8x.VarType? varType, Var8x.CalcType? calcType) {
+			var prevCursor = Cursor;
+			Cursor = Cursors.WaitCursor;
 			string dir;
 			byte[] data = setUpSave(out dir);
 			if (data == null) {
@@ -265,8 +279,9 @@ namespace TokenIDE {
 				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data);
 				statusLabel.Text = "Build succeeded";
 			} catch (Exception ex) {
-				statusLabel.Text = string.Concat("Build failed: ", ex.ToString());
+				statusLabel.Text = string.Concat("Build failed: ", ex.Message);
 			}
+			Cursor = prevCursor;
 		}
 
 		private void tokenize83pToolStripMenuItem_Click(object sender, EventArgs e) {

@@ -16,7 +16,7 @@ namespace Merthsoft.CalcData {
 			get { return realData.FullData; }
 		}
 
-		public override short DataLength {
+		public override ushort DataLength {
 			get { return realData.DataLength; }
 		}
 
@@ -36,7 +36,7 @@ namespace Merthsoft.CalcData {
 			realData.ReadData(b, len);
 		}
 
-		public override short SetData(object[] data) {
+		public override ushort SetData(object[] data) {
 			return realData.SetData(data);
 		}
 	}

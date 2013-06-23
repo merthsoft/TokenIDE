@@ -46,7 +46,7 @@ namespace Merthsoft.CalcData {
 			}
 		}
 
-		public short DataLength { get { return 9; } }
+		public ushort DataLength { get { return 9; } }
 
 		public byte[] Data {
 			get { return FullData; }
@@ -109,7 +109,7 @@ namespace Merthsoft.CalcData {
 			Value = result == 0m ? 0m : Decimal.Parse(result.ToString().TrimEnd('0', '.'));
 		}
 
-		public short SetData(object[] data) {
+		public ushort SetData(object[] data) {
 			throw new NotImplementedException();
 		}
 	}

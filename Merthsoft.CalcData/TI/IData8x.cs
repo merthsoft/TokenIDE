@@ -9,10 +9,10 @@ namespace Merthsoft.CalcData {
 	public interface IData8x {
 		byte[] Data { get; }
 		byte[] FullData { get; }
-		short DataLength { get; }
+		ushort DataLength { get; }
 
 		void ReadData(BinaryReader b, int len);
 
-		short SetData(object[] data);
+		ushort SetData(object[] data);
 	}
 }

@@ -81,12 +81,12 @@ namespace Merthsoft.CalcData {
 		protected string name;
 		protected VarType varID;
 		protected short length;
-		protected short dataLength;
+		protected ushort dataLength;
 		protected string comment;
 
 		public abstract byte[] Data { get; }
 		public short Length { get { return (short)(DataLength + 17); } }
-		//public short DataLength { get { return dataLength; } }
+		//public ushort DataLength { get { return dataLength; } }
 
 		public string Comment { get { return new string(comment.ToCharArray()); } }
 		public VarType ID { get { return Calc == CalcType.Calc85 ? (VarType)0x05 : varID; } set { varID = value; } }
@@ -143,7 +143,7 @@ namespace Merthsoft.CalcData {
 			// Data section
 			flag1 = b.ReadBytes(2);
 			dataLenArray = b.ReadBytes(2);
-			dataLength = (short)(BitConverter.ToInt16(dataLenArray, 0) - 2);
+			dataLength = (ushort)(BitConverter.ToInt16(dataLenArray, 0) - 2);
 			varIDArray = b.ReadBytes(1);
 			varID = (VarType)varIDArray[0];
 			if (Calc != CalcType.Calc85) {
@@ -216,8 +216,8 @@ namespace Merthsoft.CalcData {
 
 		public abstract void ReadData(BinaryReader b, int len);
 
-		public abstract short SetData(object[] data);
+		public abstract ushort SetData(object[] data);
 
-		public abstract short DataLength { get; }
+		public abstract ushort DataLength { get; }
 	}
 }
