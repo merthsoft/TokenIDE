@@ -199,6 +199,7 @@ namespace FastColoredTextBoxNS
         List<int> cutOffPositions;
         //Y coordinate of line on screen
         internal int startY;// = -1;
+        internal int bottomPadding;
         /// <summary>
         /// Visible state
         /// </summary>
@@ -209,6 +210,7 @@ namespace FastColoredTextBoxNS
             cutOffPositions = null;
             VisibleState = FastColoredTextBoxNS.VisibleState.Visible;
             this.startY = startY;
+            bottomPadding = 0;
         }
         /// <summary>
         /// Positions for wordwrap cutoffs
@@ -278,13 +280,15 @@ namespace FastColoredTextBoxNS
             int cutOff = 0;
             CutOffPositions.Clear();
 
-            for (int i = 0; i < line.Count; i++)
+            //for (int i = 0; i < line.Count; i++)
+            for (int i = 0; i < line.Count - 1; i++)
             {
                 char c = line[i].c;
                 if (charWrap)
                 {
                     //char wrapping
-                    cutOff = Math.Min(i + 1, line.Count - 1);
+                    //cutOff = Math.Min(i + 1, line.Count - 1);
+                    cutOff = i + 1;
                 }
                 else
                 {
@@ -294,7 +298,7 @@ namespace FastColoredTextBoxNS
                         cutOff = i;
                     }
                     else
-                        if (!char.IsLetterOrDigit(c) && c != '_')
+                        if (!char.IsLetterOrDigit(c) && c != '_' && c != '\'')
                             cutOff = Math.Min(i + 1, line.Count - 1);
                 }
 

@@ -76,6 +76,24 @@ namespace FastColoredTextBoxNS
         {
             ;
         }
+
+        /// <summary>
+        /// Returns CSS for export to HTML
+        /// </summary>
+        /// <returns></returns>
+        public virtual string GetCSS()
+        {
+            return "";
+        }
+
+        /// <summary>
+        /// Returns RTF descriptor for export to RTF
+        /// </summary>
+        /// <returns></returns>
+        public virtual RTFStyleDescriptor GetRTF()
+        {
+            return new RTFStyleDescriptor();
+        }
     }
 
     /// <summary>
@@ -102,7 +120,7 @@ namespace FastColoredTextBoxNS
         {
             //draw background
             if (BackgroundBrush != null)
-                gr.FillRectangle(BackgroundBrush, position.X, position.Y + 1, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
+                gr.FillRectangle(BackgroundBrush, position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
             //draw chars
             Font f = new Font(range.tb.Font, FontStyle);
             //Font fHalfSize = new Font(range.tb.Font.FontFamily, f.SizeInPoints/2, FontStyle);
@@ -149,11 +167,61 @@ namespace FastColoredTextBoxNS
         public override void Dispose()
         {
             base.Dispose();
+            
+            if(ForeBrush!=null)
+                ForeBrush.Dispose();
+            if(BackgroundBrush!=null)
+                BackgroundBrush.Dispose();
+        }
 
-			if (ForeBrush != null)
-				ForeBrush.Dispose();
-			if (BackgroundBrush != null)
-				BackgroundBrush.Dispose();
+        public override string GetCSS()
+        {
+            string result = "";
+
+            if (BackgroundBrush is SolidBrush)
+            {
+                var s =  ExportToHTML.GetColorAsString((BackgroundBrush as SolidBrush).Color);
+                if (s != "")
+                    result += "background-color:" + s + ";";
+            }
+            if (ForeBrush is SolidBrush)
+            {
+                var s = ExportToHTML.GetColorAsString((ForeBrush as SolidBrush).Color);
+                if (s != "")
+                    result += "color:" + s + ";";
+            }
+            if ((FontStyle & FontStyle.Bold) != 0)
+                result += "font-weight:bold;";
+            if ((FontStyle & FontStyle.Italic) != 0)
+                result += "font-style:oblique;";
+            if ((FontStyle & FontStyle.Strikeout) != 0)
+                result += "text-decoration:line-through;";
+            if ((FontStyle & FontStyle.Underline) != 0)
+                result += "text-decoration:underline;";
+
+            return result;
+        }
+
+        public override RTFStyleDescriptor GetRTF()
+        {
+            var result = new RTFStyleDescriptor();
+
+            if (BackgroundBrush is SolidBrush)
+                result.BackColor = (BackgroundBrush as SolidBrush).Color;
+            
+            if (ForeBrush is SolidBrush)
+                result.ForeColor = (ForeBrush as SolidBrush).Color;
+            
+            if ((FontStyle & FontStyle.Bold) != 0)
+                result.AdditionalTags += @"\b";
+            if ((FontStyle & FontStyle.Italic) != 0)
+                result.AdditionalTags += @"\i";
+            if ((FontStyle & FontStyle.Strikeout) != 0)
+                result.AdditionalTags += @"\strike";
+            if ((FontStyle & FontStyle.Underline) != 0)
+                result.AdditionalTags += @"\ul";
+
+            return result;
         }
     }
 
@@ -197,7 +265,7 @@ namespace FastColoredTextBoxNS
     }
 
     /// <summary>
-    /// Renderer for selection area
+    /// Renderer for selected area
     /// </summary>
     public class SelectionStyle : Style
     {
@@ -245,7 +313,7 @@ namespace FastColoredTextBoxNS
         public MarkerStyle(Brush backgroundBrush)
         {
             this.BackgroundBrush = backgroundBrush;
-            IsExportable = false;
+            IsExportable = true;
         }
 
         public override void Draw(Graphics gr, Point position, Range range)
@@ -256,8 +324,6 @@ namespace FastColoredTextBoxNS
                 Rectangle rect = new Rectangle(position.X, position.Y, (range.End.iChar - range.Start.iChar) * range.tb.CharWidth, range.tb.CharHeight);
                 if (rect.Width == 0)
                     return;
-                //var path = GetRoundedRectangle(rect, 5);
-                //gr.FillPath(BackgroundBrush, path);
                 gr.FillRectangle(BackgroundBrush, rect);
             }
         }
@@ -268,6 +334,20 @@ namespace FastColoredTextBoxNS
 
             if (BackgroundBrush != null)
                 BackgroundBrush.Dispose();
+        }
+
+        public override string GetCSS()
+        {
+            string result = "";
+
+            if (BackgroundBrush is SolidBrush)
+            {
+                var s = ExportToHTML.GetColorAsString((BackgroundBrush as SolidBrush).Color);
+                if (s != "")
+                    result += "background-color:" + s + ";";
+            }
+
+            return result;
         }
     }
 
@@ -353,4 +433,20 @@ namespace FastColoredTextBoxNS
         }
     }
 
+    /// <summary>
+    /// This style is used to mark range of text as ReadOnly block
+    /// </summary>
+    /// <remarks>You can inherite this style to add visual effects of readonly text</remarks>
+    public class ReadOnlyStyle : Style
+    {
+        public ReadOnlyStyle()
+        {
+            IsExportable = false;
+        }
+
+        public override void Draw(Graphics gr, Point position, Range range)
+        {
+            //
+        }
+    }
 }

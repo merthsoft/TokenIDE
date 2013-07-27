@@ -43,27 +43,26 @@
             // 
             // btClose
             // 
-            this.btClose.Location = new System.Drawing.Point(273, 138);
+            this.btClose.Location = new System.Drawing.Point(273, 153);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(75, 23);
-            this.btClose.TabIndex = 7;
+            this.btClose.TabIndex = 8;
             this.btClose.Text = "Close";
             this.btClose.UseVisualStyleBackColor = true;
             this.btClose.Click += new System.EventHandler(this.btClose_Click);
             // 
             // btFindNext
             // 
-            this.btFindNext.Location = new System.Drawing.Point(111, 109);
+            this.btFindNext.Location = new System.Drawing.Point(111, 124);
             this.btFindNext.Name = "btFindNext";
             this.btFindNext.Size = new System.Drawing.Size(75, 23);
-            this.btFindNext.TabIndex = 4;
+            this.btFindNext.TabIndex = 5;
             this.btFindNext.Text = "Find next";
             this.btFindNext.UseVisualStyleBackColor = true;
             this.btFindNext.Click += new System.EventHandler(this.btFindNext_Click);
             // 
             // tbFind
             // 
-            this.tbFind.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbFind.Location = new System.Drawing.Point(62, 12);
             this.tbFind.Name = "tbFind";
             this.tbFind.Size = new System.Drawing.Size(286, 20);
@@ -115,20 +114,20 @@
             // 
             // btReplace
             // 
-            this.btReplace.Location = new System.Drawing.Point(192, 109);
+            this.btReplace.Location = new System.Drawing.Point(192, 124);
             this.btReplace.Name = "btReplace";
             this.btReplace.Size = new System.Drawing.Size(75, 23);
-            this.btReplace.TabIndex = 5;
+            this.btReplace.TabIndex = 6;
             this.btReplace.Text = "Replace";
             this.btReplace.UseVisualStyleBackColor = true;
             this.btReplace.Click += new System.EventHandler(this.btReplace_Click);
             // 
             // btReplaceAll
             // 
-            this.btReplaceAll.Location = new System.Drawing.Point(273, 109);
+            this.btReplaceAll.Location = new System.Drawing.Point(273, 124);
             this.btReplaceAll.Name = "btReplaceAll";
             this.btReplaceAll.Size = new System.Drawing.Size(75, 23);
-            this.btReplaceAll.TabIndex = 6;
+            this.btReplaceAll.TabIndex = 7;
             this.btReplaceAll.Text = "Replace all";
             this.btReplaceAll.UseVisualStyleBackColor = true;
             this.btReplaceAll.Click += new System.EventHandler(this.btReplaceAll_Click);
@@ -136,7 +135,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 74);
+            this.label2.Location = new System.Drawing.Point(6, 81);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(50, 13);
             this.label2.TabIndex = 9;
@@ -144,8 +143,7 @@
             // 
             // tbReplace
             // 
-            this.tbReplace.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.tbReplace.Location = new System.Drawing.Point(62, 71);
+            this.tbReplace.Location = new System.Drawing.Point(62, 78);
             this.tbReplace.Name = "tbReplace";
             this.tbReplace.Size = new System.Drawing.Size(286, 20);
             this.tbReplace.TabIndex = 0;
@@ -156,7 +154,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(360, 173);
+            this.ClientSize = new System.Drawing.Size(360, 191);
             this.Controls.Add(this.tbFind);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.tbReplace);
@@ -175,7 +173,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Find and replace";
             this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ReplaceForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,7 +190,7 @@
         private System.Windows.Forms.Button btReplace;
         private System.Windows.Forms.Button btReplaceAll;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox tbReplace;
         public System.Windows.Forms.TextBox tbFind;
+        public System.Windows.Forms.TextBox tbReplace;
     }
 }

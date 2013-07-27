@@ -140,7 +140,7 @@ namespace FastColoredTextBoxNS
                 return;
             }
             //start of declaration
-            if (Regex.IsMatch(args.LineText, @"\b(Class|Property|Enum|Structure|Sub|Function|Namespace|Interface|Get|Set)\b", RegexOptions.IgnoreCase))
+            if (Regex.IsMatch(args.LineText, @"\b(Class|Property|Enum|Structure|Sub|Function|Namespace|Interface|Get)\b|(Set\s*\()", RegexOptions.IgnoreCase))
             {
                 args.ShiftNextLines = args.TabLength;
                 return;
@@ -333,6 +333,7 @@ namespace FastColoredTextBoxNS
             for(int i=0;i<desc.styles.Count;i++)
                 range.tb.Styles[i] = desc.styles[i];
             //brackets
+            var oldBrackets = RememberBrackets(range.tb);
             range.tb.LeftBracket = desc.leftBracket;
             range.tb.RightBracket = desc.rightBracket;
             range.tb.LeftBracket2 = desc.leftBracket2;
@@ -347,6 +348,22 @@ namespace FastColoredTextBoxNS
             //folding markers
             foreach (var folding in desc.foldings)
                 range.SetFoldingMarkers(folding.startMarkerRegex, folding.finishMarkerRegex, folding.options);
+
+            //
+            RestoreBrackets(range.tb, oldBrackets);
+        }
+
+        private void RestoreBrackets(FastColoredTextBox tb, char[] oldBrackets)
+        {
+            tb.LeftBracket = oldBrackets[0];
+            tb.RightBracket = oldBrackets[1];
+            tb.LeftBracket2 = oldBrackets[2];
+            tb.RightBracket2 = oldBrackets[3];
+        }
+
+        private char[] RememberBrackets(FastColoredTextBox tb)
+        {
+            return new char[]{tb.LeftBracket,tb.RightBracket,tb.LeftBracket2,tb.RightBracket2};
         }
 
         Regex CSharpStringRegex, CSharpCommentRegex1, CSharpCommentRegex2, CSharpCommentRegex3, CSharpNumberRegex, CSharpAttributeRegex, CSharpClassNameRegex, CSharpKeywordRegex;
@@ -362,6 +379,140 @@ namespace FastColoredTextBoxNS
             CSharpClassNameRegex = new Regex(@"\b(class|struct|enum|interface)\s+(?<range>\w+?)\b", RegexCompiledOption);
             CSharpKeywordRegex = new Regex(@"\b(abstract|as|base|bool|break|byte|case|catch|char|checked|class|const|continue|decimal|default|delegate|do|double|else|enum|event|explicit|extern|false|finally|fixed|float|for|foreach|goto|if|implicit|in|int|interface|internal|is|lock|long|namespace|new|null|object|operator|out|override|params|private|protected|public|readonly|ref|return|sbyte|sealed|short|sizeof|stackalloc|static|string|struct|switch|this|throw|true|try|typeof|uint|ulong|unchecked|unsafe|ushort|using|virtual|void|volatile|while|add|alias|ascending|descending|dynamic|from|get|global|group|into|join|let|orderby|partial|remove|select|set|value|var|where|yield)\b|#region\b|#endregion\b", RegexCompiledOption);
         }
+
+        #region Styles
+
+        /// <summary>
+        /// String style
+        /// </summary>
+        public Style StringStyle { get; set; }
+        /// <summary>
+        /// Comment style
+        /// </summary>
+        public Style CommentStyle { get; set; }
+        /// <summary>
+        /// Number style
+        /// </summary>
+        public Style NumberStyle { get; set; }
+        /// <summary>
+        /// C# attribute style
+        /// </summary>
+        public Style AttributeStyle { get; set; }
+        /// <summary>
+        /// Class name style
+        /// </summary>
+        public Style ClassNameStyle { get; set; }
+        /// <summary>
+        /// Keyword style
+        /// </summary>
+        public Style KeywordStyle { get; set; }
+        /// <summary>
+        /// Style of tags in comments of C#
+        /// </summary>
+        public Style CommentTagStyle { get; set; }
+
+        /// <summary>
+        /// HTML attribute value style
+        /// </summary>
+        public Style AttributeValueStyle { get; set; }
+        /// <summary>
+        /// HTML tag brackets style
+        /// </summary>
+        public Style TagBracketStyle { get; set; }
+        /// <summary>
+        /// HTML tag name style
+        /// </summary>
+        public Style TagNameStyle { get; set; }
+        /// <summary>
+        /// HTML Entity style
+        /// </summary>
+        public Style HtmlEntityStyle { get; set; }
+
+        /// <summary>
+        /// Variable style
+        /// </summary>
+        public Style VariableStyle { get; set; }
+        /// <summary>
+        /// Specific PHP keyword style
+        /// </summary>
+        public Style KeywordStyle2 { get; set; }
+        /// <summary>
+        /// Specific PHP keyword style
+        /// </summary>
+        public Style KeywordStyle3 { get; set; }
+
+        /// <summary>
+        /// SQL Statements style
+        /// </summary>
+        public Style StatementsStyle { get; set; }
+        /// <summary>
+        /// SQL Functions style
+        /// </summary>
+        public Style FunctionsStyle { get; set; }
+        /// <summary>
+        /// SQL Types style
+        /// </summary>
+        public Style TypesStyle { get; set; }
+
+        #endregion
+
+        public void InitStyleSchema(Language lang)
+        {
+            switch (lang)
+            {
+                case Language.CSharp:
+                    StringStyle = BrownStyle;
+                    CommentStyle = GreenStyle;
+                    NumberStyle = MagentaStyle;
+                    AttributeStyle = GreenStyle;
+                    ClassNameStyle = BoldStyle;
+                    KeywordStyle = BlueStyle;
+                    CommentTagStyle = GrayStyle;
+                    break;
+                case Language.VB:
+                    StringStyle = BrownStyle;
+                    CommentStyle = GreenStyle;
+                    NumberStyle = MagentaStyle;
+                    ClassNameStyle = BoldStyle;
+                    KeywordStyle = BlueStyle;
+                    break;
+                case Language.HTML:
+                    CommentStyle = GreenStyle;
+                    TagBracketStyle = BlueStyle;
+                    TagNameStyle = MaroonStyle;
+                    AttributeStyle = RedStyle;
+                    AttributeValueStyle = BlueStyle;
+                    HtmlEntityStyle = RedStyle;
+                    break;
+                case Language.JS:
+                    StringStyle = BrownStyle;
+                    CommentStyle = GreenStyle;
+                    NumberStyle = MagentaStyle;
+                    KeywordStyle = BlueStyle;
+                    KeywordStyle = BlueStyle;
+                    break;
+                case Language.PHP:
+                    StringStyle = RedStyle;
+                    CommentStyle = GreenStyle;
+                    NumberStyle = RedStyle;
+                    VariableStyle = MaroonStyle;
+                    KeywordStyle = MagentaStyle;
+                    KeywordStyle2 = BlueStyle;
+                    KeywordStyle3 = GrayStyle;
+                    break;
+                case Language.SQL:
+                    StringStyle = RedStyle;
+                    CommentStyle = GreenStyle;
+                    NumberStyle = MagentaStyle;
+                    KeywordStyle = BlueStyle;
+                    StatementsStyle = BlueBoldStyle;
+                    FunctionsStyle = MaroonStyle;
+                    VariableStyle = MaroonStyle;
+                    TypesStyle = BrownStyle;
+                    break;
+            }
+        }
+
         /// <summary>
         /// Highlights C# code
         /// </summary>
@@ -374,24 +525,49 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '\x0';
             range.tb.RightBracket2 = '\x0';
             //clear style of changed range
-            range.ClearStyle(BlueStyle, BoldStyle, GrayStyle, MagentaStyle, GreenStyle, BrownStyle);
+            range.ClearStyle(StringStyle, CommentStyle, NumberStyle, AttributeStyle, ClassNameStyle, KeywordStyle);
             //
             if (CSharpStringRegex == null)
                 InitCShaprRegex();
             //string highlighting
-            range.SetStyle(BrownStyle, CSharpStringRegex);
+            range.SetStyle(StringStyle, CSharpStringRegex);
             //comment highlighting
-            range.SetStyle(GreenStyle, CSharpCommentRegex1);
-            range.SetStyle(GreenStyle, CSharpCommentRegex2);
-            range.SetStyle(GreenStyle, CSharpCommentRegex3);
+            range.SetStyle(CommentStyle, CSharpCommentRegex1);
+            range.SetStyle(CommentStyle, CSharpCommentRegex2);
+            range.SetStyle(CommentStyle, CSharpCommentRegex3);
             //number highlighting
-            range.SetStyle(MagentaStyle, CSharpNumberRegex);
+            range.SetStyle(NumberStyle, CSharpNumberRegex);
             //attribute highlighting
-            range.SetStyle(GrayStyle, CSharpAttributeRegex);
+            range.SetStyle(AttributeStyle, CSharpAttributeRegex);
             //class name highlighting
-            range.SetStyle(BoldStyle, CSharpClassNameRegex);
+            range.SetStyle(ClassNameStyle, CSharpClassNameRegex);
             //keyword highlighting
-            range.SetStyle(BlueStyle, CSharpKeywordRegex);
+            range.SetStyle(KeywordStyle, CSharpKeywordRegex);
+
+
+            //find document comments
+            foreach (var r in range.GetRanges(@"^\s*///.*$", RegexOptions.Multiline))
+            {
+                //remove C# highlighting from this fragment
+                r.ClearStyle(StyleIndex.All);
+                //do XML highlighting
+                if (HTMLTagRegex == null)
+                    InitHTMLRegex();
+                //
+                r.SetStyle(CommentStyle);
+                //tags
+                foreach (var rr in r.GetRanges(HTMLTagContentRegex))
+                {
+                    rr.ClearStyle(StyleIndex.All);
+                    rr.SetStyle(CommentTagStyle);
+                }
+                //prefix '///'
+                foreach (var rr in r.GetRanges( @"^\s*///", RegexOptions.Multiline))
+                {
+                    rr.ClearStyle(StyleIndex.All);
+                    rr.SetStyle(CommentTagStyle);
+                }
+            }
 
             //clear folding markers
             range.ClearFoldingMarkers();
@@ -424,20 +600,20 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '\x0';
             range.tb.RightBracket2 = '\x0';
             //clear style of changed range
-            range.ClearStyle(BrownStyle, GreenStyle, MagentaStyle, BoldStyle, BlueStyle);
+            range.ClearStyle(StringStyle, CommentStyle, NumberStyle, ClassNameStyle, KeywordStyle);
             //
             if (VBStringRegex == null)
                 InitVBRegex();
             //string highlighting
-            range.SetStyle(BrownStyle, VBStringRegex);
+            range.SetStyle(StringStyle, VBStringRegex);
             //comment highlighting
-            range.SetStyle(GreenStyle, VBCommentRegex);
+            range.SetStyle(CommentStyle, VBCommentRegex);
             //number highlighting
-            range.SetStyle(MagentaStyle, VBNumberRegex);
+            range.SetStyle(NumberStyle, VBNumberRegex);
             //class name highlighting
-            range.SetStyle(BoldStyle, VBClassNameRegex);
+            range.SetStyle(ClassNameStyle, VBClassNameRegex);
             //keyword highlighting
-            range.SetStyle(BlueStyle, VBKeywordRegex);
+            range.SetStyle(KeywordStyle, VBKeywordRegex);
 
             //clear folding markers
             range.ClearFoldingMarkers();
@@ -451,7 +627,7 @@ namespace FastColoredTextBoxNS
             range.SetFoldingMarkers(@"^\s*(?<range>Do)\b", @"^\s*(?<range>Loop)\b", RegexOptions.Multiline | RegexOptions.IgnoreCase);
         }
 
-        Regex HTMLTagRegex, HTMLTagNameRegex, HTMLEndTagRegex, HTMLAttrRegex, HTMLAttrValRegex, HTMLCommentRegex1, HTMLCommentRegex2, HTMLEntityRegex;
+        Regex HTMLTagRegex, HTMLTagNameRegex, HTMLEndTagRegex, HTMLAttrRegex, HTMLAttrValRegex, HTMLCommentRegex1, HTMLCommentRegex2, HTMLEntityRegex, HTMLTagContentRegex;
 
         void InitHTMLRegex()
         {
@@ -460,6 +636,7 @@ namespace FastColoredTextBoxNS
             HTMLTagRegex = new Regex(@"<|/>|</|>", RegexCompiledOption);
             HTMLTagNameRegex = new Regex(@"<(?<range>[!\w:]+)", RegexCompiledOption);
             HTMLEndTagRegex = new Regex(@"</(?<range>[\w:]+)>", RegexCompiledOption);
+            HTMLTagContentRegex = new Regex(@"<[^>]+>", RegexCompiledOption);
             HTMLAttrRegex = new Regex(@"(?<range>[\w\d\-]{1,20}?)='[^']*'|(?<range>[\w\d\-]{1,20})=""[^""]*""|(?<range>[\w\d\-]{1,20})=[\w\d\-]{1,20}", RegexCompiledOption);
             HTMLAttrValRegex = new Regex(@"[\w\d\-]{1,20}?=(?<range>'[^']*')|[\w\d\-]{1,20}=(?<range>""[^""]*"")|[\w\d\-]{1,20}=(?<range>[\w\d\-]{1,20})", RegexCompiledOption);
             HTMLEntityRegex = new Regex(@"\&(amp|gt|lt|nbsp|quot|apos|copy|reg|#[0-9]{1,8}|#x[0-9a-f]{1,8});", RegexCompiledOption | RegexOptions.IgnoreCase);
@@ -477,25 +654,25 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '(';
             range.tb.RightBracket2 = ')';
             //clear style of changed range
-            range.ClearStyle(BlueStyle, MaroonStyle, RedStyle);
+            range.ClearStyle(CommentStyle, TagBracketStyle, TagNameStyle, AttributeStyle, AttributeValueStyle, HtmlEntityStyle);
             //
             if (HTMLTagRegex == null)
                 InitHTMLRegex();
             //comment highlighting
-            range.SetStyle(GreenStyle, HTMLCommentRegex1);
-            range.SetStyle(GreenStyle, HTMLCommentRegex2);
+            range.SetStyle(CommentStyle, HTMLCommentRegex1);
+            range.SetStyle(CommentStyle, HTMLCommentRegex2);
             //tag brackets highlighting
-            range.SetStyle(BlueStyle, HTMLTagRegex);
+            range.SetStyle(TagBracketStyle, HTMLTagRegex);
             //tag name
-            range.SetStyle(MaroonStyle, HTMLTagNameRegex);
+            range.SetStyle(TagNameStyle, HTMLTagNameRegex);
             //end of tag
-            range.SetStyle(MaroonStyle, HTMLEndTagRegex);
+            range.SetStyle(TagNameStyle, HTMLEndTagRegex);
             //attributes
-            range.SetStyle(RedStyle, HTMLAttrRegex);
+            range.SetStyle(AttributeStyle, HTMLAttrRegex);
             //attribute values
-            range.SetStyle(BlueStyle, HTMLAttrValRegex);
+            range.SetStyle(AttributeValueStyle, HTMLAttrValRegex);
             //html entity
-            range.SetStyle(RedStyle, HTMLEntityRegex);
+            range.SetStyle(HtmlEntityStyle, HTMLEntityRegex);
 
             //clear folding markers
             range.ClearFoldingMarkers();
@@ -509,7 +686,7 @@ namespace FastColoredTextBoxNS
             range.SetFoldingMarkers("<tr", "</tr>", RegexOptions.IgnoreCase);
         }
 
-        Regex SQLStringRegex, SQLNumberRegex, SQLCommentRegex1, SQLCommentRegex2, SQLCommentRegex3, SQLVarRegex, SQLStatementsRegex, SQLKeywordsRegex, SQLFunctionsRegex;
+        Regex SQLStringRegex, SQLNumberRegex, SQLCommentRegex1, SQLCommentRegex2, SQLCommentRegex3, SQLVarRegex, SQLStatementsRegex, SQLKeywordsRegex, SQLFunctionsRegex, SQLTypesRegex;
 
         void InitSQLRegex()
         {
@@ -522,6 +699,8 @@ namespace FastColoredTextBoxNS
             SQLStatementsRegex = new Regex(@"\b(ALTER APPLICATION ROLE|ALTER ASSEMBLY|ALTER ASYMMETRIC KEY|ALTER AUTHORIZATION|ALTER BROKER PRIORITY|ALTER CERTIFICATE|ALTER CREDENTIAL|ALTER CRYPTOGRAPHIC PROVIDER|ALTER DATABASE|ALTER DATABASE AUDIT SPECIFICATION|ALTER DATABASE ENCRYPTION KEY|ALTER ENDPOINT|ALTER EVENT SESSION|ALTER FULLTEXT CATALOG|ALTER FULLTEXT INDEX|ALTER FULLTEXT STOPLIST|ALTER FUNCTION|ALTER INDEX|ALTER LOGIN|ALTER MASTER KEY|ALTER MESSAGE TYPE|ALTER PARTITION FUNCTION|ALTER PARTITION SCHEME|ALTER PROCEDURE|ALTER QUEUE|ALTER REMOTE SERVICE BINDING|ALTER RESOURCE GOVERNOR|ALTER RESOURCE POOL|ALTER ROLE|ALTER ROUTE|ALTER SCHEMA|ALTER SERVER AUDIT|ALTER SERVER AUDIT SPECIFICATION|ALTER SERVICE|ALTER SERVICE MASTER KEY|ALTER SYMMETRIC KEY|ALTER TABLE|ALTER TRIGGER|ALTER USER|ALTER VIEW|ALTER WORKLOAD GROUP|ALTER XML SCHEMA COLLECTION|BULK INSERT|CREATE AGGREGATE|CREATE APPLICATION ROLE|CREATE ASSEMBLY|CREATE ASYMMETRIC KEY|CREATE BROKER PRIORITY|CREATE CERTIFICATE|CREATE CONTRACT|CREATE CREDENTIAL|CREATE CRYPTOGRAPHIC PROVIDER|CREATE DATABASE|CREATE DATABASE AUDIT SPECIFICATION|CREATE DATABASE ENCRYPTION KEY|CREATE DEFAULT|CREATE ENDPOINT|CREATE EVENT NOTIFICATION|CREATE EVENT SESSION|CREATE FULLTEXT CATALOG|CREATE FULLTEXT INDEX|CREATE FULLTEXT STOPLIST|CREATE FUNCTION|CREATE INDEX|CREATE LOGIN|CREATE MASTER KEY|CREATE MESSAGE TYPE|CREATE PARTITION FUNCTION|CREATE PARTITION SCHEME|CREATE PROCEDURE|CREATE QUEUE|CREATE REMOTE SERVICE BINDING|CREATE RESOURCE POOL|CREATE ROLE|CREATE ROUTE|CREATE RULE|CREATE SCHEMA|CREATE SERVER AUDIT|CREATE SERVER AUDIT SPECIFICATION|CREATE SERVICE|CREATE SPATIAL INDEX|CREATE STATISTICS|CREATE SYMMETRIC KEY|CREATE SYNONYM|CREATE TABLE|CREATE TRIGGER|CREATE TYPE|CREATE USER|CREATE VIEW|CREATE WORKLOAD GROUP|CREATE XML INDEX|CREATE XML SCHEMA COLLECTION|DELETE|DISABLE TRIGGER|DROP AGGREGATE|DROP APPLICATION ROLE|DROP ASSEMBLY|DROP ASYMMETRIC KEY|DROP BROKER PRIORITY|DROP CERTIFICATE|DROP CONTRACT|DROP CREDENTIAL|DROP CRYPTOGRAPHIC PROVIDER|DROP DATABASE|DROP DATABASE AUDIT SPECIFICATION|DROP DATABASE ENCRYPTION KEY|DROP DEFAULT|DROP ENDPOINT|DROP EVENT NOTIFICATION|DROP EVENT SESSION|DROP FULLTEXT CATALOG|DROP FULLTEXT INDEX|DROP FULLTEXT STOPLIST|DROP FUNCTION|DROP INDEX|DROP LOGIN|DROP MASTER KEY|DROP MESSAGE TYPE|DROP PARTITION FUNCTION|DROP PARTITION SCHEME|DROP PROCEDURE|DROP QUEUE|DROP REMOTE SERVICE BINDING|DROP RESOURCE POOL|DROP ROLE|DROP ROUTE|DROP RULE|DROP SCHEMA|DROP SERVER AUDIT|DROP SERVER AUDIT SPECIFICATION|DROP SERVICE|DROP SIGNATURE|DROP STATISTICS|DROP SYMMETRIC KEY|DROP SYNONYM|DROP TABLE|DROP TRIGGER|DROP TYPE|DROP USER|DROP VIEW|DROP WORKLOAD GROUP|DROP XML SCHEMA COLLECTION|ENABLE TRIGGER|EXEC|EXECUTE|FROM|INSERT|MERGE|OPTION|OUTPUT|SELECT|TOP|TRUNCATE TABLE|UPDATE|UPDATE STATISTICS|WHERE|WITH)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
             SQLKeywordsRegex = new Regex(@"\b(ADD|ALL|AND|ANY|AS|ASC|AUTHORIZATION|BACKUP|BEGIN|BETWEEN|BREAK|BROWSE|BY|CASCADE|CHECK|CHECKPOINT|CLOSE|CLUSTERED|COLLATE|COLUMN|COMMIT|COMPUTE|CONSTRAINT|CONTAINS|CONTINUE|CROSS|CURRENT|CURRENT_DATE|CURRENT_TIME|CURSOR|DATABASE|DBCC|DEALLOCATE|DECLARE|DEFAULT|DENY|DESC|DISK|DISTINCT|DISTRIBUTED|DOUBLE|DUMP|ELSE|END|ERRLVL|ESCAPE|EXCEPT|EXISTS|EXIT|EXTERNAL|FETCH|FILE|FILLFACTOR|FOR|FOREIGN|FREETEXT|FULL|FUNCTION|GOTO|GRANT|GROUP|HAVING|HOLDLOCK|IDENTITY|IDENTITY_INSERT|IDENTITYCOL|IF|IN|INDEX|INNER|INTERSECT|INTO|IS|JOIN|KEY|KILL|LIKE|LINENO|LOAD|NATIONAL|NOCHECK|NONCLUSTERED|NOT|NULL|OF|OFF|OFFSETS|ON|OPEN|OR|ORDER|OUTER|OVER|PERCENT|PIVOT|PLAN|PRECISION|PRIMARY|PRINT|PROC|PROCEDURE|PUBLIC|RAISERROR|READ|READTEXT|RECONFIGURE|REFERENCES|REPLICATION|RESTORE|RESTRICT|RETURN|REVERT|REVOKE|ROLLBACK|ROWCOUNT|ROWGUIDCOL|RULE|SAVE|SCHEMA|SECURITYAUDIT|SET|SHUTDOWN|SOME|STATISTICS|TABLE|TABLESAMPLE|TEXTSIZE|THEN|TO|TRAN|TRANSACTION|TRIGGER|TSEQUAL|UNION|UNIQUE|UNPIVOT|UPDATETEXT|USE|USER|VALUES|VARYING|VIEW|WAITFOR|WHEN|WHILE|WRITETEXT)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
             SQLFunctionsRegex = new Regex(@"(@@CONNECTIONS|@@CPU_BUSY|@@CURSOR_ROWS|@@DATEFIRST|@@DATEFIRST|@@DBTS|@@ERROR|@@FETCH_STATUS|@@IDENTITY|@@IDLE|@@IO_BUSY|@@LANGID|@@LANGUAGE|@@LOCK_TIMEOUT|@@MAX_CONNECTIONS|@@MAX_PRECISION|@@NESTLEVEL|@@OPTIONS|@@PACKET_ERRORS|@@PROCID|@@REMSERVER|@@ROWCOUNT|@@SERVERNAME|@@SERVICENAME|@@SPID|@@TEXTSIZE|@@TRANCOUNT|@@VERSION)\b|\b(ABS|ACOS|APP_NAME|ASCII|ASIN|ASSEMBLYPROPERTY|AsymKey_ID|ASYMKEY_ID|asymkeyproperty|ASYMKEYPROPERTY|ATAN|ATN2|AVG|CASE|CAST|CEILING|Cert_ID|Cert_ID|CertProperty|CHAR|CHARINDEX|CHECKSUM_AGG|COALESCE|COL_LENGTH|COL_NAME|COLLATIONPROPERTY|COLLATIONPROPERTY|COLUMNPROPERTY|COLUMNS_UPDATED|COLUMNS_UPDATED|CONTAINSTABLE|CONVERT|COS|COT|COUNT|COUNT_BIG|CRYPT_GEN_RANDOM|CURRENT_TIMESTAMP|CURRENT_TIMESTAMP|CURRENT_USER|CURRENT_USER|CURSOR_STATUS|DATABASE_PRINCIPAL_ID|DATABASE_PRINCIPAL_ID|DATABASEPROPERTY|DATABASEPROPERTYEX|DATALENGTH|DATALENGTH|DATEADD|DATEDIFF|DATENAME|DATEPART|DAY|DB_ID|DB_NAME|DECRYPTBYASYMKEY|DECRYPTBYCERT|DECRYPTBYKEY|DECRYPTBYKEYAUTOASYMKEY|DECRYPTBYKEYAUTOCERT|DECRYPTBYPASSPHRASE|DEGREES|DENSE_RANK|DIFFERENCE|ENCRYPTBYASYMKEY|ENCRYPTBYCERT|ENCRYPTBYKEY|ENCRYPTBYPASSPHRASE|ERROR_LINE|ERROR_MESSAGE|ERROR_NUMBER|ERROR_PROCEDURE|ERROR_SEVERITY|ERROR_STATE|EVENTDATA|EXP|FILE_ID|FILE_IDEX|FILE_NAME|FILEGROUP_ID|FILEGROUP_NAME|FILEGROUPPROPERTY|FILEPROPERTY|FLOOR|fn_helpcollations|fn_listextendedproperty|fn_servershareddrives|fn_virtualfilestats|fn_virtualfilestats|FORMATMESSAGE|FREETEXTTABLE|FULLTEXTCATALOGPROPERTY|FULLTEXTSERVICEPROPERTY|GETANSINULL|GETDATE|GETUTCDATE|GROUPING|HAS_PERMS_BY_NAME|HOST_ID|HOST_NAME|IDENT_CURRENT|IDENT_CURRENT|IDENT_INCR|IDENT_INCR|IDENT_SEED|IDENTITY\(|INDEX_COL|INDEXKEY_PROPERTY|INDEXPROPERTY|IS_MEMBER|IS_OBJECTSIGNED|IS_SRVROLEMEMBER|ISDATE|ISDATE|ISNULL|ISNUMERIC|Key_GUID|Key_GUID|Key_ID|Key_ID|KEY_NAME|KEY_NAME|LEFT|LEN|LOG|LOG10|LOWER|LTRIM|MAX|MIN|MONTH|NCHAR|NEWID|NTILE|NULLIF|OBJECT_DEFINITION|OBJECT_ID|OBJECT_NAME|OBJECT_SCHEMA_NAME|OBJECTPROPERTY|OBJECTPROPERTYEX|OPENDATASOURCE|OPENQUERY|OPENROWSET|OPENXML|ORIGINAL_LOGIN|ORIGINAL_LOGIN|PARSENAME|PATINDEX|PATINDEX|PERMISSIONS|PI|POWER|PUBLISHINGSERVERNAME|PWDCOMPARE|PWDENCRYPT|QUOTENAME|RADIANS|RAND|RANK|REPLACE|REPLICATE|REVERSE|RIGHT|ROUND|ROW_NUMBER|ROWCOUNT_BIG|RTRIM|SCHEMA_ID|SCHEMA_ID|SCHEMA_NAME|SCHEMA_NAME|SCOPE_IDENTITY|SERVERPROPERTY|SESSION_USER|SESSION_USER|SESSIONPROPERTY|SETUSER|SIGN|SignByAsymKey|SignByCert|SIN|SOUNDEX|SPACE|SQL_VARIANT_PROPERTY|SQRT|SQUARE|STATS_DATE|STDEV|STDEVP|STR|STUFF|SUBSTRING|SUM|SUSER_ID|SUSER_NAME|SUSER_SID|SUSER_SNAME|SWITCHOFFSET|SYMKEYPROPERTY|symkeyproperty|sys\.dm_db_index_physical_stats|sys\.fn_builtin_permissions|sys\.fn_my_permissions|SYSDATETIME|SYSDATETIMEOFFSET|SYSTEM_USER|SYSTEM_USER|SYSUTCDATETIME|TAN|TERTIARY_WEIGHTS|TEXTPTR|TODATETIMEOFFSET|TRIGGER_NESTLEVEL|TYPE_ID|TYPE_NAME|TYPEPROPERTY|UNICODE|UPDATE\(|UPPER|USER_ID|USER_NAME|USER_NAME|VAR|VARP|VerifySignedByAsymKey|VerifySignedByCert|XACT_STATE|YEAR)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
+            SQLTypesRegex = new Regex(@"\b(BIGINT|NUMERIC|BIT|SMALLINT|DECIMAL|SMALLMONEY|INT|TINYINT|MONEY|FLOAT|REAL|DATE|DATETIMEOFFSET|DATETIME2|SMALLDATETIME|DATETIME|TIME|CHAR|VARCHAR|TEXT|NCHAR|NVARCHAR|NTEXT|BINARY|VARBINARY|IMAGE|TIMESTAMP|HIERARCHYID|TABLE|UNIQUEIDENTIFIER|SQL_VARIANT|XML)\b", RegexOptions.IgnoreCase | RegexCompiledOption);
+
         }
 
         /// <summary>
@@ -536,26 +715,28 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '\x0';
             range.tb.RightBracket2 = '\x0';
             //clear style of changed range
-            range.ClearStyle(RedStyle, MagentaStyle, GreenStyle, BlueBoldStyle, BlueStyle, MaroonStyle);
+            range.ClearStyle(CommentStyle, StringStyle, NumberStyle, VariableStyle, StatementsStyle, KeywordStyle, FunctionsStyle, TypesStyle);
             //
             if (SQLStringRegex == null)
                 InitSQLRegex();
             //comment highlighting
-            range.SetStyle(GreenStyle, SQLCommentRegex1);
-            range.SetStyle(GreenStyle, SQLCommentRegex2);
-            range.SetStyle(GreenStyle, SQLCommentRegex3);
+            range.SetStyle(CommentStyle, SQLCommentRegex1);
+            range.SetStyle(CommentStyle, SQLCommentRegex2);
+            range.SetStyle(CommentStyle, SQLCommentRegex3);
             //string highlighting
-            range.SetStyle(RedStyle, SQLStringRegex);
+            range.SetStyle(StringStyle, SQLStringRegex);
             //number highlighting
-            range.SetStyle(MagentaStyle, SQLNumberRegex);
+            range.SetStyle(NumberStyle, SQLNumberRegex);
+            //types highlighting
+            range.SetStyle(TypesStyle, SQLTypesRegex);
             //var highlighting
-            range.SetStyle(MaroonStyle, SQLVarRegex);
+            range.SetStyle(VariableStyle, SQLVarRegex);
             //statements
-            range.SetStyle(BlueBoldStyle, SQLStatementsRegex);
+            range.SetStyle(StatementsStyle, SQLStatementsRegex);
             //keywords
-            range.SetStyle(BlueStyle, SQLKeywordsRegex);
+            range.SetStyle(KeywordStyle, SQLKeywordsRegex);
             //functions
-            range.SetStyle(MaroonStyle, SQLFunctionsRegex);
+            range.SetStyle(FunctionsStyle, SQLFunctionsRegex);
 
             //clear folding markers
             range.ClearFoldingMarkers();
@@ -591,24 +772,24 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '\x0';
             range.tb.RightBracket2 = '\x0';
             //clear style of changed range
-            range.ClearStyle(BlueStyle, GrayStyle, MagentaStyle, GreenStyle, RedStyle, MaroonStyle);
+            range.ClearStyle(StringStyle, CommentStyle, NumberStyle, VariableStyle, KeywordStyle, KeywordStyle2, KeywordStyle3);
             //
             if (PHPStringRegex == null)
                 InitPHPRegex();
             //string highlighting
-            range.SetStyle(RedStyle, PHPStringRegex);
+            range.SetStyle(StringStyle, PHPStringRegex);
             //comment highlighting
-            range.SetStyle(GreenStyle, PHPCommentRegex1);
-            range.SetStyle(GreenStyle, PHPCommentRegex2);
-            range.SetStyle(GreenStyle, PHPCommentRegex3);
+            range.SetStyle(CommentStyle, PHPCommentRegex1);
+            range.SetStyle(CommentStyle, PHPCommentRegex2);
+            range.SetStyle(CommentStyle, PHPCommentRegex3);
             //number highlighting
-            range.SetStyle(RedStyle, PHPNumberRegex);
+            range.SetStyle(NumberStyle, PHPNumberRegex);
             //var highlighting
-            range.SetStyle(MaroonStyle, PHPVarRegex);
+            range.SetStyle(VariableStyle, PHPVarRegex);
             //keyword highlighting
-            range.SetStyle(MagentaStyle, PHPKeywordRegex1);
-            range.SetStyle(BlueStyle, PHPKeywordRegex2);
-            range.SetStyle(GrayStyle, PHPKeywordRegex3);
+            range.SetStyle(KeywordStyle, PHPKeywordRegex1);
+            range.SetStyle(KeywordStyle2, PHPKeywordRegex2);
+            range.SetStyle(KeywordStyle3, PHPKeywordRegex3);
 
             //clear folding markers
             range.ClearFoldingMarkers();
@@ -641,20 +822,20 @@ namespace FastColoredTextBoxNS
             range.tb.LeftBracket2 = '\x0';
             range.tb.RightBracket2 = '\x0';
             //clear style of changed range
-            range.ClearStyle(BlueStyle, BoldStyle, GrayStyle, MagentaStyle, GreenStyle, BrownStyle);
+            range.ClearStyle(StringStyle, CommentStyle, NumberStyle, KeywordStyle);
             //
             if (JScriptStringRegex == null)
                 InitJScriptRegex();
             //string highlighting
-            range.SetStyle(BrownStyle, JScriptStringRegex);
+            range.SetStyle(StringStyle, JScriptStringRegex);
             //comment highlighting
-            range.SetStyle(GreenStyle, JScriptCommentRegex1);
-            range.SetStyle(GreenStyle, JScriptCommentRegex2);
-            range.SetStyle(GreenStyle, JScriptCommentRegex3);
+            range.SetStyle(CommentStyle, JScriptCommentRegex1);
+            range.SetStyle(CommentStyle, JScriptCommentRegex2);
+            range.SetStyle(CommentStyle, JScriptCommentRegex3);
             //number highlighting
-            range.SetStyle(MagentaStyle, JScriptNumberRegex);
+            range.SetStyle(NumberStyle, JScriptNumberRegex);
             //keyword highlighting
-            range.SetStyle(BlueStyle, JScriptKeywordRegex);
+            range.SetStyle(KeywordStyle, JScriptKeywordRegex);
             //clear folding markers
             range.ClearFoldingMarkers();
             //set folding markers

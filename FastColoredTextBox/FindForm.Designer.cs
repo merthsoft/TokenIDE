@@ -39,7 +39,7 @@
             // 
             // btClose
             // 
-            this.btClose.Location = new System.Drawing.Point(273, 72);
+            this.btClose.Location = new System.Drawing.Point(273, 73);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(75, 23);
             this.btClose.TabIndex = 5;
@@ -49,7 +49,7 @@
             // 
             // btFindNext
             // 
-            this.btFindNext.Location = new System.Drawing.Point(192, 72);
+            this.btFindNext.Location = new System.Drawing.Point(192, 73);
             this.btFindNext.Name = "btFindNext";
             this.btFindNext.Size = new System.Drawing.Size(75, 23);
             this.btFindNext.TabIndex = 4;
@@ -59,7 +59,6 @@
             // 
             // tbFind
             // 
-            this.tbFind.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.tbFind.Location = new System.Drawing.Point(42, 12);
             this.tbFind.Name = "tbFind";
             this.tbFind.Size = new System.Drawing.Size(306, 20);
@@ -113,7 +112,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(360, 103);
+            this.ClientSize = new System.Drawing.Size(360, 108);
             this.Controls.Add(this.cbWholeWord);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cbMatchCase);

@@ -26,7 +26,7 @@ namespace FastColoredTextBoxNS
         {
             try
             {
-                if(!Find())
+                if (!Find(tbFind.Text))
                     MessageBox.Show("Not found");
             }
             catch (Exception ex)
@@ -35,9 +35,8 @@ namespace FastColoredTextBoxNS
             }
         }
 
-        List<Range> FindAll()
+        public List<Range> FindAll(string pattern)
         {
-            string pattern = tbFind.Text;
             RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
             if (!cbRegex.Checked)
                 pattern = Regex.Escape(pattern);
@@ -56,9 +55,8 @@ namespace FastColoredTextBoxNS
             return list;
         }
 
-        bool Find()
+        public bool Find(string pattern)
         {
-            string pattern = tbFind.Text;
             RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
             if (!cbRegex.Checked)
                 pattern = Regex.Escape(pattern);
@@ -91,7 +89,7 @@ namespace FastColoredTextBoxNS
             if (range.Start >= startPlace && startPlace > Place.Empty)
             {
                 tb.Selection.Start = new Place(0, 0);
-                return Find();
+                return Find(pattern);
             }
             return false;
         }
@@ -104,13 +102,24 @@ namespace FastColoredTextBoxNS
                 Hide();
         }
 
-        private void FindForm_FormClosing(object sender, FormClosingEventArgs e)
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) // David
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
+        private void ReplaceForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (e.CloseReason == CloseReason.UserClosing)
             {
                 e.Cancel = true;
                 Hide();
             }
+            this.tb.Focus();
         }
 
         private void btReplace_Click(object sender, EventArgs e)
@@ -118,6 +127,7 @@ namespace FastColoredTextBoxNS
             try
             {
                 if (tb.SelectionLength != 0)
+                if (!tb.Selection.ReadOnly)
                     tb.InsertText(tbReplace.Text);
                 btFindNext_Click(sender, null);
             }
@@ -134,8 +144,17 @@ namespace FastColoredTextBoxNS
                 tb.Selection.BeginUpdate();
                 tb.Selection.Start = new Place(0, 0);
                 //search
-                var ranges = FindAll();
+                var ranges = FindAll(tbFind.Text);
+                //check readonly
+                var ro = false;
+                foreach (var r in ranges)
+                    if (r.ReadOnly)
+                    {
+                        ro = true;
+                        break;
+                    }
                 //replace
+                if (!ro)
                 if (ranges.Count > 0)
                 {
                     tb.TextSource.Manager.ExecuteCommand(new ReplaceTextCommand(tb.TextSource, ranges, tbReplace.Text));

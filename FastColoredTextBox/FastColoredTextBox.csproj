@@ -22,8 +22,7 @@
     <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\FastColoredTextBox.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -45,16 +45,33 @@
     <Compile Include="AutocompleteMenu.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Bookmarks.cs" />
     <Compile Include="Char.cs" />
-    <Compile Include="Export.cs" />
+    <Compile Include="ExportToHTML.cs" />
+    <Compile Include="ExportToRTF.cs" />
     <Compile Include="GoToForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="GoToForm.designer.cs">
       <DependentUpon>GoToForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Hints.cs" />
+    <Compile Include="HotkeysEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HotkeysEditorForm.Designer.cs">
+      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LinesAccessor.cs" />
+    <Compile Include="MacrosManager.cs" />
     <Compile Include="PlatformType.cs" />
+    <Compile Include="Hotkeys.cs" />
+    <Compile Include="Ruler.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Ruler.Designer.cs">
+      <DependentUpon>Ruler.cs</DependentUpon>
+    </Compile>
     <Compile Include="SyntaxDescriptor.cs" />
     <Compile Include="SyntaxHighlighter.cs" />
     <Compile Include="ReplaceForm.cs">
@@ -83,6 +100,9 @@
     <Compile Include="TextSource.cs" />
     <Compile Include="TypeDescriptor.cs" />
     <Compile Include="FileTextSource.cs" />
+    <Compile Include="UnfocusablePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="VisualMarker.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +114,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GoToForm.resx">
       <DependentUpon>GoToForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HotkeysEditorForm.resx">
+      <DependentUpon>HotkeysEditorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ReplaceForm.resx">
       <DependentUpon>ReplaceForm.cs</DependentUpon>

@@ -24,14 +24,13 @@ namespace FastColoredTextBoxNS
 
         private void btFindNext_Click(object sender, EventArgs e)
         {
-            FindNext();
+            FindNext(tbFind.Text);
         }
 
-        public void FindNext()
+        public void FindNext(string pattern)
         {
             try
             {
-                string pattern = tbFind.Text;
                 RegexOptions opt = cbMatchCase.Checked ? RegexOptions.None : RegexOptions.IgnoreCase;
                 if (!cbRegex.Checked)
                     pattern = Regex.Escape(pattern);
@@ -64,7 +63,7 @@ namespace FastColoredTextBoxNS
                 if (range.Start >= startPlace && startPlace > Place.Empty)
                 {
                     tb.Selection.Start = new Place(0, 0);
-                    FindNext();
+                    FindNext(pattern);
                     return;
                 }
                 MessageBox.Show("Not found");
@@ -98,6 +97,17 @@ namespace FastColoredTextBoxNS
                 e.Cancel = true;
                 Hide();
             }
+            this.tb.Focus();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         protected override void OnActivated(EventArgs e)

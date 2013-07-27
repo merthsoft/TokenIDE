@@ -67,7 +67,7 @@ namespace FastColoredTextBoxNS
             MinFragmentLength = 2;
         }
 
-        internal new void OnOpening(CancelEventArgs args)
+        new internal void OnOpening(CancelEventArgs args)
         {
             if (Opening != null)
                 Opening(this, args);
@@ -224,8 +224,9 @@ namespace FastColoredTextBoxNS
             Point point = tb.PlaceToPoint(fragment.End);
             point.Offset(2, tb.CharHeight);
             //
-            if (forced ||
-                (text.Length >= Menu.MinFragmentLength && tb.Selection.IsEmpty))
+            if (forced || (text.Length >= Menu.MinFragmentLength 
+                && tb.Selection.IsEmpty /*pops up only if selected range is empty*/
+                && (tb.Selection.Start > fragment.Start || text.Length == 0/*pops up only if caret is after first letter*/)))
             {
                 Menu.Fragment = fragment;
                 bool foundSelected = false;
@@ -304,16 +305,25 @@ namespace FastColoredTextBoxNS
 
         void tb_KeyDown(object sender, KeyEventArgs e)
         {
+            var tb = sender as FastColoredTextBox;
+
             if (Menu.Visible)
                 if (ProcessKey(e.KeyCode, e.Modifiers))
                     e.Handled = true;
 
-            if(!Menu.Visible)
-                if (e.Modifiers == Keys.Control && e.KeyCode == Keys.Space)
+            if (!Menu.Visible)
+            {
+                if (tb.HotkeysMapping.ContainsKey(e.KeyData) && tb.HotkeysMapping[e.KeyData] == FCTBAction.AutocompleteMenu)
                 {
                     DoAutocomplete();
                     e.Handled = true;
                 }
+                else
+                {
+                    if (e.KeyCode == Keys.Escape && timer.Enabled)
+                        timer.Stop();
+                }
+            }
         }
 
         void AdjustScroll()
@@ -431,8 +441,12 @@ namespace FastColoredTextBoxNS
         private void DoAutocomplete(AutocompleteItem item, Range fragment)
         {
             string newText = item.GetTextForReplace();
+
             //replace text of fragment
             var tb = fragment.tb;
+
+            tb.BeginAutoUndo();
+            tb.TextSource.Manager.ExecuteCommand(new SelectCommand(tb.TextSource));
             if (tb.Selection.ColumnSelectionMode)
             {
                 var start = tb.Selection.Start;
@@ -448,6 +462,8 @@ namespace FastColoredTextBoxNS
                 tb.Selection.End = fragment.End;
             }
             tb.InsertText(newText);
+            tb.TextSource.Manager.ExecuteCommand(new SelectCommand(tb.TextSource));
+            tb.EndAutoUndo();
             tb.Focus();
         }
 
@@ -555,7 +571,7 @@ namespace FastColoredTextBoxNS
             SetAutocompleteItems(list);
         }
 
-        public void SetAutocompleteItems(ICollection<AutocompleteItem> items)
+        public void SetAutocompleteItems(IEnumerable<AutocompleteItem> items)
         {
             sourceItems = items;
         }

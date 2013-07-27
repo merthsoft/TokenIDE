@@ -3,7 +3,7 @@ using System;
 
 namespace FastColoredTextBoxNS
 {
-    internal class CommandManager
+    public class CommandManager
     {
         readonly int maxHistoryLength = 200;
         LimitedStack<UndoableCommand> history;
@@ -34,6 +34,7 @@ namespace FastColoredTextBoxNS
                 (cmd as UndoableCommand).autoUndo = autoUndoCommands > 0;
                 history.Push(cmd as UndoableCommand);
             }
+
             try
             {
                 cmd.Execute();
@@ -158,7 +159,7 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    internal abstract class Command
+    public abstract class Command
     {
         internal TextSource ts;
         public abstract void Execute();
@@ -186,7 +187,7 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    internal abstract class UndoableCommand : Command
+    public abstract class UndoableCommand : Command
     {
         internal RangeInfo sel;
         internal RangeInfo lastSel;

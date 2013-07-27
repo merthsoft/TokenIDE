@@ -1,10 +1,11 @@
-﻿
+﻿using System;
+
 namespace FastColoredTextBoxNS
 {
     /// <summary>
     /// Line index and char index
     /// </summary>
-    public struct Place
+    public struct Place : IEquatable<Place>
     {
         public int iChar;
         public int iLine;
@@ -21,6 +22,21 @@ namespace FastColoredTextBoxNS
             iLine += dy;
         }
 
+        public bool Equals(Place other)
+        {
+            return iChar == other.iChar && iLine == other.iLine;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return (obj is Place) && Equals((Place)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return iChar.GetHashCode() ^ iLine.GetHashCode();
+        }
+
         public static bool operator !=(Place p1, Place p2)
         {
             return !p1.Equals(p2);
@@ -30,10 +46,6 @@ namespace FastColoredTextBoxNS
         {
             return p1.Equals(p2);
         }
-
-		public override bool Equals(object obj) {
-			return base.Equals(obj);
-		}
 
         public static bool operator <(Place p1, Place p2)
         {
@@ -74,9 +86,9 @@ namespace FastColoredTextBoxNS
 			return p1;
 		}
 
-		public override int GetHashCode() {
-			return base.GetHashCode();
-		}
+		//public override int GetHashCode() {
+		//    return base.GetHashCode();
+		//}
 
 		//public static Place operator +=(Place p1, int i) {
 		//    p1.iChar += i;

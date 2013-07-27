@@ -64,7 +64,7 @@ namespace FastColoredTextBoxNS
         }
     }
 
-    class FoldedAreaMarker : VisualMarker
+    public class FoldedAreaMarker : VisualMarker
     {
         public readonly int iLine;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Printing;
 
 namespace FastColoredTextBoxNS
 {
@@ -225,6 +226,22 @@ namespace FastColoredTextBoxNS
         public override string GetTextForReplace()
         {
             return firstPart + "." + Text;
+        }
+    }
+
+    /// <summary>
+    /// This Item does not check correspondence to current text fragment.
+    /// SuggestItem is intended for dynamic menus.
+    /// </summary>
+    public class SuggestItem : AutocompleteItem
+    {
+        public SuggestItem(string text, int imageIndex):base(text, imageIndex)
+        {   
+        }
+
+        public override CompareResult Compare(string fragmentText)
+        {
+            return CompareResult.Visible;
         }
     }
 }

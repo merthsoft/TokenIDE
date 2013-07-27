@@ -4,7 +4,7 @@ using System.Text;
 
 namespace FastColoredTextBoxNS
 {
-    class LinesAccessor : IList<string>
+    public class LinesAccessor : IList<string>
     {
         IList<Line> ts;
 

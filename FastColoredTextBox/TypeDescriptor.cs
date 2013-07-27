@@ -5,13 +5,13 @@ using System.Windows.Forms;
 namespace FastColoredTextBoxNS
 {
     ///
-    /// This classes is required for correct data binding to Text property of FastColoredTextbox
+    /// These classes are required for correct data binding to Text property of FastColoredTextbox
     /// 
     class FCTBDescriptionProvider : TypeDescriptionProvider
     {
         public FCTBDescriptionProvider(Type type)
             : base(GetDefaultTypeProvider(type))
-        {  
+        {
         }
 
         private static TypeDescriptionProvider GetDefaultTypeProvider(Type type)
