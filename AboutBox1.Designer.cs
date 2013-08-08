@@ -1,4 +1,4 @@
-﻿namespace TokenIDE {
+﻿namespace Merthsoft.TokenIDE {
 	partial class AboutBox1 {
 		/// <summary>
 		/// Required designer variable.
@@ -62,7 +62,7 @@
 			// logoPictureBox
 			// 
 			this.logoPictureBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.logoPictureBox.Image = global::TokenIDE.Properties.Resources.logo_curved;
+			this.logoPictureBox.Image = global::Merthsoft.TokenIDE.Properties.Resources.logo_curved;
 			this.logoPictureBox.Location = new System.Drawing.Point(3, 3);
 			this.logoPictureBox.Name = "logoPictureBox";
 			this.tableLayoutPanel.SetRowSpan(this.logoPictureBox, 6);

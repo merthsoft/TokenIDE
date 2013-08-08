@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Merthsoft.Tokens;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class GroupStats : Form {
 		string indentedText;
 		string unindentedText;

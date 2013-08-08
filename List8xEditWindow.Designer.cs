@@ -1,4 +1,4 @@
-﻿namespace TokenIDE {
+﻿namespace Merthsoft.TokenIDE {
 	partial class List8xEditWindow {
 		/// <summary> 
 		/// Required designer variable.

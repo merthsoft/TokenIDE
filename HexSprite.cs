@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Merthsoft.Tokens;
 using Merthsoft.Extensions;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
 		int[,] sprite;
 		int w, h;

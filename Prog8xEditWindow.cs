@@ -12,7 +12,7 @@ using Merthsoft.CalcData;
 using System.Threading;
 using FastColoredTextBoxNS;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class Prog8xEditWindow : UserControl, IEditWindow {
 		Dictionary<string, TokenStyle> styles;
 		

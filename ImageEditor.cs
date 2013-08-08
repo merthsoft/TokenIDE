@@ -12,7 +12,7 @@ using System.Drawing.Drawing2D;
 using Merthsoft.CalcData;
 using Merthsoft.Extensions;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class ImageEditor:Form {
 		enum Tools { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, _max }
 

@@ -1,4 +1,4 @@
-﻿namespace TokenIDE {
+﻿namespace Merthsoft.TokenIDE {
 	partial class DCSGUIDesigner {
 		/// <summary>
 		/// Required designer variable.

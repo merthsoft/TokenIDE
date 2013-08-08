@@ -1,24 +1,51 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:element name="project">
-		<xs:complexType>
-			<xs:sequence>
-				<xs:element name="program" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="file" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="image" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="file" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-				<xs:element name="sprite" maxOccurs="unbounded">
-					<xs:complexType>
-						<xs:attribute name="file" type="xs:string" use="required" />
-					</xs:complexType>
-				</xs:element>
-			</xs:sequence>
-		</xs:complexType>
-	</xs:element>
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema id="TokensProject" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+  targetNamespace="http://merthsoft.com/TokensProject" xmlns="http://merthsoft.com/TokensProject">
+  <xs:element name="TokensProject">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="RAM"/>
+        <xs:element ref="Archive"/>
+      </xs:sequence>
+      <xs:attribute name="baseDirectory" use="required" type="xs:NCName"/>
+      <xs:attribute name="outDirectory" use="required" type="xs:NCName"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RAM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Programs"/>
+        <xs:element ref="AppVars"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Archive">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Programs"/>
+        <xs:element ref="AppVars"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Programs">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="File"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AppVars">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="File"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="File">
+    <xs:complexType>
+      <xs:attribute name="output" use="required"/>
+      <xs:attribute name="path" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

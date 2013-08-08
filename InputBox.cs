@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class InputBox:Form {
 		public string outString;
 		public InputBox(string title, string defaultText = "") {

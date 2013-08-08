@@ -11,7 +11,7 @@ using Merthsoft.Tokens.DCSGUI;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class DCSGUIDesigner : Form {
 		public List<GUIItem> outControls;
 

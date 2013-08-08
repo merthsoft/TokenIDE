@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Merthsoft.CalcData;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public interface IEditWindow {
 		event DragEventHandler DragDrop;
 		event DragEventHandler DragEnter;

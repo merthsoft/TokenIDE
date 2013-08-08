@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastColoredTextBox", "FastC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merthsoft.DynamicConfig", "..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj", "{762E8292-3E30-41CE-B874-BB6D9D0319DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTester", "..\ProjectTester\ProjectTester.csproj", "{0571B4EA-D9FC-42FA-9795-00A923B503A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +97,16 @@ Global
 		{762E8292-3E30-41CE-B874-BB6D9D0319DC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{762E8292-3E30-41CE-B874-BB6D9D0319DC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{762E8292-3E30-41CE-B874-BB6D9D0319DC}.Release|x86.ActiveCfg = Release|Any CPU
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Debug|x86.ActiveCfg = Debug|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Debug|x86.Build.0 = Debug|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Release|Any CPU.ActiveCfg = Release|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Release|Mixed Platforms.Build.0 = Release|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Release|x86.ActiveCfg = Release|x86
+		{0571B4EA-D9FC-42FA-9795-00A923B503A2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

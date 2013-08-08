@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using Merthsoft.Tokens;
 using System.IO;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class Options : Form {
 		private Prog8xEditWindow window;
 

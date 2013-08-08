@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Merthsoft.CalcData;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class List8xEditWindow : UserControl, IEditWindow {
 		public List8xEditWindow(string fileName) {
 			InitializeComponent();

@@ -8,14 +8,15 @@ using XmlValidator;
 using System.Text;
 using Merthsoft.CalcData;
 using System.Xml.Schema;
-using TokenIDE.Properties;
-using TokenIDE.Project;
+using Merthsoft.TokenIDE.Properties;
+using Merthsoft.TokenIDE.Project;
 using System.Linq;
 using Merthsoft.DynamicConfig;
 using System.Drawing;
 using System.Diagnostics;
+using FolderSelect;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class Tokens : Form {
 		IEditWindow currWindow;
 		//UserControl currWindow;
@@ -662,13 +663,15 @@ namespace TokenIDE {
 			}
 
 			if (string.IsNullOrWhiteSpace(currWindow.SaveDirectory)) {
-				FolderBrowserDialog fbd = new FolderBrowserDialog();
-				fbd.SelectedPath = Environment.CurrentDirectory;
-				if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
+				var fbd = new FolderSelectDialog() {
+					InitialDirectory = Environment.CurrentDirectory,
+					Title = "Save Directory",
+				};
+				if (!fbd.ShowDialog()) {
 					return null;
 				}
 
-				directory = fbd.SelectedPath;
+				directory = fbd.FileName;
 				currWindow.SaveDirectory = directory;
 			} else {
 				directory = currWindow.SaveDirectory;
@@ -711,13 +714,15 @@ namespace TokenIDE {
 		}
 
 		private void changeSaveDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
-			FolderBrowserDialog fbd = new FolderBrowserDialog();
-			fbd.SelectedPath = Environment.CurrentDirectory;
-			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
+			var fbd = new FolderSelectDialog() {
+				Title = "Save Directory",
+				InitialDirectory = Environment.CurrentDirectory,
+			};
+			if (!fbd.ShowDialog()) {
 				return;
 			}
 
-			currWindow.SaveDirectory = fbd.SelectedPath;
+			currWindow.SaveDirectory = fbd.FileName;
 		}
 
 		private void findToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -736,47 +741,83 @@ namespace TokenIDE {
 			ofd.CheckFileExists = true;
 			if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK || ofd.FileName == "") { return; }
 
-			TokensProject proj = new TokensProject(ofd.FileName);
+			TokensProject proj = TokensProject.Open(ofd.FileName);
 			AddProject(proj);
+
+			buildAllToolStripMenuItem.Enabled = true;
 		}
 
 		private void AddProject(TokensProject proj) {
+			leftTabControl.SelectedTab = ProjectTab;
+
 			projects.Add(proj);
 
 			TreeNode projectNode = new TreeNode(proj.Name);
 			projectNode.ImageKey = "icon_project.png";
+			projectNode.Tag = proj;
 
-			TreeNode programsNode = new TreeNode("Programs");
-			programsNode.ImageKey = programsNode.SelectedImageKey = "icon_files.png";
-			foreach (var projItem in proj.Programs) {
-				TreeNode progNode = new TreeNode(projItem.ToString());
-				progNode.Tag = projItem;
-				progNode.ImageKey = progNode.SelectedImageKey = "icon_prog.png";
-				programsNode.Nodes.Add(progNode);
-			}
-			projectNode.Nodes.Add(programsNode);
-			
-			TreeNode appVarNodes = new TreeNode("AppVars");
-			appVarNodes.ImageKey = appVarNodes.SelectedImageKey = "icon_files.png";
-			foreach (var appVarItem in proj.AppVars) {
-				TreeNode progNode = new TreeNode(appVarItem.ToString());
-				progNode.Tag = appVarItem;
-				progNode.ImageKey = progNode.SelectedImageKey = "icon_appvar.png";
-				appVarNodes.Nodes.Add(progNode);
-			}
-			projectNode.Nodes.Add(appVarNodes);
+			TreeNode ramNode = new TreeNode("RAM");
+			ramNode.ImageKey = "icon_project_blank.png";
+			ramNode.Tag = proj.Ram;
+			AddMemorySection(proj.Ram, ramNode);
+			projectNode.Nodes.Add(ramNode);
+
+			TreeNode archiveNode = new TreeNode("Archive");
+			archiveNode.ImageKey = "icon_project_blank.png";
+			archiveNode.Tag = proj.Archive;
+			AddMemorySection(proj.Archive, archiveNode);
+			projectNode.Nodes.Add(archiveNode);
 
 			projectTree.Nodes.Add(projectNode);
 			projectNode.Expand();
+		}
+
+		private void AddMemorySection(MemorySection mem, TreeNode treeNode) {
+			TreeNode programsNode = new TreeNode("Programs");
+			AddProjectItems(mem.Programs, programsNode);
+			treeNode.Nodes.Add(programsNode);
+
+			TreeNode appVarNodes = new TreeNode("AppVars");
+			appVarNodes.Tag = mem.Programs;
+			appVarNodes.ContextMenuStrip = addItemContextMenuStrip;
+			appVarNodes.ImageKey = appVarNodes.SelectedImageKey = "icon_project_appvars.png";
+			foreach (var appVarItem in mem.AppVars) {
+				TreeNode appVarNode = new TreeNode(appVarItem.ToString());
+				appVarNode.Tag = appVarItem;
+				appVarNode.ImageKey = appVarNode.SelectedImageKey = "icon_appvar.png";
+				appVarNodes.Nodes.Add(appVarNode);
+			}
+			treeNode.Nodes.Add(appVarNodes);
+		}
+
+		private void AddProjectItems(List<ProjectFile> section, TreeNode treeNode) {
+			treeNode.Tag = section;
+			treeNode.ContextMenuStrip = addItemContextMenuStrip;
+			treeNode.ImageKey = treeNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_project_progs.png" : "icon_project_appvars.png";
+			foreach (ProjectFile projItem in section) {
+				AddProjectItem(treeNode, projItem);
+			}
+		}
+
+		private static void AddProjectItem(TreeNode treeNode, ProjectFile projItem) {
+			TreeNode progNode = new TreeNode(projItem.ToString());
+			progNode.Tag = projItem;
+			progNode.ImageKey = progNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_prog.png" : "icon_project_appvars.png";
+			treeNode.Nodes.Add(progNode);
 		}
 
 		private void projectTree_DoubleClick(object sender, EventArgs e) {
 			TreeNode selectedNode = projectTree.SelectedNode;
 			if (selectedNode == null) { return; }
 
-			if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
-				OpenFile(((ProjectItem)selectedNode.Tag).File);
+			TokensProject selectedProject = GetProject(projectTree.SelectedNode.Parent.Parent);
+
+			if (selectedNode.Nodes == null || selectedNode.Nodes.Count == 0) {
+				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
 			}
+			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
+				//OpenFile(((ProjectItem)selectedNode.Tag).File);
+			//}
 		}
 
 		private void buildAllToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -906,6 +947,84 @@ namespace TokenIDE {
 
 		private void binaryFileToolStripMenuItem_Click(object sender, EventArgs e) {
 			buildFile(null, null);
+		}
+
+		private void projectToolStripMenuItem1_Click(object sender, EventArgs e) {
+			NewProjectWizard wizard = new NewProjectWizard() {
+				ProjectName = "New Project",
+				BaseDirectory = Path.Combine(string.IsNullOrWhiteSpace(currWindow.SaveDirectory) ? Environment.CurrentDirectory : currWindow.SaveDirectory, "New Project"),
+			};
+
+			if (wizard.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
+				return;
+			}
+
+			var project = new TokensProject() {
+				Name = wizard.ProjectName,
+				BaseDirectory = wizard.BaseDirectory,
+				OutDirectory = wizard.OutDirectory,
+				FileName = Path.Combine(wizard.BaseDirectory, wizard.ProjectName + ".xml"),
+			};
+
+			AddProject(project);
+
+			if (!Directory.Exists(project.BaseDirectory)) {
+				Directory.CreateDirectory(project.BaseDirectory);
+			}
+
+			if (!Directory.Exists(project.OutDirectory)) {
+				Directory.CreateDirectory(project.OutDirectory);
+			}
+
+			project.Save();
+		}
+
+		private void projectTree_MouseClick(object sender, MouseEventArgs e) {
+			projectTree.SelectedNode = projectTree.GetNodeAt(e.Location);
+		}
+
+		private void existingItemToolStripMenuItem_Click(object sender, EventArgs e) {
+			TokensProject project = GetProject(projectTree.SelectedNode.Parent.Parent);
+			var fileDialog = new OpenFileDialog() {
+				InitialDirectory = project.BaseDirectory,
+				Filter = "Text Files (*.txt)|*.txt",
+				CheckFileExists = true,
+				Multiselect = true,
+			};
+			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
+
+			List<ProjectFile> section = (List<ProjectFile>)projectTree.SelectedNode.Tag;
+			foreach (string fileName in fileDialog.FileNames) {
+				FileInfo fileInfo = new FileInfo(fileName);
+				string projectFilePath = Path.Combine(project.BaseDirectory, fileInfo.Name);
+				if (!File.Exists(projectFilePath)) {
+					File.Copy(fileName, projectFilePath);
+				}
+
+				var newProjectFile = new ProjectFile() { Path = fileInfo.Name };
+
+				//string outName = fileInfo.FileName() + projectTree.SelectedNode.Text == "Program" ? ".8xp" : ".8xk";
+				//newProjectFile.Output = Path.Combine(project.OutDirectory, fileName);
+				section.Add(newProjectFile);
+				AddProjectItem(projectTree.SelectedNode, newProjectFile);
+			}
+		}
+
+		private TokensProject GetProject(TreeNode node) {
+			if (node.Parent == null) {
+				return (TokensProject)node.Tag;
+			}
+			return GetProject(node.Parent);
+		}
+
+		private void toolStripMenuItem1_Click(object sender, EventArgs e) {
+			saveProject();
+		}
+
+		private void saveProject() {
+			foreach (TokensProject proj in projects) {
+				proj.Save();
+			}
 		}
 	}
 }

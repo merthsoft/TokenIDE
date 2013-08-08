@@ -1,4 +1,4 @@
-﻿namespace TokenIDE {
+﻿namespace Merthsoft.TokenIDE {
 	partial class InputBox {
 		/// <summary>
 		/// Required designer variable.

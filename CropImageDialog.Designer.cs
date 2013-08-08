@@ -1,4 +1,4 @@
-﻿namespace TokenIDE {
+﻿namespace Merthsoft.TokenIDE {
 	partial class CropImageDialog {
 		/// <summary>
 		/// Required designer variable.

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TokenIDE {
+namespace Merthsoft.TokenIDE {
 	public partial class CropImageDialog:Form {
 		Bitmap b;
 		Rectangle cropRect = new Rectangle(0, 0, 96, 64);
