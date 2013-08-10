@@ -78,16 +78,7 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			_outMap = resized.Clone(new Rectangle(cropRect.X / zoom + 100, cropRect.Y / zoom + 100, cropRect.Width, cropRect.Height), resized.PixelFormat);
-			for (int i = 0; i < cropRect.Width; i++) {
-				for (int j = 0; j < cropRect.Height; j++) {
-					Color c = _outMap.GetPixel(i, j);
-					if ((c.R + c.G + c.B) / 3 > tol) {
-						_outMap.SetPixel(i, j, Color.White);
-					} else {
-						_outMap.SetPixel(i, j, Color.Black);
-					}
-				}
-			}
+			_outMap.PosterizeImage(cropRect, tol);
 
 			this.Close();
 		}

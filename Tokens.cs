@@ -132,7 +132,7 @@ namespace Merthsoft.TokenIDE {
 		private void openFileToolStripMenuItem_Click(object sender, EventArgs e) {
 			//try {
 			FileDialog fd = new OpenFileDialog();
-			fd.ShowDialog();
+			if (fd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
 			if (fd.FileName == string.Empty || fd.FileName == null)
 				return;
 			OpenFile(fd.FileName);
@@ -194,7 +194,7 @@ namespace Merthsoft.TokenIDE {
 					using (StreamReader sr = new StreamReader(fileName)) {
 						ewProg.ProgramText = sr.ReadToEnd();
 					}
-					ewProg.RefreshBytes();
+					ewProg.RefreshBytes(false);
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
@@ -365,9 +365,9 @@ namespace Merthsoft.TokenIDE {
 			try {
 				HexSprite s;
 				if (ew.SelectedText != "") {
-					s = new HexSprite(ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", ""));
+					s = new HexSprite(ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", ""), true);
 				} else {
-					s = new HexSprite();
+					s = new HexSprite(true);
 				}
 				s.ShowDialog();
 				if (s.outString != "") {
@@ -772,7 +772,7 @@ namespace Merthsoft.TokenIDE {
 			projectNode.Expand();
 		}
 
-		private void AddMemorySection(MemorySection mem, TreeNode treeNode) {
+		private void AddMemorySection(PojectSection mem, TreeNode treeNode) {
 			TreeNode programsNode = new TreeNode("Programs");
 			AddProjectItems(mem.Programs, programsNode);
 			treeNode.Nodes.Add(programsNode);
@@ -812,7 +812,8 @@ namespace Merthsoft.TokenIDE {
 
 			TokensProject selectedProject = GetProject(projectTree.SelectedNode.Parent.Parent);
 
-			if (selectedNode.Nodes == null || selectedNode.Nodes.Count == 0) {
+			if (selectedNode.Nodes == null || selectedNode.Nodes.Count == 0 &&
+				(selectedNode.Text != "Programs" && selectedNode.Text != "AppVars")) {
 				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
 			}
 			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {

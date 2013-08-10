@@ -10,8 +10,11 @@
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing) {
-			if (disposing && (components != null)) {
-				components.Dispose();
+			if (disposing) {
+				if ((components != null)) {
+					components.Dispose();
+				}
+				BrushList.ForEach(b => b.Dispose());
 			}
 			base.Dispose(disposing);
 		}
@@ -24,6 +27,8 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.paletteBox = new System.Windows.Forms.PictureBox();
+			this.colorCheckBox = new System.Windows.Forms.CheckBox();
 			this.ResizeFromHexButton = new System.Windows.Forms.Button();
 			this.MaintainDim = new System.Windows.Forms.CheckBox();
 			this.DrawGrid = new System.Windows.Forms.CheckBox();
@@ -37,40 +42,48 @@
 			this.SpriteWidth = new System.Windows.Forms.NumericUpDown();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.spriteBox = new System.Windows.Forms.PictureBox();
-			this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+			this.tabControl1 = new System.Windows.Forms.TabControl();
+			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.hexBox = new System.Windows.Forms.TextBox();
+			this.tabPage2 = new System.Windows.Forms.TabPage();
 			this.binBox = new System.Windows.Forms.TextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.openImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.PixelSize)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteHeight)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteWidth)).BeginInit();
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.spriteBox)).BeginInit();
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
-			this.splitContainer3.Panel1.SuspendLayout();
-			this.splitContainer3.Panel2.SuspendLayout();
-			this.splitContainer3.SuspendLayout();
+			this.tabControl1.SuspendLayout();
+			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// splitContainer1
 			// 
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Location = new System.Drawing.Point(0, 24);
 			this.splitContainer1.Name = "splitContainer1";
 			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.paletteBox);
+			this.splitContainer1.Panel1.Controls.Add(this.colorCheckBox);
 			this.splitContainer1.Panel1.Controls.Add(this.ResizeFromHexButton);
 			this.splitContainer1.Panel1.Controls.Add(this.MaintainDim);
 			this.splitContainer1.Panel1.Controls.Add(this.DrawGrid);
@@ -87,9 +100,31 @@
 			// 
 			this.splitContainer1.Panel2.AutoScroll = true;
 			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(490, 393);
-			this.splitContainer1.SplitterDistance = 87;
+			this.splitContainer1.Size = new System.Drawing.Size(490, 369);
+			this.splitContainer1.SplitterDistance = 92;
 			this.splitContainer1.TabIndex = 0;
+			// 
+			// paletteBox
+			// 
+			this.paletteBox.Location = new System.Drawing.Point(266, 9);
+			this.paletteBox.Name = "paletteBox";
+			this.paletteBox.Size = new System.Drawing.Size(216, 70);
+			this.paletteBox.TabIndex = 21;
+			this.paletteBox.TabStop = false;
+			this.paletteBox.Visible = false;
+			this.paletteBox.Paint += new System.Windows.Forms.PaintEventHandler(this.paletteBox_Paint);
+			this.paletteBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteBox_MouseClick);
+			// 
+			// colorCheckBox
+			// 
+			this.colorCheckBox.AutoSize = true;
+			this.colorCheckBox.Location = new System.Drawing.Point(95, 67);
+			this.colorCheckBox.Name = "colorCheckBox";
+			this.colorCheckBox.Size = new System.Drawing.Size(50, 17);
+			this.colorCheckBox.TabIndex = 20;
+			this.colorCheckBox.Text = "Color";
+			this.colorCheckBox.UseVisualStyleBackColor = true;
+			this.colorCheckBox.CheckedChanged += new System.EventHandler(this.colorCheckBox_CheckedChanged);
 			// 
 			// ResizeFromHexButton
 			// 
@@ -258,16 +293,16 @@
 			// 
 			// splitContainer2.Panel2
 			// 
-			this.splitContainer2.Panel2.Controls.Add(this.splitContainer3);
+			this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
 			this.splitContainer2.Panel2.Controls.Add(this.statusStrip1);
-			this.splitContainer2.Size = new System.Drawing.Size(490, 302);
+			this.splitContainer2.Size = new System.Drawing.Size(490, 273);
 			this.splitContainer2.SplitterDistance = 326;
 			this.splitContainer2.TabIndex = 1;
 			// 
 			// spriteBox
 			// 
 			this.spriteBox.BackColor = System.Drawing.Color.White;
-			this.spriteBox.Location = new System.Drawing.Point(0, 3);
+			this.spriteBox.Location = new System.Drawing.Point(3, 3);
 			this.spriteBox.Name = "spriteBox";
 			this.spriteBox.Size = new System.Drawing.Size(81, 81);
 			this.spriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -280,51 +315,66 @@
 			this.spriteBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.spriteBox_MouseMove);
 			this.spriteBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.spriteBox_MouseUp);
 			// 
-			// splitContainer3
+			// tabControl1
 			// 
-			this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer3.Name = "splitContainer3";
-			this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			this.tabControl1.Controls.Add(this.tabPage1);
+			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabControl1.Location = new System.Drawing.Point(0, 0);
+			this.tabControl1.Name = "tabControl1";
+			this.tabControl1.SelectedIndex = 0;
+			this.tabControl1.Size = new System.Drawing.Size(160, 251);
+			this.tabControl1.TabIndex = 16;
 			// 
-			// splitContainer3.Panel1
+			// tabPage1
 			// 
-			this.splitContainer3.Panel1.Controls.Add(this.hexBox);
-			// 
-			// splitContainer3.Panel2
-			// 
-			this.splitContainer3.Panel2.Controls.Add(this.binBox);
-			this.splitContainer3.Size = new System.Drawing.Size(160, 280);
-			this.splitContainer3.SplitterDistance = 135;
-			this.splitContainer3.TabIndex = 15;
+			this.tabPage1.Controls.Add(this.hexBox);
+			this.tabPage1.Location = new System.Drawing.Point(4, 22);
+			this.tabPage1.Name = "tabPage1";
+			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage1.Size = new System.Drawing.Size(152, 225);
+			this.tabPage1.TabIndex = 0;
+			this.tabPage1.Text = "Hex";
+			this.tabPage1.UseVisualStyleBackColor = true;
 			// 
 			// hexBox
 			// 
 			this.hexBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.hexBox.Location = new System.Drawing.Point(0, 0);
+			this.hexBox.Location = new System.Drawing.Point(3, 3);
 			this.hexBox.Multiline = true;
 			this.hexBox.Name = "hexBox";
 			this.hexBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.hexBox.Size = new System.Drawing.Size(160, 135);
+			this.hexBox.Size = new System.Drawing.Size(146, 219);
 			this.hexBox.TabIndex = 14;
 			this.hexBox.TextChanged += new System.EventHandler(this.hexBox_TextChanged);
+			// 
+			// tabPage2
+			// 
+			this.tabPage2.Controls.Add(this.binBox);
+			this.tabPage2.Location = new System.Drawing.Point(4, 22);
+			this.tabPage2.Name = "tabPage2";
+			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage2.Size = new System.Drawing.Size(152, 249);
+			this.tabPage2.TabIndex = 1;
+			this.tabPage2.Text = "Binary";
+			this.tabPage2.UseVisualStyleBackColor = true;
 			// 
 			// binBox
 			// 
 			this.binBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.binBox.Location = new System.Drawing.Point(0, 0);
+			this.binBox.Location = new System.Drawing.Point(3, 3);
 			this.binBox.Multiline = true;
 			this.binBox.Name = "binBox";
 			this.binBox.ReadOnly = true;
 			this.binBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.binBox.Size = new System.Drawing.Size(160, 141);
+			this.binBox.Size = new System.Drawing.Size(146, 243);
 			this.binBox.TabIndex = 15;
 			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 280);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 251);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(160, 22);
 			this.statusStrip1.TabIndex = 13;
@@ -336,6 +386,31 @@
 			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
 			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(490, 24);
+			this.menuStrip1.TabIndex = 22;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openImageToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "&File";
+			// 
+			// openImageToolStripMenuItem
+			// 
+			this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
+			this.openImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openImageToolStripMenuItem.Text = "&Open";
+			this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
+			// 
 			// HexSprite
 			// 
 			this.AcceptButton = this.InsertButton;
@@ -344,13 +419,16 @@
 			this.CancelButton = this.CloseButton;
 			this.ClientSize = new System.Drawing.Size(490, 393);
 			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.menuStrip1);
+			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "HexSprite";
-			this.Text = "HexSprite";
+			this.Text = "Hex Sprite Editor";
 			this.splitContainer1.Panel1.ResumeLayout(false);
 			this.splitContainer1.Panel1.PerformLayout();
 			this.splitContainer1.Panel2.ResumeLayout(false);
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.PixelSize)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteHeight)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.SpriteWidth)).EndInit();
@@ -358,18 +436,20 @@
 			this.splitContainer2.Panel1.PerformLayout();
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			this.splitContainer2.Panel2.PerformLayout();
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.spriteBox)).EndInit();
-			this.splitContainer3.Panel1.ResumeLayout(false);
-			this.splitContainer3.Panel1.PerformLayout();
-			this.splitContainer3.Panel2.ResumeLayout(false);
-			this.splitContainer3.Panel2.PerformLayout();
-			////((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
-			this.splitContainer3.ResumeLayout(false);
+			this.tabControl1.ResumeLayout(false);
+			this.tabPage1.ResumeLayout(false);
+			this.tabPage1.PerformLayout();
+			this.tabPage2.ResumeLayout(false);
+			this.tabPage2.PerformLayout();
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.menuStrip1.ResumeLayout(false);
+			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -392,8 +472,15 @@
 		private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
 		private System.Windows.Forms.CheckBox MaintainDim;
 		private System.Windows.Forms.Button ResizeFromHexButton;
-		private System.Windows.Forms.SplitContainer splitContainer3;
 		private System.Windows.Forms.TextBox binBox;
+		private System.Windows.Forms.PictureBox paletteBox;
+		private System.Windows.Forms.CheckBox colorCheckBox;
+		private System.Windows.Forms.TabControl tabControl1;
+		private System.Windows.Forms.TabPage tabPage1;
+		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.MenuStrip menuStrip1;
+		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
 
 	}
 }

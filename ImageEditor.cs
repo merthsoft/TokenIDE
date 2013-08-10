@@ -90,7 +90,7 @@ namespace Merthsoft.TokenIDE {
 
 		private void loadToolStripMenuItem_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			f.ShowDialog();
+			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
 		}
 

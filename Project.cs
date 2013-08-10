@@ -14,18 +14,18 @@ namespace Merthsoft.TokenIDE.Project {
 		public string Output { get; set; }
 
 		public override string ToString() {
-			return new FileInfo(Path).Name;
+			return new FileInfo(Path).GetFileName();
 		}
 	}
 
-	public class MemorySection {
+	public class PojectSection {
 		[XmlArray("Programs"), XmlArrayItem("File")]
 		public List<ProjectFile> Programs { get; set; }
 
 		[XmlArray("AppVars"), XmlArrayItem("File")]
 		public List<ProjectFile> AppVars { get; set; }
 
-		public MemorySection() {
+		public PojectSection() {
 			Programs = new List<ProjectFile>();
 			AppVars = new List<ProjectFile>();
 		}
@@ -48,14 +48,14 @@ namespace Merthsoft.TokenIDE.Project {
 		public string OutDirectory { get; set; }
 		
 		[XmlElement("RAM")]
-		public MemorySection Ram { get; set; }
+		public PojectSection Ram { get; set; }
 
 		[XmlElement("Archive")]
-		public MemorySection Archive { get; set; }
+		public PojectSection Archive { get; set; }
 
 		public TokensProject() {
-			Ram = new MemorySection();
-			Archive = new MemorySection();
+			Ram = new PojectSection();
+			Archive = new PojectSection();
 		}
 
 		public void Save(string fileName = null) {
