@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TokensProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xmlns="http://merthsoft.com/TokensProject" baseDirectory="blah" outDirectory="blah" name="Test Project">
+    <RAM>
+        <Programs>
+            <File path="A.txt" output="out/A.8xp" />
+            <File path="B.txt" output="out/B.8xp" />
+            <File path="C.txt" output="out/C.8xp" />
+        </Programs>
+        <AppVars>
+            <File path="DataA.txt" output="out/DataA.8xk" />
+            <File path="DataB.txt" output="out/DataB.8xk" />
+            <File path="DataC.txt" output="out/DataC.8xk" />            
+        </AppVars>
+    </RAM>
+    <Archive>
+        <Programs>
+            <File path="ZA.txt" output="out/ZA.8xp" />
+            <File path="ZB.txt" output="out/ZB.8xp" />
+            <File path="ZC.txt" output="out/ZC.8xp" />
+        </Programs>
+        <AppVars>
+            <File path="ZDataA.txt" output="out/ZDataA.8xk" />
+            <File path="ZDataB.txt" output="out/ZDataB.8xk" />
+            <File path="ZDataC.txt" output="out/ZDataC.8xk" />            
+        </AppVars>
+    </Archive>
+</TokensProject>
