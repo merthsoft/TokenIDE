@@ -340,6 +340,7 @@
 			// hexBox
 			// 
 			this.hexBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.hexBox.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.hexBox.Location = new System.Drawing.Point(3, 3);
 			this.hexBox.Multiline = true;
 			this.hexBox.Name = "hexBox";
@@ -354,7 +355,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(152, 249);
+			this.tabPage2.Size = new System.Drawing.Size(152, 225);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Binary";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -367,7 +368,7 @@
 			this.binBox.Name = "binBox";
 			this.binBox.ReadOnly = true;
 			this.binBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.binBox.Size = new System.Drawing.Size(146, 243);
+			this.binBox.Size = new System.Drawing.Size(146, 219);
 			this.binBox.TabIndex = 15;
 			// 
 			// statusStrip1
