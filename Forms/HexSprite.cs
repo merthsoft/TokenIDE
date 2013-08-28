@@ -35,7 +35,12 @@ namespace Merthsoft.TokenIDE {
 			set { colorCheckBox.Checked = value; }
 		}
 
-		public HexSprite(bool color = false) {
+		public bool HasGCharacter {
+			get { return hasGBox.Checked; }
+			set { hasGBox.Checked = value; }
+		}
+
+		public HexSprite(bool color) {
 			InitializeComponent();
 
 			IntPtr iconPtr = TokenIDE.Properties.Resources.icon_hexsprite.GetHicon();
@@ -56,7 +61,9 @@ namespace Merthsoft.TokenIDE {
 		public HexSprite(string hex, bool color) {
 			InitializeComponent();
 
-			IsColor = true;
+			IsColor = color;
+
+			HasGCharacter = hex.Contains('G');
 
 			IntPtr iconPtr = TokenIDE.Properties.Resources.icon_hexsprite.GetHicon();
 			using (Icon icon = Icon.FromHandle(iconPtr)) {
@@ -99,7 +106,8 @@ namespace Merthsoft.TokenIDE {
 				SpriteWidth.Value = spriteWidth + delta;
 				performResizeFlag = true;
 			}
-				resizeSprite((int)SpriteWidth.Value, (int)SpriteHeight.Value);
+			
+			resizeSprite((int)SpriteWidth.Value, (int)SpriteHeight.Value);
 		}
 
 		private void resizeFromHex(string hex, out int newW, out int newH) {
@@ -152,7 +160,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void spriteBox_Paint(object sender, PaintEventArgs e) {
+#if !DEBUG
 			try {
+#endif
 				Graphics g = e.Graphics;
 				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 				spriteBox.Width = spriteWidth * pixelSize;
@@ -161,16 +171,20 @@ namespace Merthsoft.TokenIDE {
 					for (int i = 0; i < spriteWidth; i++) {
 						//if (sprite[i, j] == 1) {
 						Rectangle box = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+#if !DEBUG
 						try {
+#endif
 							int paletteIndex = sprite[i, j];
 							if (IsColor) {
 								g.FillRectangle(BrushList[paletteIndex], box);
 							} else {
 								g.FillRectangle(paletteIndex == 0 ? Brushes.White : Brushes.Black, box);
 							}
+#if !DEBUG
 						} catch (Exception ex) {
 							MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 						}
+#endif
 						//}
 						if (DrawGrid.Checked) {
 							Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
@@ -183,9 +197,11 @@ namespace Merthsoft.TokenIDE {
 					}
 				}
 				g.FillRectangle(Brushes.PaleVioletRed, new Rectangle(mX, mY, pixelSize, pixelSize));
+#if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 			}
+#endif
 		}
 
 		private void updateHex() {
@@ -193,25 +209,51 @@ namespace Merthsoft.TokenIDE {
 			StringBuilder bin = new StringBuilder();
 			for (int j = 0; j < spriteHeight; j++) {
 				string t = "";
+				StringBuilder line = new StringBuilder();
 				for (int i = 0; i < spriteWidth; i++) {
 					if (i % 8 == 0) {
 						t += ",%";
 					}
 					t += sprite[i, j].ToString();
 					if (IsColor) {
-						bin.Append(sprite[i, j].ToString("X1"));
+						line.Append(sprite[i, j].ToString("X1"));
 					} else {
-						bin.Append(sprite[i, j].ToString());
+						line.Append(sprite[i, j].ToString());
 					}
 				}
+
+				if (!IsColor) {
+					line = new StringBuilder(HexHelper.BinToHex(line.ToString()));
+				}
+				// Try to backtrack and add G
+				if (HasGCharacter) {
+					int lineWidth = line.Length;
+					if (line[lineWidth - 1] == '0') {
+						int zeroCount = 1;
+						for (int k = lineWidth - 2; k >= 0; k--) {
+							if (line[k] == '0') {
+								zeroCount++;
+							} else {
+								break;
+							}
+						}
+
+						if (zeroCount > 1) {
+							line.Remove(lineWidth - zeroCount, zeroCount);
+							line.Append('G');
+						}
+					}
+				}
+
+				bin.Append(line);
 				binBox.Text = string.Concat(binBox.Text, ".db ", t.Substring(1), Environment.NewLine);
 			}
 
-			if (IsColor) {
-				hexBox.Text = bin.ToString();
-			} else {
-				hexBox.Text = HexHelper.BinToHex(bin.ToString());
-			}
+			//if (IsColor) {
+			hexBox.Text = bin.ToString();
+			//} else {
+			//	hexBox.Text = HexHelper.BinToHex(bin.ToString());
+			//}
 		}
 
 		private void spriteBox_MouseMove(object sender, MouseEventArgs e) {
@@ -285,15 +327,19 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void hexBox_TextChanged(object sender, EventArgs e) {
+#if !DEBUG
 			try {
+#endif
 				if (IsColor) {
 					sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
 				} else {
 					sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
 				}
+#if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
 			}
+#endif
 			toolStripStatusLabel1.Text = "Len: " + hexBox.Text.Length.ToString();
 			if (ActiveHex.Checked) {
 				spriteBox.Invalidate();
@@ -352,6 +398,20 @@ namespace Merthsoft.TokenIDE {
 
 		private void colorCheckBox_CheckedChanged(object sender, EventArgs e) {
 			paletteBox.Visible = colorCheckBox.Checked;
+
+			// Make all numbers 1 if it's black and white
+			if (!IsColor) {
+				for (int j = 0; j < spriteHeight; j++) {
+					for (int i = 0; i < spriteWidth; i++) {
+						if (sprite[i, j] == rightPixel) {
+							sprite[i, j] = 0;
+						} else {
+							sprite[i, j] = 1;
+						}
+					}
+				}
+			}
+
 			leftPixel = 1;
 			rightPixel = 0;
 
@@ -388,5 +448,8 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Invalidate();
 		}
 
+		private void hasGBox_CheckedChanged(object sender, EventArgs e) {
+			updateHex();
+		}
 	}
 }

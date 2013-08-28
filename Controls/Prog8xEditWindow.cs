@@ -15,6 +15,16 @@ using FastColoredTextBoxNS;
 namespace Merthsoft.TokenIDE {
 	public partial class Prog8xEditWindow : UserControl, IEditWindow {
 		Dictionary<string, TokenStyle> styles;
+
+		public bool Archived {
+			get { return _program == null ? false : _program.Archived; }
+			set {
+				if (_program != null) {
+					_program.Archived = value;
+					archivedCheckBox.Checked = value;
+				}
+			}
+		}
 		
 		public TabPage ParentTabPage { get; set; }
 
@@ -544,7 +554,13 @@ namespace Merthsoft.TokenIDE {
 
 		public void Save() {
 			string fileName = FileName;
-			if (!FileName.EndsWith(".txt")) { fileName = FileName + ".txt"; }
+			if (!FileName.EndsWith(".txt")) {
+				int extensionLocation = fileName.LastIndexOf('.');
+				if (extensionLocation != -1) {
+					fileName = fileName.Remove(extensionLocation);
+				}
+				fileName = fileName + ".txt"; 
+			}
 			using (StreamWriter sw = new StreamWriter(fileName, false)) {
 				sw.Write(ProgramText.Replace("\r", "").Replace("\n", Environment.NewLine));
 			}
@@ -586,5 +602,7 @@ namespace Merthsoft.TokenIDE {
 		private void Prog8xEditWindow_MouseHover(object sender, EventArgs e) {
 
 		}
+
+		public bool Locked { get { return ((Prog8x)_program).Locked; } }
 	}
 }

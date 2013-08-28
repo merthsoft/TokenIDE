@@ -106,10 +106,18 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		void t_Click(object sender, EventArgs e) {
+			if (currWindow.SaveDirectory == null) {
+				return;
+			}
+
 			ToolStripMenuItem t = (ToolStripMenuItem)sender;
 			string[] vals = (string[])t.Tag;
 			string program = replaceTokens(vals[1]);
 			string args = replaceTokens(vals[2]);
+
+			if (program == null || args == null) {
+				return;
+			}
 			//MessageBox.Show(args, program);
 			Process.Start(program, args);
 		}
@@ -121,6 +129,7 @@ namespace Merthsoft.TokenIDE {
 				StringBuilder sb = new StringBuilder();
 				foreach (TabPage page in EditWindows.TabPages) {
 					IEditWindow window = (IEditWindow)(page.Controls[0]);
+					if (window.SaveDirectory == null) { return null; }
 					sb.AppendFormat("\"{0}\" ", Path.Combine(window.SaveDirectory, window.FileName));
 				}
 				val = val.Replace("%files%", sb.ToString());
@@ -255,6 +264,7 @@ namespace Merthsoft.TokenIDE {
 				EditWindows.TabPages.Remove(prevWindow.ParentTabPage);
 			}
 			currWindow.SaveDirectory = fi.Directory.FullName;
+			currWindow.New = false;
 			//currWindow.DragEnter += TokenIDE_DragEnter;
 			//currWindow.DragDrop += TokenIDE_DragDrop;
 			//} catch (Exception ex) {
@@ -277,7 +287,12 @@ namespace Merthsoft.TokenIDE {
 				return;
 			}
 			try {
-				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data);
+				bool locked = false;
+				if (currWindow is Prog8xEditWindow) {
+					locked = ((Prog8xEditWindow)currWindow).Locked;
+				}
+
+				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data, currWindow.Archived, locked);
 				statusLabel.Text = "Build succeeded";
 			} catch (Exception ex) {
 				statusLabel.Text = string.Concat("Build failed: ", ex.Message);
@@ -289,7 +304,6 @@ namespace Merthsoft.TokenIDE {
 			Var8x.VarType varType = Var8x.VarType.Program;
 			Var8x.CalcType calcType = Var8x.CalcType.Calc83;
 			buildFile(varType, calcType);
-
 		}
 
 		public string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
@@ -332,7 +346,7 @@ namespace Merthsoft.TokenIDE {
 			return "." + prefix + suffix;
 		}
 
-		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData) {
+		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData, bool archived, bool locked = false) {
 			string name = window.OnCalcName;
 			Var8x var = null;
 			string ext = getExtension(varType, calcType);
@@ -351,7 +365,10 @@ namespace Merthsoft.TokenIDE {
 						var = new AppVar8x(name, calcType.Value);
 					} else {
 						var = new Prog8x(name, calcType.Value);
+						((Prog8x)var).Locked = locked;
 					}
+					var.Archived = archived;
+
 					var.SetData(new object[] { numTokens.ToString(), rawData });
 					var.Save(new BinaryWriter(s.BaseStream));
 				}
@@ -359,23 +376,30 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void hexSpriteEditorToolStripMenuItem_Click(object sender, EventArgs e) {
+		}
+
+		private void hexSprite(bool color) {
 			if (!(currWindow is Prog8xEditWindow)) { return; }
 			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 
+#if !DEBUG
 			try {
+#endif
 				HexSprite s;
 				if (ew.SelectedText != "") {
-					s = new HexSprite(ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", ""), true);
+					s = new HexSprite(ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", ""), color);
 				} else {
-					s = new HexSprite(true);
+					s = new HexSprite(color);
 				}
 				s.ShowDialog();
 				if (s.outString != "") {
 					ew.SelectedText = s.outString;
 				}
+#if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
 			}
+#endif
 		}
 
 		private void dCSGuiDesignerToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -646,8 +670,9 @@ namespace Merthsoft.TokenIDE {
 
 		private byte[] setUpSave(out string directory) {
 			directory = "";
-			if (currWindow == null)
+			if (currWindow == null) {
 				return null;
+			}
 			if (string.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
 				currWindow.OnCalcName = InputBox.ShowInputBox("Program Name");
 				//currWindow.FileName = currWindow.ProgramName;
@@ -676,6 +701,8 @@ namespace Merthsoft.TokenIDE {
 			} else {
 				directory = currWindow.SaveDirectory;
 			}
+
+			currWindow.Save();
 
 			return data;
 		}
@@ -1026,6 +1053,18 @@ namespace Merthsoft.TokenIDE {
 			foreach (TokensProject proj in projects) {
 				proj.Save();
 			}
+		}
+
+		private void projectTree_AfterSelect(object sender, TreeViewEventArgs e) {
+
+		}
+
+		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) {
+			hexSprite(true);
+		}
+
+		private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e) {
+			hexSprite(false);
 		}
 	}
 }

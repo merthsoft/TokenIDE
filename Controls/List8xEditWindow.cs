@@ -17,6 +17,11 @@ namespace Merthsoft.TokenIDE {
 			FileName = fileName;
 		}
 
+		public bool Archived {
+			get { return false; }
+			set { }
+		}
+
 		public TabPage ParentTabPage { get; set; }
 
 		public string SaveDirectory { get; set; }

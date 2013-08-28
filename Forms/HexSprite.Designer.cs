@@ -52,6 +52,7 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.hasGBox = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
 			this.splitContainer1.Panel2.SuspendLayout();
@@ -82,6 +83,7 @@
 			// 
 			// splitContainer1.Panel1
 			// 
+			this.splitContainer1.Panel1.Controls.Add(this.hasGBox);
 			this.splitContainer1.Panel1.Controls.Add(this.paletteBox);
 			this.splitContainer1.Panel1.Controls.Add(this.colorCheckBox);
 			this.splitContainer1.Panel1.Controls.Add(this.ResizeFromHexButton);
@@ -161,7 +163,7 @@
 			// 
 			// PixelSize
 			// 
-			this.PixelSize.Location = new System.Drawing.Point(49, 49);
+			this.PixelSize.Location = new System.Drawing.Point(49, 41);
 			this.PixelSize.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -185,7 +187,7 @@
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 51);
+			this.label2.Location = new System.Drawing.Point(12, 43);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(32, 13);
 			this.label2.TabIndex = 15;
@@ -228,7 +230,7 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 9);
+			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(77, 13);
 			this.label1.TabIndex = 9;
@@ -236,7 +238,7 @@
 			// 
 			// SpriteHeight
 			// 
-			this.SpriteHeight.Location = new System.Drawing.Point(49, 26);
+			this.SpriteHeight.Location = new System.Drawing.Point(49, 16);
 			this.SpriteHeight.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -259,7 +261,7 @@
 			// 
 			// SpriteWidth
 			// 
-			this.SpriteWidth.Location = new System.Drawing.Point(3, 26);
+			this.SpriteWidth.Location = new System.Drawing.Point(4, 16);
 			this.SpriteWidth.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -408,9 +410,20 @@
 			// openImageToolStripMenuItem
 			// 
 			this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
-			this.openImageToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.openImageToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
 			this.openImageToolStripMenuItem.Text = "&Open";
 			this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
+			// 
+			// hasGBox
+			// 
+			this.hasGBox.AutoSize = true;
+			this.hasGBox.Location = new System.Drawing.Point(23, 67);
+			this.hasGBox.Name = "hasGBox";
+			this.hasGBox.Size = new System.Drawing.Size(66, 17);
+			this.hasGBox.TabIndex = 22;
+			this.hasGBox.Text = "Use \"G\"";
+			this.hasGBox.UseVisualStyleBackColor = true;
+			this.hasGBox.CheckedChanged += new System.EventHandler(this.hasGBox_CheckedChanged);
 			// 
 			// HexSprite
 			// 
@@ -482,6 +495,7 @@
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
+		private System.Windows.Forms.CheckBox hasGBox;
 
 	}
 }

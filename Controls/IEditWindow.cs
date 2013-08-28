@@ -21,6 +21,7 @@ namespace Merthsoft.TokenIDE {
 		bool FirstFileFlag { get; set; }
 		int NumTokens { get; }
 		byte[] ByteData { get; }
+		bool Archived { get; set; }
 
 		void Save();
 	}

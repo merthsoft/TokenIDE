@@ -79,123 +79,123 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox1.cs">
+    <Compile Include="Forms\AboutBox1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox1.Designer.cs">
+    <Compile Include="Forms\AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="CropImageDialog.cs">
+    <Compile Include="Forms\CropImageDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="CropImageDialog.Designer.cs">
+    <Compile Include="Forms\CropImageDialog.Designer.cs">
       <DependentUpon>CropImageDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="DCSGUIDesigner.cs">
+    <Compile Include="Forms\DCSGUIDesigner.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DCSGUIDesigner.Designer.cs">
+    <Compile Include="Forms\DCSGUIDesigner.Designer.cs">
       <DependentUpon>DCSGUIDesigner.cs</DependentUpon>
     </Compile>
-    <Compile Include="FolderSelectDialog.cs" />
-    <Compile Include="GroupStats.cs">
+    <Compile Include="Controls\FolderSelectDialog.cs" />
+    <Compile Include="Forms\GroupStats.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GroupStats.Designer.cs">
+    <Compile Include="Forms\GroupStats.Designer.cs">
       <DependentUpon>GroupStats.cs</DependentUpon>
     </Compile>
-    <Compile Include="IEditWindow.cs" />
-    <Compile Include="List8xEditWindow.cs">
+    <Compile Include="Controls\IEditWindow.cs" />
+    <Compile Include="Controls\List8xEditWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="List8xEditWindow.Designer.cs">
+    <Compile Include="Controls\List8xEditWindow.Designer.cs">
       <DependentUpon>List8xEditWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="NewProjectWizard.cs">
+    <Compile Include="Forms\NewProjectWizard.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewProjectWizard.Designer.cs">
+    <Compile Include="Forms\NewProjectWizard.Designer.cs">
       <DependentUpon>NewProjectWizard.cs</DependentUpon>
     </Compile>
-    <Compile Include="Options.cs">
+    <Compile Include="Forms\Options.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Options.Designer.cs">
+    <Compile Include="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
     <Compile Include="PreprocessorException.cs" />
-    <Compile Include="Prog8xEditWindow.cs">
+    <Compile Include="Controls\Prog8xEditWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Prog8xEditWindow.Designer.cs">
+    <Compile Include="Controls\Prog8xEditWindow.Designer.cs">
       <DependentUpon>Prog8xEditWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="InputBox.cs">
+    <Compile Include="Forms\InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InputBox.Designer.cs">
+    <Compile Include="Forms\InputBox.Designer.cs">
       <DependentUpon>InputBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="HexSprite.cs">
+    <Compile Include="Forms\HexSprite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HexSprite.Designer.cs">
+    <Compile Include="Forms\HexSprite.Designer.cs">
       <DependentUpon>HexSprite.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageEditor.cs">
+    <Compile Include="Forms\ImageEditor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ImageEditor.Designer.cs">
+    <Compile Include="Forms\ImageEditor.Designer.cs">
       <DependentUpon>ImageEditor.cs</DependentUpon>
     </Compile>
     <Compile Include="Project.cs">
       <DependentUpon>Project.xsd</DependentUpon>
     </Compile>
     <Compile Include="Reflector.cs" />
-    <Compile Include="Tokens.cs">
+    <Compile Include="Forms\Tokens.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tokens.Designer.cs">
+    <Compile Include="Forms\Tokens.Designer.cs">
       <DependentUpon>Tokens.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TokenStyle.cs" />
     <Compile Include="XmlValidator.cs" />
-    <EmbeddedResource Include="AboutBox1.resx">
+    <EmbeddedResource Include="Forms\AboutBox1.resx">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="CropImageDialog.resx">
+    <EmbeddedResource Include="Forms\CropImageDialog.resx">
       <DependentUpon>CropImageDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DCSGUIDesigner.resx">
+    <EmbeddedResource Include="Forms\DCSGUIDesigner.resx">
       <DependentUpon>DCSGUIDesigner.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GroupStats.resx">
+    <EmbeddedResource Include="Forms\GroupStats.resx">
       <DependentUpon>GroupStats.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="List8xEditWindow.resx">
+    <EmbeddedResource Include="Controls\List8xEditWindow.resx">
       <DependentUpon>List8xEditWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewProjectWizard.resx">
+    <EmbeddedResource Include="Forms\NewProjectWizard.resx">
       <DependentUpon>NewProjectWizard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Options.resx">
+    <EmbeddedResource Include="Forms\Options.resx">
       <DependentUpon>Options.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Prog8xEditWindow.resx">
+    <EmbeddedResource Include="Controls\Prog8xEditWindow.resx">
       <DependentUpon>Prog8xEditWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="InputBox.resx">
+    <EmbeddedResource Include="Forms\InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HexSprite.resx">
+    <EmbeddedResource Include="Forms\HexSprite.resx">
       <DependentUpon>HexSprite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImageEditor.resx">
+    <EmbeddedResource Include="Forms\ImageEditor.resx">
       <DependentUpon>ImageEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Tokens.resx">
+    <EmbeddedResource Include="Forms\Tokens.resx">
       <DependentUpon>Tokens.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -228,7 +228,7 @@
     <None Include="TokenIDE.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Tokens.xsd">
+    <None Include="Tokens\Tokens.xsd">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -254,30 +254,30 @@
     <None Include="Assets\Icons\Project\icon_project_pics.png" />
     <None Include="Assets\Icons\Project\icon_project_progs.png" />
     <Content Include="Assets\logo-curved.png" />
-    <Content Include="TI-73.xml">
+    <Content Include="Tokens\TI-73.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TI-84+CSE.xml">
+    <Content Include="Tokens\TI-84+CSE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="TI-82.xml">
+    <Content Include="Tokens\TI-82.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="GrammerTokens.xml">
+    <Content Include="Tokens\GrammerTokens.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="NoLib.xml">
+    <Content Include="Tokens\NoLib.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Prizm.xml">
+    <Content Include="Tokens\Prizm.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Tokens.ico" />
     <None Include="Assets\Tokens.png" />
-    <Content Include="Tokens.xml">
+    <Content Include="Tokens\Tokens.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="AxeTokens.xml">
+    <Content Include="Tokens\AxeTokens.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

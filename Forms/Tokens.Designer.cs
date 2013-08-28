@@ -38,6 +38,7 @@
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAlltoolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.changeTokenFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeSaveDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -97,7 +98,8 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.colorSpritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.blackAndWhiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -234,6 +236,13 @@
             | System.Windows.Forms.Keys.S)));
 			this.saveAlltoolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.saveAlltoolStripMenuItem.Text = "Save All";
+			// 
+			// toolStripMenuItem1
+			// 
+			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
+			this.toolStripMenuItem1.Text = "Save Project";
+			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator2
 			// 
@@ -418,9 +427,11 @@
 			// 
 			// hexSpriteEditorToolStripMenuItem
 			// 
+			this.hexSpriteEditorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.blackAndWhiteToolStripMenuItem,
+            this.colorSpritesToolStripMenuItem});
 			this.hexSpriteEditorToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
 			this.hexSpriteEditorToolStripMenuItem.Name = "hexSpriteEditorToolStripMenuItem";
-			this.hexSpriteEditorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
 			this.hexSpriteEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.hexSpriteEditorToolStripMenuItem.Text = "Hex Sprite Editor";
 			this.hexSpriteEditorToolStripMenuItem.Click += new System.EventHandler(this.hexSpriteEditorToolStripMenuItem_Click);
@@ -663,6 +674,7 @@
 			this.projectTree.Size = new System.Drawing.Size(164, 474);
 			this.projectTree.TabIndex = 0;
 			this.projectTree.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterExpand);
+			this.projectTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterSelect);
 			this.projectTree.DoubleClick += new System.EventHandler(this.projectTree_DoubleClick);
 			this.projectTree.MouseClick += new System.Windows.Forms.MouseEventHandler(this.projectTree_MouseClick);
 			// 
@@ -764,12 +776,25 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
-			// toolStripMenuItem1
+			// colorSpritesToolStripMenuItem
 			// 
-			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
-			this.toolStripMenuItem1.Text = "Save Project";
-			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+			this.colorSpritesToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
+			this.colorSpritesToolStripMenuItem.Name = "colorSpritesToolStripMenuItem";
+			this.colorSpritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.H)));
+			this.colorSpritesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+			this.colorSpritesToolStripMenuItem.Text = "Color Sprites";
+			this.colorSpritesToolStripMenuItem.Click += new System.EventHandler(this.colorSpritesToolStripMenuItem_Click);
+			// 
+			// blackAndWhiteToolStripMenuItem
+			// 
+			this.blackAndWhiteToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
+			this.blackAndWhiteToolStripMenuItem.Name = "blackAndWhiteToolStripMenuItem";
+			this.blackAndWhiteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.H)));
+			this.blackAndWhiteToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.blackAndWhiteToolStripMenuItem.Text = "Black and White";
+			this.blackAndWhiteToolStripMenuItem.Click += new System.EventHandler(this.blackAndWhiteToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 
@@ -888,6 +913,8 @@
 		private System.Windows.Forms.ToolStripMenuItem newItemToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem existingItemToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem colorSpritesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem blackAndWhiteToolStripMenuItem;
 	}
 }
 
