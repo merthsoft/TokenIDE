@@ -60,6 +60,8 @@
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.label3 = new System.Windows.Forms.Label();
+			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -75,6 +77,7 @@
 			this.mainToolStrip.SuspendLayout();
 			this.topPanel.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// paletteBox
@@ -101,7 +104,7 @@
 			// 
 			// ResizeFromHexButton
 			// 
-			this.ResizeFromHexButton.Location = new System.Drawing.Point(188, 55);
+			this.ResizeFromHexButton.Location = new System.Drawing.Point(188, 38);
 			this.ResizeFromHexButton.Name = "ResizeFromHexButton";
 			this.ResizeFromHexButton.Size = new System.Drawing.Size(75, 23);
 			this.ResizeFromHexButton.TabIndex = 19;
@@ -160,9 +163,9 @@
 			this.label2.AutoSize = true;
 			this.label2.Location = new System.Drawing.Point(12, 43);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(32, 13);
+			this.label2.Size = new System.Drawing.Size(37, 13);
 			this.label2.TabIndex = 15;
-			this.label2.Text = "Pixel:";
+			this.label2.Text = "Zoom:";
 			// 
 			// ActiveHex
 			// 
@@ -350,7 +353,7 @@
 			// hasGBox
 			// 
 			this.hasGBox.AutoSize = true;
-			this.hasGBox.Location = new System.Drawing.Point(23, 67);
+			this.hasGBox.Location = new System.Drawing.Point(188, 62);
 			this.hasGBox.Name = "hasGBox";
 			this.hasGBox.Size = new System.Drawing.Size(66, 17);
 			this.hasGBox.TabIndex = 22;
@@ -401,6 +404,8 @@
 			// 
 			// topPanel
 			// 
+			this.topPanel.Controls.Add(this.label3);
+			this.topPanel.Controls.Add(this.penWidthBox);
 			this.topPanel.Controls.Add(this.spriteWidthBox);
 			this.topPanel.Controls.Add(this.spriteHeightBox);
 			this.topPanel.Controls.Add(this.label1);
@@ -449,7 +454,7 @@
 			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
 			// 
@@ -479,6 +484,37 @@
 			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.redoToolStripMenuItem.Text = "Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(15, 69);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(29, 13);
+			this.label3.TabIndex = 23;
+			this.label3.Text = "Pen:";
+			// 
+			// penWidthBox
+			// 
+			this.penWidthBox.Location = new System.Drawing.Point(49, 67);
+			this.penWidthBox.Maximum = new decimal(new int[] {
+            65536,
+            0,
+            0,
+            0});
+			this.penWidthBox.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+			this.penWidthBox.Name = "penWidthBox";
+			this.penWidthBox.Size = new System.Drawing.Size(40, 20);
+			this.penWidthBox.TabIndex = 24;
+			this.penWidthBox.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
 			// 
 			// HexSprite
 			// 
@@ -515,6 +551,7 @@
 			this.topPanel.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -556,6 +593,8 @@
 		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.NumericUpDown penWidthBox;
 
 	}
 }

@@ -22,7 +22,10 @@ namespace Merthsoft.TokenIDE {
 		MouseButtons button;
 		bool drawing;
 		int shapeX, shapeY;
-		int penWidth = 1;
+		int penWidth {
+			get { return (int)penWidthBox.Value; }
+			set { penWidthBox.Value = value; }
+		}
 
 		List<int[,]> history;
 		int historyPosition;
@@ -329,53 +332,31 @@ namespace Merthsoft.TokenIDE {
 			mouseX = e.X / pixelSize;
 			mouseY = e.Y / pixelSize;
 
-			int pixelColor;
+			int pixelColor = -1;
 
 			switch (button) {
 				case MouseButtons.Left:
-					//if (IsColor) {
-					//    pen = new Pen(BrushList[leftPixel], penWidth);
-					//} else {
-					//    pen = new Pen(leftPixel == 0 ? Brushes.White : Brushes.Black, penWidth);
-					//}
 					pixelColor = leftPixel;
 					break;
 				case MouseButtons.Right:
-					//if (IsColor) {
-					//    pen = new Pen(BrushList[rightPixel], penWidth);
-					//} else {
-					//    pen = new Pen(leftPixel == 0 ? Brushes.White : Brushes.Black, penWidth);
-					//}
 					pixelColor = rightPixel;
 					break;
-				case MouseButtons.None:
-				default:
-					//pen = Pens.Transparent;
-					pixelColor = -1;
-					break;
 			}
-			//Graphics g = Graphics.FromImage
 
 			switch (currentTool) {
 				case Tool.Pencil:
-					//g.FillRectangle(pen.Brush, mouseX, mouseY, penWidth, penWidth);
 					if (button != System.Windows.Forms.MouseButtons.None) {
 						sprite.Plot(mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
 				case Tool.Pen:
-					//g.DrawLine(pen, mouseXOld, mouseYOld, mouseX, mouseY);
 					if (button != System.Windows.Forms.MouseButtons.None) {
-						sprite.DrawLine(pixelColor, penWidth, mouseXOld, mouseYOld, mouseX, mouseY);
+						sprite.DrawLine(mouseXOld, mouseYOld, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
 				case Tool.Flood:
-				//    if (button == System.Windows.Forms.MouseButtons.None) {
-				//        return;
-				//    }
-					//p.FloodFill(pen, mouseX, mouseY);
 					if (button != System.Windows.Forms.MouseButtons.None) {
-						sprite.FloodFill(pixelColor, mouseX, mouseY);
+						sprite.FloodFill(mouseX, mouseY, pixelColor);
 					}
 					break;
 				case Tool.Line:
@@ -383,17 +364,14 @@ namespace Merthsoft.TokenIDE {
 						shapeX = mouseX;
 						shapeY = mouseY;
 						drawing = true;
-						//shapePen = pen;
-						//previewSprite = sprite;
 					}
 					if (button == System.Windows.Forms.MouseButtons.None) {
-						//g.DrawLine(shapePen, shapeX, shapeY, mouseX, mouseY);
 						copyPreviewSprite();
 						previewSprite = null;
 						drawing = false;
 					} else {
 						createPreviewSprite();
-						previewSprite.DrawLine(pixelColor, 0, shapeX, shapeY, mouseX, mouseY);
+						previewSprite.DrawLine(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
 				case Tool.Rectangle:
@@ -402,20 +380,14 @@ namespace Merthsoft.TokenIDE {
 						shapeX = mouseX;
 						shapeY = mouseY;
 						drawing = true;
-						//shapePen = pen;
 					}
 					if (button == System.Windows.Forms.MouseButtons.None) {
-						//if (currentTool == Tool.RectangleFill) {
-						//    //g.FillRect(shapePen.Brush, shapeX, shapeY, mouseX, mouseY);
-						//} else {
-						//    //g.DrawRect(shapePen, shapeX, shapeY, mouseX, mouseY);
-						//}
 						copyPreviewSprite();
 						previewSprite = null;
 						drawing = false;
 					} else {
 						createPreviewSprite();
-						previewSprite.DrawRectangle(pixelColor, 0, shapeX, shapeY, mouseX, mouseY);
+						previewSprite.DrawRectangle(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.RectangleFill);
 					}
 					break;
 				case Tool.Ellipse:
@@ -424,15 +396,14 @@ namespace Merthsoft.TokenIDE {
 						shapeX = mouseX;
 						shapeY = mouseY;
 						drawing = true;
-						//shapePen = pen;
 					}
 					if (button == System.Windows.Forms.MouseButtons.None) {
-						if (currentTool == Tool.EllipseFill) {
-							//g.FillEllipse(shapePen.Brush, shapeX, shapeY, mouseX - shapeX, mouseY - shapeY);
-						} else {
-							//g.DrawEllipse(shapePen, shapeX, shapeY, mouseX - shapeX, mouseY - shapeY);
-						}
+						copyPreviewSprite();
+						previewSprite = null;
 						drawing = false;
+					} else {
+						createPreviewSprite();
+						previewSprite.DrawEllipse(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.EllipseFill);
 					}
 					break;
 				case Tool.Circle:
@@ -441,15 +412,25 @@ namespace Merthsoft.TokenIDE {
 						shapeX = mouseX;
 						shapeY = mouseY;
 						drawing = true;
-						//shapePen = pen;
 					}
 					if (button == System.Windows.Forms.MouseButtons.None) {
-						if (currentTool == Tool.CircleFill) {
-							//g.FillCircle(shapePen.Brush, shapeX, shapeY, (int)Math.Sqrt((shapeX - mouseX) * (shapeX - mouseX) + (shapeY - mouseY) * (shapeY - mouseY)));
-						} else {
-							//g.DrawCircle(shapePen, shapeX, shapeY, (int)Math.Sqrt((shapeX - mouseX) * (shapeX - mouseX) + (shapeY - mouseY) * (shapeY - mouseY)));
-						}
+						copyPreviewSprite();
+						previewSprite = null;
 						drawing = false;
+					} else {
+						createPreviewSprite();
+						int radius = (int)Math.Sqrt((shapeX - mouseX) * (shapeX - mouseX) + (shapeY - mouseY) * (shapeY - mouseY));
+						previewSprite.DrawCircle(shapeX, shapeY, radius, pixelColor, penWidth, currentTool == Tool.CircleFill);
+					}
+					break;
+				case Tool.EyeDropper:
+					if (IsColor) {
+						if (button == System.Windows.Forms.MouseButtons.Left) {
+							leftPixel = sprite[mouseX, mouseY];
+						} else if (button == System.Windows.Forms.MouseButtons.Right) {
+							rightPixel = sprite[mouseX, mouseY];
+						}
+						paletteBox.Invalidate();
 					}
 					break;
 				default:
@@ -532,18 +513,21 @@ namespace Merthsoft.TokenIDE {
 			//    button = e.Button;
 			//    //try { pixelMode = sprite[mX / pixelSize, mY / pixelSize] == 0 ? 1 : 0; } catch { }
 			//}
-			
+			pushHistory();
+
+			mouseX = e.X / pixelSize;
+			mouseY = e.Y / pixelSize;
+			handleMouse(e);
+		}
+
+		private void pushHistory() {
 			if (historyPosition != history.Count) {
-			    history.RemoveRange(historyPosition, history.Count - historyPosition);
+				history.RemoveRange(historyPosition, history.Count - historyPosition);
 			}
 			history.Add(copySpriteArray());
 			historyPosition = history.Count;
 			toggleRedo(false);
 			toggleUndo(true);
-
-			mouseX = e.X / pixelSize;
-			mouseY = e.Y / pixelSize;
-			handleMouse(e);
 		}
 
 		private int[,] copySpriteArray() {
@@ -633,12 +617,12 @@ namespace Merthsoft.TokenIDE {
 
 				if (colorIndex == leftPixel) {
 					using (Font newFont = new Font(FontFamily.GenericSansSerif, 7)) {
-						g.DrawString("L", newFont, c.GetBrightness() <= 0.5f ? Brushes.White : Brushes.Black, paletteX + 5, paletteY + 20);
+						g.DrawString("L", newFont, c.GetBrightness() < 0.5f ? Brushes.White : Brushes.Black, paletteX + 5, paletteY + 20);
 					}
 				} 
 				if (colorIndex == rightPixel) {
 					using (Font newFont = new Font(FontFamily.GenericSansSerif, 7)) {
-						g.DrawString("R", newFont, c.GetBrightness() <= 0.5f ? Brushes.White : Brushes.Black, paletteX + 12, paletteY + 20);
+						g.DrawString("R", newFont, c.GetBrightness() < 0.5f ? Brushes.White : Brushes.Black, paletteX + 12, paletteY + 20);
 					}
 				}
 
@@ -686,6 +670,7 @@ namespace Merthsoft.TokenIDE {
 		}
 		
 		private void Open(string fileName) {
+			pushHistory();
 			using (Bitmap image = new Bitmap(fileName)) {
 				spriteWidthBox.Value = image.Width;
 				spriteHeightBox.Value = image.Height;
@@ -726,6 +711,9 @@ namespace Merthsoft.TokenIDE {
 			toggleRedo(true);
 
 			spriteBox.Invalidate();
+			if (ActiveHex.Checked) {
+				updateHex();
+			}
 		}
 
 		private void redo() {
@@ -736,6 +724,9 @@ namespace Merthsoft.TokenIDE {
 			toggleUndo(true);
 			
 			spriteBox.Invalidate();
+			if (ActiveHex.Checked) {
+				updateHex();
+			}
 		}
 
 		private void toggleUndo(bool enabled) {
