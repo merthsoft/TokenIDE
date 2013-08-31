@@ -61,6 +61,8 @@
 			this.binaryFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.hexSpriteEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.blackAndWhiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.colorSpritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dCSGuiDesignerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageEditosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
@@ -98,8 +100,6 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.colorSpritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.blackAndWhiteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -435,6 +435,26 @@
 			this.hexSpriteEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.hexSpriteEditorToolStripMenuItem.Text = "Hex Sprite Editor";
 			this.hexSpriteEditorToolStripMenuItem.Click += new System.EventHandler(this.hexSpriteEditorToolStripMenuItem_Click);
+			// 
+			// blackAndWhiteToolStripMenuItem
+			// 
+			this.blackAndWhiteToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
+			this.blackAndWhiteToolStripMenuItem.Name = "blackAndWhiteToolStripMenuItem";
+			this.blackAndWhiteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.H)));
+			this.blackAndWhiteToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.blackAndWhiteToolStripMenuItem.Text = "Black and White";
+			this.blackAndWhiteToolStripMenuItem.Click += new System.EventHandler(this.blackAndWhiteToolStripMenuItem_Click);
+			// 
+			// colorSpritesToolStripMenuItem
+			// 
+			this.colorSpritesToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
+			this.colorSpritesToolStripMenuItem.Name = "colorSpritesToolStripMenuItem";
+			this.colorSpritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.H)));
+			this.colorSpritesToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.colorSpritesToolStripMenuItem.Text = "Color Sprites";
+			this.colorSpritesToolStripMenuItem.Click += new System.EventHandler(this.colorSpritesToolStripMenuItem_Click);
 			// 
 			// dCSGuiDesignerToolStripMenuItem
 			// 
@@ -775,26 +795,6 @@
 			this.existingItemToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
-			// 
-			// colorSpritesToolStripMenuItem
-			// 
-			this.colorSpritesToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
-			this.colorSpritesToolStripMenuItem.Name = "colorSpritesToolStripMenuItem";
-			this.colorSpritesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.H)));
-			this.colorSpritesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
-			this.colorSpritesToolStripMenuItem.Text = "Color Sprites";
-			this.colorSpritesToolStripMenuItem.Click += new System.EventHandler(this.colorSpritesToolStripMenuItem_Click);
-			// 
-			// blackAndWhiteToolStripMenuItem
-			// 
-			this.blackAndWhiteToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
-			this.blackAndWhiteToolStripMenuItem.Name = "blackAndWhiteToolStripMenuItem";
-			this.blackAndWhiteToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
-            | System.Windows.Forms.Keys.H)));
-			this.blackAndWhiteToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
-			this.blackAndWhiteToolStripMenuItem.Text = "Black and White";
-			this.blackAndWhiteToolStripMenuItem.Click += new System.EventHandler(this.blackAndWhiteToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 

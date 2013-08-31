@@ -253,6 +253,20 @@
     <None Include="Assets\Icons\Project\icon_project_matrices.png" />
     <None Include="Assets\Icons\Project\icon_project_pics.png" />
     <None Include="Assets\Icons\Project\icon_project_progs.png" />
+    <None Include="Assets\Icons\icon_flood.png" />
+    <None Include="Assets\Icons\icon_line.png" />
+    <None Include="Assets\Icons\icon_pen.png" />
+    <None Include="Assets\Icons\icon_pencil.png" />
+    <None Include="Assets\Icons\icon_rectangle.png" />
+    <None Include="Assets\Icons\icon_circle.png" />
+    <None Include="Assets\Icons\icon_circlefill.png" />
+    <None Include="Assets\Icons\icon_ellipse.png" />
+    <None Include="Assets\Icons\icon_ellipsefill.png" />
+    <None Include="Assets\Icons\icon_rectanglefill.png" />
+    <None Include="Assets\Icons\icon_colorpicker.png" />
+    <None Include="Assets\Icons\icon_eyedropper.png" />
+    <None Include="Assets\Icons\icon_redo.png" />
+    <None Include="Assets\Icons\icon_undo.png" />
     <Content Include="Assets\logo-curved.png" />
     <Content Include="Tokens\TI-73.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

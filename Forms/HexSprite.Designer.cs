@@ -26,21 +26,19 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.paletteBox = new System.Windows.Forms.PictureBox();
 			this.colorCheckBox = new System.Windows.Forms.CheckBox();
 			this.ResizeFromHexButton = new System.Windows.Forms.Button();
 			this.MaintainDim = new System.Windows.Forms.CheckBox();
 			this.DrawGrid = new System.Windows.Forms.CheckBox();
-			this.PixelSize = new System.Windows.Forms.NumericUpDown();
+			this.pixelSizeBox = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.ActiveHex = new System.Windows.Forms.CheckBox();
 			this.InsertButton = new System.Windows.Forms.Button();
-			this.CloseButton = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
-			this.SpriteHeight = new System.Windows.Forms.NumericUpDown();
-			this.SpriteWidth = new System.Windows.Forms.NumericUpDown();
-			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.spriteHeightBox = new System.Windows.Forms.NumericUpDown();
+			this.spriteWidthBox = new System.Windows.Forms.NumericUpDown();
+			this.bottomPanel = new System.Windows.Forms.SplitContainer();
 			this.spriteBox = new System.Windows.Forms.PictureBox();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
 			this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -49,62 +47,35 @@
 			this.binBox = new System.Windows.Forms.TextBox();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+			this.hasGBox = new System.Windows.Forms.CheckBox();
+			this.mainToolStrip = new System.Windows.Forms.ToolStrip();
+			this.undoButton = new System.Windows.Forms.ToolStripButton();
+			this.redoButton = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.topPanel = new System.Windows.Forms.Panel();
+			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.openImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.hasGBox = new System.Windows.Forms.CheckBox();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
+			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.PixelSize)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.SpriteHeight)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.SpriteWidth)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-			this.splitContainer2.Panel1.SuspendLayout();
-			this.splitContainer2.Panel2.SuspendLayout();
-			this.splitContainer2.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.spriteWidthBox)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bottomPanel)).BeginInit();
+			this.bottomPanel.Panel1.SuspendLayout();
+			this.bottomPanel.Panel2.SuspendLayout();
+			this.bottomPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.spriteBox)).BeginInit();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
-			this.statusStrip1.SuspendLayout();
+			this.mainToolStrip.SuspendLayout();
+			this.topPanel.SuspendLayout();
 			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// splitContainer1
-			// 
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 24);
-			this.splitContainer1.Name = "splitContainer1";
-			this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-			// 
-			// splitContainer1.Panel1
-			// 
-			this.splitContainer1.Panel1.Controls.Add(this.hasGBox);
-			this.splitContainer1.Panel1.Controls.Add(this.paletteBox);
-			this.splitContainer1.Panel1.Controls.Add(this.colorCheckBox);
-			this.splitContainer1.Panel1.Controls.Add(this.ResizeFromHexButton);
-			this.splitContainer1.Panel1.Controls.Add(this.MaintainDim);
-			this.splitContainer1.Panel1.Controls.Add(this.DrawGrid);
-			this.splitContainer1.Panel1.Controls.Add(this.PixelSize);
-			this.splitContainer1.Panel1.Controls.Add(this.label2);
-			this.splitContainer1.Panel1.Controls.Add(this.ActiveHex);
-			this.splitContainer1.Panel1.Controls.Add(this.InsertButton);
-			this.splitContainer1.Panel1.Controls.Add(this.CloseButton);
-			this.splitContainer1.Panel1.Controls.Add(this.label1);
-			this.splitContainer1.Panel1.Controls.Add(this.SpriteHeight);
-			this.splitContainer1.Panel1.Controls.Add(this.SpriteWidth);
-			// 
-			// splitContainer1.Panel2
-			// 
-			this.splitContainer1.Panel2.AutoScroll = true;
-			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
-			this.splitContainer1.Size = new System.Drawing.Size(490, 369);
-			this.splitContainer1.SplitterDistance = 92;
-			this.splitContainer1.TabIndex = 0;
 			// 
 			// paletteBox
 			// 
@@ -161,28 +132,28 @@
 			this.DrawGrid.UseVisualStyleBackColor = true;
 			this.DrawGrid.CheckedChanged += new System.EventHandler(this.DrawGrid_CheckedChanged);
 			// 
-			// PixelSize
+			// pixelSizeBox
 			// 
-			this.PixelSize.Location = new System.Drawing.Point(49, 41);
-			this.PixelSize.Maximum = new decimal(new int[] {
+			this.pixelSizeBox.Location = new System.Drawing.Point(49, 41);
+			this.pixelSizeBox.Maximum = new decimal(new int[] {
             65536,
             0,
             0,
             0});
-			this.PixelSize.Minimum = new decimal(new int[] {
+			this.pixelSizeBox.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.PixelSize.Name = "PixelSize";
-			this.PixelSize.Size = new System.Drawing.Size(40, 20);
-			this.PixelSize.TabIndex = 16;
-			this.PixelSize.Value = new decimal(new int[] {
+			this.pixelSizeBox.Name = "pixelSizeBox";
+			this.pixelSizeBox.Size = new System.Drawing.Size(40, 20);
+			this.pixelSizeBox.TabIndex = 16;
+			this.pixelSizeBox.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
-			this.PixelSize.ValueChanged += new System.EventHandler(this.PixelSize_ValueChanged);
+			this.pixelSizeBox.ValueChanged += new System.EventHandler(this.PixelSize_ValueChanged);
 			// 
 			// label2
 			// 
@@ -217,16 +188,6 @@
 			this.InsertButton.UseVisualStyleBackColor = true;
 			this.InsertButton.Click += new System.EventHandler(this.InsertButton_Click);
 			// 
-			// CloseButton
-			// 
-			this.CloseButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CloseButton.Location = new System.Drawing.Point(188, 32);
-			this.CloseButton.Name = "CloseButton";
-			this.CloseButton.Size = new System.Drawing.Size(75, 23);
-			this.CloseButton.TabIndex = 12;
-			this.CloseButton.Text = "Close";
-			this.CloseButton.UseVisualStyleBackColor = true;
-			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
@@ -236,70 +197,70 @@
 			this.label1.TabIndex = 9;
 			this.label1.Text = "Width x Height";
 			// 
-			// SpriteHeight
+			// spriteHeightBox
 			// 
-			this.SpriteHeight.Location = new System.Drawing.Point(49, 16);
-			this.SpriteHeight.Maximum = new decimal(new int[] {
+			this.spriteHeightBox.Location = new System.Drawing.Point(49, 16);
+			this.spriteHeightBox.Maximum = new decimal(new int[] {
             65536,
             0,
             0,
             0});
-			this.SpriteHeight.Minimum = new decimal(new int[] {
+			this.spriteHeightBox.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.SpriteHeight.Name = "SpriteHeight";
-			this.SpriteHeight.Size = new System.Drawing.Size(40, 20);
-			this.SpriteHeight.TabIndex = 8;
-			this.SpriteHeight.Value = new decimal(new int[] {
+			this.spriteHeightBox.Name = "spriteHeightBox";
+			this.spriteHeightBox.Size = new System.Drawing.Size(40, 20);
+			this.spriteHeightBox.TabIndex = 8;
+			this.spriteHeightBox.Value = new decimal(new int[] {
             8,
             0,
             0,
             0});
-			this.SpriteHeight.ValueChanged += new System.EventHandler(this.Height_ValueChanged);
+			this.spriteHeightBox.ValueChanged += new System.EventHandler(this.Height_ValueChanged);
 			// 
-			// SpriteWidth
+			// spriteWidthBox
 			// 
-			this.SpriteWidth.Location = new System.Drawing.Point(4, 16);
-			this.SpriteWidth.Maximum = new decimal(new int[] {
+			this.spriteWidthBox.Location = new System.Drawing.Point(4, 16);
+			this.spriteWidthBox.Maximum = new decimal(new int[] {
             65536,
             0,
             0,
             0});
-			this.SpriteWidth.Minimum = new decimal(new int[] {
+			this.spriteWidthBox.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.SpriteWidth.Name = "SpriteWidth";
-			this.SpriteWidth.Size = new System.Drawing.Size(40, 20);
-			this.SpriteWidth.TabIndex = 7;
-			this.SpriteWidth.Value = new decimal(new int[] {
+			this.spriteWidthBox.Name = "spriteWidthBox";
+			this.spriteWidthBox.Size = new System.Drawing.Size(40, 20);
+			this.spriteWidthBox.TabIndex = 7;
+			this.spriteWidthBox.Value = new decimal(new int[] {
             8,
             0,
             0,
             0});
-			this.SpriteWidth.ValueChanged += new System.EventHandler(this.Width_ValueChanged);
+			this.spriteWidthBox.ValueChanged += new System.EventHandler(this.Width_ValueChanged);
 			// 
-			// splitContainer2
+			// bottomPanel
 			// 
-			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer2.Name = "splitContainer2";
+			this.bottomPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.bottomPanel.Location = new System.Drawing.Point(0, 145);
+			this.bottomPanel.Name = "bottomPanel";
 			// 
-			// splitContainer2.Panel1
+			// bottomPanel.Panel1
 			// 
-			this.splitContainer2.Panel1.AutoScroll = true;
-			this.splitContainer2.Panel1.Controls.Add(this.spriteBox);
+			this.bottomPanel.Panel1.AutoScroll = true;
+			this.bottomPanel.Panel1.Controls.Add(this.spriteBox);
 			// 
-			// splitContainer2.Panel2
+			// bottomPanel.Panel2
 			// 
-			this.splitContainer2.Panel2.Controls.Add(this.tabControl1);
-			this.splitContainer2.Panel2.Controls.Add(this.statusStrip1);
-			this.splitContainer2.Size = new System.Drawing.Size(490, 273);
-			this.splitContainer2.SplitterDistance = 326;
-			this.splitContainer2.TabIndex = 1;
+			this.bottomPanel.Panel2.Controls.Add(this.tabControl1);
+			this.bottomPanel.Panel2.Controls.Add(this.statusStrip1);
+			this.bottomPanel.Size = new System.Drawing.Size(706, 445);
+			this.bottomPanel.SplitterDistance = 469;
+			this.bottomPanel.TabIndex = 1;
 			// 
 			// spriteBox
 			// 
@@ -310,7 +271,6 @@
 			this.spriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.spriteBox.TabIndex = 0;
 			this.spriteBox.TabStop = false;
-			this.spriteBox.Click += new System.EventHandler(this.spriteBox_Click);
 			this.spriteBox.Paint += new System.Windows.Forms.PaintEventHandler(this.spriteBox_Paint);
 			this.spriteBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.spriteBox_MouseDown);
 			this.spriteBox.MouseLeave += new System.EventHandler(this.spriteBox_MouseLeave);
@@ -325,7 +285,7 @@
 			this.tabControl1.Location = new System.Drawing.Point(0, 0);
 			this.tabControl1.Name = "tabControl1";
 			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(160, 251);
+			this.tabControl1.Size = new System.Drawing.Size(233, 423);
 			this.tabControl1.TabIndex = 16;
 			// 
 			// tabPage1
@@ -334,7 +294,7 @@
 			this.tabPage1.Location = new System.Drawing.Point(4, 22);
 			this.tabPage1.Name = "tabPage1";
 			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(152, 225);
+			this.tabPage1.Size = new System.Drawing.Size(225, 397);
 			this.tabPage1.TabIndex = 0;
 			this.tabPage1.Text = "Hex";
 			this.tabPage1.UseVisualStyleBackColor = true;
@@ -347,7 +307,7 @@
 			this.hexBox.Multiline = true;
 			this.hexBox.Name = "hexBox";
 			this.hexBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.hexBox.Size = new System.Drawing.Size(146, 219);
+			this.hexBox.Size = new System.Drawing.Size(219, 391);
 			this.hexBox.TabIndex = 14;
 			this.hexBox.TextChanged += new System.EventHandler(this.hexBox_TextChanged);
 			// 
@@ -357,7 +317,7 @@
 			this.tabPage2.Location = new System.Drawing.Point(4, 22);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(152, 225);
+			this.tabPage2.Size = new System.Drawing.Size(225, 397);
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Binary";
 			this.tabPage2.UseVisualStyleBackColor = true;
@@ -370,16 +330,14 @@
 			this.binBox.Name = "binBox";
 			this.binBox.ReadOnly = true;
 			this.binBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.binBox.Size = new System.Drawing.Size(146, 219);
+			this.binBox.Size = new System.Drawing.Size(219, 391);
 			this.binBox.TabIndex = 15;
 			// 
 			// statusStrip1
 			// 
-			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 251);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 423);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(160, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(233, 22);
 			this.statusStrip1.TabIndex = 13;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -388,31 +346,6 @@
 			this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
 			this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
 			this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(490, 24);
-			this.menuStrip1.TabIndex = 22;
-			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// fileToolStripMenuItem
-			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openImageToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "&File";
-			// 
-			// openImageToolStripMenuItem
-			// 
-			this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
-			this.openImageToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-			this.openImageToolStripMenuItem.Text = "&Open";
-			this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
 			// 
 			// hasGBox
 			// 
@@ -425,41 +358,161 @@
 			this.hasGBox.UseVisualStyleBackColor = true;
 			this.hasGBox.CheckedChanged += new System.EventHandler(this.hasGBox_CheckedChanged);
 			// 
+			// mainToolStrip
+			// 
+			this.mainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoButton,
+            this.redoButton,
+            this.toolStripSeparator1});
+			this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
+			this.mainToolStrip.Name = "mainToolStrip";
+			this.mainToolStrip.Size = new System.Drawing.Size(706, 27);
+			this.mainToolStrip.TabIndex = 23;
+			this.mainToolStrip.Text = "toolStrip1";
+			// 
+			// undoButton
+			// 
+			this.undoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.undoButton.Enabled = false;
+			this.undoButton.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
+			this.undoButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.undoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.undoButton.Name = "undoButton";
+			this.undoButton.Size = new System.Drawing.Size(24, 24);
+			this.undoButton.Text = "Undo (Ctrl+Z)";
+			this.undoButton.Click += new System.EventHandler(this.undoButton_Click);
+			// 
+			// redoButton
+			// 
+			this.redoButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.redoButton.Enabled = false;
+			this.redoButton.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
+			this.redoButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+			this.redoButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.redoButton.Name = "redoButton";
+			this.redoButton.Size = new System.Drawing.Size(24, 24);
+			this.redoButton.Text = "Redo (Ctrl+Y)";
+			this.redoButton.Click += new System.EventHandler(this.redoButton_Click);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 27);
+			// 
+			// topPanel
+			// 
+			this.topPanel.Controls.Add(this.spriteWidthBox);
+			this.topPanel.Controls.Add(this.spriteHeightBox);
+			this.topPanel.Controls.Add(this.label1);
+			this.topPanel.Controls.Add(this.InsertButton);
+			this.topPanel.Controls.Add(this.ActiveHex);
+			this.topPanel.Controls.Add(this.label2);
+			this.topPanel.Controls.Add(this.pixelSizeBox);
+			this.topPanel.Controls.Add(this.DrawGrid);
+			this.topPanel.Controls.Add(this.MaintainDim);
+			this.topPanel.Controls.Add(this.ResizeFromHexButton);
+			this.topPanel.Controls.Add(this.colorCheckBox);
+			this.topPanel.Controls.Add(this.paletteBox);
+			this.topPanel.Controls.Add(this.hasGBox);
+			this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.topPanel.Location = new System.Drawing.Point(0, 51);
+			this.topPanel.Name = "topPanel";
+			this.topPanel.Size = new System.Drawing.Size(706, 94);
+			this.topPanel.TabIndex = 23;
+			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 23);
+			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.editToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(706, 24);
+			this.menuStrip1.TabIndex = 24;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "File";
+			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.openToolStripMenuItem.Text = "Open";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
+			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Text = "Edit";
+			// 
+			// undoToolStripMenuItem
+			// 
+			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.undoToolStripMenuItem.Text = "Undo";
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_Click);
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.redoToolStripMenuItem.Text = "Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
+			// 
 			// HexSprite
 			// 
 			this.AcceptButton = this.InsertButton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CloseButton;
-			this.ClientSize = new System.Drawing.Size(490, 393);
-			this.Controls.Add(this.splitContainer1);
+			this.ClientSize = new System.Drawing.Size(706, 590);
+			this.Controls.Add(this.bottomPanel);
+			this.Controls.Add(this.topPanel);
+			this.Controls.Add(this.mainToolStrip);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "HexSprite";
 			this.Text = "Hex Sprite Editor";
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel1.PerformLayout();
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-			this.splitContainer1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.PixelSize)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.SpriteHeight)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.SpriteWidth)).EndInit();
-			this.splitContainer2.Panel1.ResumeLayout(false);
-			this.splitContainer2.Panel1.PerformLayout();
-			this.splitContainer2.Panel2.ResumeLayout(false);
-			this.splitContainer2.Panel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-			this.splitContainer2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.spriteWidthBox)).EndInit();
+			this.bottomPanel.Panel1.ResumeLayout(false);
+			this.bottomPanel.Panel1.PerformLayout();
+			this.bottomPanel.Panel2.ResumeLayout(false);
+			this.bottomPanel.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.bottomPanel)).EndInit();
+			this.bottomPanel.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.spriteBox)).EndInit();
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
 			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
-			this.statusStrip1.ResumeLayout(false);
-			this.statusStrip1.PerformLayout();
+			this.mainToolStrip.ResumeLayout(false);
+			this.mainToolStrip.PerformLayout();
+			this.topPanel.ResumeLayout(false);
+			this.topPanel.PerformLayout();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -469,16 +522,14 @@
 
 		#endregion
 
-		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.Button InsertButton;
-		private System.Windows.Forms.Button CloseButton;
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.NumericUpDown SpriteHeight;
-		private System.Windows.Forms.NumericUpDown SpriteWidth;
+		private System.Windows.Forms.NumericUpDown spriteHeightBox;
+		private System.Windows.Forms.NumericUpDown spriteWidthBox;
 		private System.Windows.Forms.PictureBox spriteBox;
-		private System.Windows.Forms.SplitContainer splitContainer2;
+		private System.Windows.Forms.SplitContainer bottomPanel;
 		private System.Windows.Forms.CheckBox ActiveHex;
-		private System.Windows.Forms.NumericUpDown PixelSize;
+		private System.Windows.Forms.NumericUpDown pixelSizeBox;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox DrawGrid;
 		private System.Windows.Forms.TextBox hexBox;
@@ -492,10 +543,19 @@
 		private System.Windows.Forms.TabControl tabControl1;
 		private System.Windows.Forms.TabPage tabPage1;
 		private System.Windows.Forms.TabPage tabPage2;
+		private System.Windows.Forms.CheckBox hasGBox;
+		private System.Windows.Forms.ToolStrip mainToolStrip;
+		private System.Windows.Forms.Panel topPanel;
+		private System.Windows.Forms.ToolStripButton toolStripButton1;
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem openImageToolStripMenuItem;
-		private System.Windows.Forms.CheckBox hasGBox;
+		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
+		private System.Windows.Forms.ToolStripButton undoButton;
+		private System.Windows.Forms.ToolStripButton redoButton;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 
 	}
 }

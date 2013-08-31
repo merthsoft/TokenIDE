@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("TokenIDE")]
 [assembly: AssemblyDescription(
-@"TokenIDE is an Interactive Development Environment for TI-BASIC. Many thanks go out to Christopher Mitchell, Weregoose, Ben Ryves, tifreak, Philip Hanson, Sonlen, Muffinator, Kévin Ouellet, Runer112, and everyone else at Cemetech and Omnimaga.
+@"TokenIDE is an Interactive Development Environment for TI-BASIC. Many thanks go out to Christopher Mitchell, Weregoose, Ben Ryves, tifreak, Philip Hanson, Sonlen, Muffinator, Kévin Ouellet, Runer112, bsparks, and everyone else at Cemetech and Omnimaga.
 The most recent version can be found at http://merthsoft.com/Tokens.zip.
 Please visit http://www.cemetech.net and http://www.omnimaga.org for more information, and for more calculator products from many talented programmers.
 Contact me at: shaunm.mcfall@gmail.com
