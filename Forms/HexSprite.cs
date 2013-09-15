@@ -103,6 +103,8 @@ namespace Merthsoft.TokenIDE {
 					currentButton = toolButton;
 				}
 			}
+
+			clearHistory();
 		}
 
 		void toolButton_Click(object sender, EventArgs e) {
@@ -129,6 +131,8 @@ namespace Merthsoft.TokenIDE {
 				spriteHeightBox.Value = 32;
 				pixelSizeBox.Value = 8;
 			}
+
+			clearHistory();
 		}
 
 		public HexSprite(string hex, bool color) : this() {
@@ -148,6 +152,8 @@ namespace Merthsoft.TokenIDE {
 			hexBox.Text = hex;
 			pixelSize = 10;
 			MaintainDim.Checked = true;
+
+			clearHistory();
 		}
 
 		private void Width_ValueChanged(object sender, EventArgs e) {
@@ -204,6 +210,9 @@ namespace Merthsoft.TokenIDE {
 		private void resizeSprite(int newW, int newH) {
 			if (sprite == null || !performResizeFlag)
 				return;
+			if (sprite != null) {
+				pushHistory();
+			}
 			//int[,] newSprite = new int[newW, newH];
 			Sprite newSprite = new Sprite(newW, newH);
 			for (int i = 0; i < Math.Min(spriteWidth, newW); i++) {
@@ -213,18 +222,21 @@ namespace Merthsoft.TokenIDE {
 			}
 			spriteWidth = newW;
 			spriteHeight = newH;
-			if (ActiveHex.Checked) {
-				if (IsColor) {
-					//sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
-					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
-				} else {
-					//sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
-					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
-				}
-			} else {
+			//if (ActiveHex.Checked) {
+			//    if (IsColor) {
+			//        //sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
+			//        sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
+			//    } else {
+			//        //sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
+			//        sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
+			//    }
+			//} else {
 				sprite = newSprite;
-			}
+			//}
 			spriteBox.Invalidate();
+			if (ActiveHex.Checked) {
+				updateHex();
+			}
 		}
 
 		private void spriteBox_Paint(object sender, PaintEventArgs e) {
@@ -284,6 +296,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void updateHex() {
+			return;
 			binBox.Text = "";
 			StringBuilder bin = new StringBuilder();
 			for (int j = 0; j < spriteHeight; j++) {
@@ -491,7 +504,13 @@ namespace Merthsoft.TokenIDE {
 			handleMouse(e);
 		}
 
+		private void clearHistory() {
+			history.Clear();
+			historyPosition = 0;
+		}
+
 		private void pushHistory() {
+			if (sprite == null) { return; }
 			if (historyPosition != history.Count) {
 				history.RemoveRange(historyPosition, history.Count - historyPosition);
 			}
@@ -607,6 +626,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void colorCheckBox_CheckedChanged(object sender, EventArgs e) {
+			pushHistory();
+
 			paletteBox.Visible = colorCheckBox.Checked;
 
 			// Make all numbers 1 if it's black and white
@@ -677,7 +698,8 @@ namespace Merthsoft.TokenIDE {
 				history.Add(sprite.Copy());
 			}
 
-			sprite = history[--historyPosition];
+			copySpriteFromHistory(--historyPosition);
+
 			if (historyPosition == 0) {
 				toggleUndo(false);
 			}
@@ -689,8 +711,29 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		private void copySpriteFromHistory(int position) {
+			sprite = history[position];
+			// If we're not in color, reduce it to ones and zeros
+			if (!IsColor) {
+				for (int i = 0; i < sprite.Width; i++) {
+					for (int j = 0; j < sprite.Height; j++) {
+						if (sprite[i, j] > 1) {
+							sprite[i, j] = 1;
+						}
+					}
+				}
+			}
+
+			performResizeFlag = false;
+			spriteHeight = sprite.Height;
+			spriteHeightBox.Value = sprite.Height;
+			spriteWidth = sprite.Width;
+			spriteWidthBox.Value = sprite.Width;
+			performResizeFlag = true;
+		}
+
 		private void redo() {
-			sprite = history[++historyPosition];
+			copySpriteFromHistory(++historyPosition);
 			if (historyPosition + 1 == history.Count) {
 				toggleRedo(false);
 			}

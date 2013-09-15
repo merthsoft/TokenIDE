@@ -17,7 +17,7 @@ namespace Merthsoft.TokenIDE {
 			set { sprite[i, j] = value; }
 		}
 
-		public Sprite(string hexData, int height, int width, int bitsPerPixel) {
+		public Sprite(string hexData, int width, int height, int bitsPerPixel) {
 			Height = height;
 			Width = width;
 			sprite = HexHelper.HexToArr(hexData, Height, Width, bitsPerPixel);
@@ -26,20 +26,20 @@ namespace Merthsoft.TokenIDE {
 		public Sprite(int[,] sprite) {
 			Height = sprite.GetLength(0);
 			Width = sprite.GetLength(1);
-			this.sprite = new int[Height, Width];
+			this.sprite = new int[Width, Height];
 			Array.Copy(sprite, this.sprite, this.sprite.Length);
 		}
 
-		public Sprite(int height, int width) {
+		public Sprite(int width, int height) {
 			Height = height;
 			Width = width;
-			sprite = new int[Height, Width];
+			sprite = new int[Width, Height];
 		}
 
 		public Sprite(Sprite oldSprite) {
 			Height = oldSprite.Height;
 			Width = oldSprite.Width;
-			this.sprite = new int[Height, Width];
+			this.sprite = new int[Width, Height];
 			Array.Copy(oldSprite.sprite, this.sprite, this.sprite.Length);
 		}
 
@@ -76,7 +76,7 @@ namespace Merthsoft.TokenIDE {
 		/// <param name="plotWidth">The pen width.</param>
 		public void Plot(int x, int y, int color, int plotWidth = 1) {
 			if (plotWidth == 1) {
-				if (x >= 0 && y >= 0 && x < sprite.GetLength(0) && y < sprite.GetLength(1)) {
+				if (x >= 0 && y >= 0 && x < Width && y < Height) {
 					sprite[x, y] = color;
 				}
 			} else {
