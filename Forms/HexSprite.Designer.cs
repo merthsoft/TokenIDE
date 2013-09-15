@@ -1,4 +1,5 @@
-﻿namespace Merthsoft.TokenIDE {
+﻿using System.Windows.Forms;
+namespace Merthsoft.TokenIDE {
 	partial class HexSprite {
 		/// <summary>
 		/// Required designer variable.
@@ -53,6 +54,8 @@
 			this.redoButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.topPanel = new System.Windows.Forms.Panel();
+			this.label3 = new System.Windows.Forms.Label();
+			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -60,8 +63,6 @@
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.label3 = new System.Windows.Forms.Label();
-			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -74,10 +75,11 @@
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.mainToolStrip.SuspendLayout();
 			this.topPanel.SuspendLayout();
-			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
+			this.menuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// paletteBox
@@ -338,6 +340,8 @@
 			// 
 			// statusStrip1
 			// 
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 423);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(233, 22);
@@ -425,66 +429,6 @@
 			this.topPanel.Size = new System.Drawing.Size(706, 94);
 			this.topPanel.TabIndex = 23;
 			// 
-			// toolStripButton1
-			// 
-			this.toolStripButton1.Name = "toolStripButton1";
-			this.toolStripButton1.Size = new System.Drawing.Size(23, 23);
-			// 
-			// menuStrip1
-			// 
-			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
-            this.editToolStripMenuItem});
-			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(706, 24);
-			this.menuStrip1.TabIndex = 24;
-			this.menuStrip1.Text = "menuStrip1";
-			// 
-			// fileToolStripMenuItem
-			// 
-			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.openToolStripMenuItem});
-			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-			this.fileToolStripMenuItem.Text = "File";
-			// 
-			// openToolStripMenuItem
-			// 
-			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
-			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.openToolStripMenuItem.Text = "Open";
-			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
-			// 
-			// editToolStripMenuItem
-			// 
-			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.undoToolStripMenuItem,
-            this.redoToolStripMenuItem});
-			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
-			this.editToolStripMenuItem.Text = "Edit";
-			// 
-			// undoToolStripMenuItem
-			// 
-			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
-			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.undoToolStripMenuItem.Text = "Undo";
-			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_Click);
-			// 
-			// redoToolStripMenuItem
-			// 
-			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
-			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.redoToolStripMenuItem.Text = "Redo";
-			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
-			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
@@ -516,6 +460,66 @@
             0,
             0});
 			// 
+			// toolStripButton1
+			// 
+			this.toolStripButton1.Name = "toolStripButton1";
+			this.toolStripButton1.Size = new System.Drawing.Size(23, 23);
+			// 
+			// menuStrip1
+			// 
+			this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.editToolStripMenuItem});
+			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+			this.menuStrip1.Name = "menuStrip1";
+			this.menuStrip1.Size = new System.Drawing.Size(706, 24);
+			this.menuStrip1.TabIndex = 24;
+			this.menuStrip1.Text = "menuStrip1";
+			// 
+			// fileToolStripMenuItem
+			// 
+			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openToolStripMenuItem});
+			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Text = "File";
+			// 
+			// openToolStripMenuItem
+			// 
+			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
+			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.openToolStripMenuItem.Text = "Open";
+			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
+			// 
+			// editToolStripMenuItem
+			// 
+			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.undoToolStripMenuItem,
+            this.redoToolStripMenuItem});
+			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Text = "Edit";
+			// 
+			// undoToolStripMenuItem
+			// 
+			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.undoToolStripMenuItem.Text = "Undo";
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_Click);
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.redoToolStripMenuItem.Text = "Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
+			// 
 			// HexSprite
 			// 
 			this.AcceptButton = this.InsertButton;
@@ -545,13 +549,15 @@
 			this.tabPage1.PerformLayout();
 			this.tabPage2.ResumeLayout(false);
 			this.tabPage2.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.mainToolStrip.ResumeLayout(false);
 			this.mainToolStrip.PerformLayout();
 			this.topPanel.ResumeLayout(false);
 			this.topPanel.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -595,6 +601,8 @@
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.NumericUpDown penWidthBox;
+		private ToolStripStatusLabel toolStripStatusLabel2;
+		private ToolStripStatusLabel toolStripStatusLabel3;
 
 	}
 }

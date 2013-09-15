@@ -15,6 +15,7 @@ using Merthsoft.DynamicConfig;
 using System.Drawing;
 using System.Diagnostics;
 using FolderSelect;
+using Merthsoft.Extensions;
 
 namespace Merthsoft.TokenIDE {
 	public partial class Tokens : Form {

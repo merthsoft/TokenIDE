@@ -160,6 +160,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sprite.cs" />
     <Compile Include="TokenStyle.cs" />
     <Compile Include="XmlValidator.cs" />
     <EmbeddedResource Include="Forms\AboutBox1.resx">

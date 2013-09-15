@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using Merthsoft.Extensions;
 
 namespace Merthsoft.CalcData {
 	public abstract class Var8x : IData8x {

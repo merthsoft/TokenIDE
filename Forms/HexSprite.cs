@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using Merthsoft.Tokens;
 using Merthsoft.Extensions;
 using Merthsoft.TokenIDE.Properties;
+using System.Threading.Tasks;
 
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
@@ -27,11 +28,14 @@ namespace Merthsoft.TokenIDE {
 			set { penWidthBox.Value = value; }
 		}
 
-		List<int[,]> history;
+		//List<int[,]> history;
+		List<Sprite> history;
 		int historyPosition;
 
-		int[,] sprite;
-		int[,] previewSprite = null;
+		//int[,] sprite;
+		//int[,] previewSprite = null;
+		Sprite sprite;
+		Sprite previewSprite = null;
 
 		int spriteWidth, spriteHeight;
 		int pixelSize;
@@ -62,7 +66,8 @@ namespace Merthsoft.TokenIDE {
 		public HexSprite() {
 			InitializeComponent();
 
-			history = new List<int[,]>();
+			//history = new List<int[,]>();
+			history = new List<Sprite>();
 			historyPosition = 0;
 
 			IntPtr iconPtr = TokenIDE.Properties.Resources.icon_hexsprite.GetHicon();
@@ -114,7 +119,8 @@ namespace Merthsoft.TokenIDE {
 
 			spriteWidth = 8;
 			spriteHeight = 8;
-			sprite = new int[spriteWidth, spriteHeight];
+			//sprite = new int[spriteWidth, spriteHeight];
+			sprite = new Sprite(spriteWidth, spriteHeight);
 			pixelSize = 10;
 			updateHex();
 
@@ -198,7 +204,8 @@ namespace Merthsoft.TokenIDE {
 		private void resizeSprite(int newW, int newH) {
 			if (sprite == null || !performResizeFlag)
 				return;
-			int[,] newSprite = new int[newW, newH];
+			//int[,] newSprite = new int[newW, newH];
+			Sprite newSprite = new Sprite(newW, newH);
 			for (int i = 0; i < Math.Min(spriteWidth, newW); i++) {
 				for (int j = 0; j < Math.Min(spriteHeight, newH); j++) {
 					newSprite[i, j] = sprite[i, j];
@@ -208,9 +215,11 @@ namespace Merthsoft.TokenIDE {
 			spriteHeight = newH;
 			if (ActiveHex.Checked) {
 				if (IsColor) {
-					sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
+					//sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
+					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
 				} else {
-					sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
+					//sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
+					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
 				}
 			} else {
 				sprite = newSprite;
@@ -231,7 +240,8 @@ namespace Merthsoft.TokenIDE {
 			//g.FillRectangle(Brushes.PaleVioletRed, new Rectangle(mouseX, mouseY, pixelSize, pixelSize));
 		}
 
-		private void drawSprite(Graphics g, int[,] spriteToUse) {
+		//private void drawSprite(Graphics g, int[,] spriteToUse) {
+		private void drawSprite(Graphics g, Sprite spriteToUse) {
 #if !DEBUG
 			try {
 #endif
@@ -445,7 +455,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void createPreviewSprite() {
-			previewSprite = new int[spriteWidth, spriteHeight];
+			//previewSprite = new int[spriteWidth, spriteHeight];
+			previewSprite = new Sprite(spriteWidth, spriteHeight);
 			for (int j = 0; j < spriteHeight; j++) {
 				for (int i = 0; i < spriteWidth; i++) {
 					previewSprite[i, j] = -1;
@@ -464,55 +475,15 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void spriteBox_MouseMove(object sender, MouseEventArgs e) {
-			//mX = (int)(e.X / pixelSize) * pixelSize;
-			//mY = (int)(e.Y / pixelSize) * pixelSize;
-			//if (mouseDown) {
-			//    //if (pixelMode == -1) {
-			//    //    try { pixelMode = sprite[mX / pixelSize, mY / pixelSize] == 0 ? 1 : 0; } catch { }
-			//    //} else {
-			//    //    try { sprite[mX / pixelSize, mY / pixelSize] = pixelMode; } catch { }
-			//    //}
-			//    try { sprite[mX / pixelSize, mY / pixelSize] = button == System.Windows.Forms.MouseButtons.Left ? leftPixel : rightPixel; } catch { }
-			//}
-			//spriteBox.Invalidate();
-
-			//if (mouseDown && ActiveHex.Checked) {
-			//    updateHex();
-			//}
-
 			if (e.Button != MouseButtons.None)
 				handleMouse(e);
-			//mouseCoordLabel.Text = string.Format("Mouse: ({0}, {1})", e.X / zoom, e.Y / zoom);
 		}
 
 		private void spriteBox_MouseLeave(object sender, EventArgs e) {
-			//mX = -100;
-			//mY = -100;
 			spriteBox.Invalidate();
 		}
 
-		//private void spriteBox_Click(object sender, EventArgs e) {
-		//    if (mouseDown) {
-		//        //if (pixelMode == -1) {
-		//        //    try { pixelMode = sprite[mX / pixelSize, mY / pixelSize] == 0 ? 1 : 0; } catch { }
-		//        //}
-		//        //if (pixelMode != -1) {
-		//        //    try { sprite[mX / pixelSize, mY / pixelSize] = pixelMode; } catch { }
-		//        //}
-		//        try { sprite[mX / pixelSize, mY / pixelSize] = button == System.Windows.Forms.MouseButtons.Left ? leftPixel : rightPixel; } catch { }
-		//    }
-
-		//    if (mouseDown && ActiveHex.Checked) {
-		//        updateHex();
-		//    }
-		//}
-
 		private void spriteBox_MouseDown(object sender, MouseEventArgs e) {
-			//if (e.Button == System.Windows.Forms.MouseButtons.Left || e.Button == System.Windows.Forms.MouseButtons.Right) {
-			//    mouseDown = true;
-			//    button = e.Button;
-			//    //try { pixelMode = sprite[mX / pixelSize, mY / pixelSize] == 0 ? 1 : 0; } catch { }
-			//}
 			pushHistory();
 
 			mouseX = e.X / pixelSize;
@@ -524,19 +495,18 @@ namespace Merthsoft.TokenIDE {
 			if (historyPosition != history.Count) {
 				history.RemoveRange(historyPosition, history.Count - historyPosition);
 			}
-			history.Add(copySpriteArray());
+			history.Add(sprite.Copy());
 			historyPosition = history.Count;
 			toggleRedo(false);
 			toggleUndo(true);
 		}
 
-		private int[,] copySpriteArray() {
-			int[,] newSprite = new int[spriteWidth, spriteHeight];
-			//Buffer.BlockCopy(sprite, 0, newSprite, 0, 
-			Array.Copy(sprite, newSprite, sprite.Length);
+		//private int[,] copySpriteArray() {
+		//    int[,] newSprite = new int[spriteWidth, spriteHeight];
+		//    Array.Copy(sprite, newSprite, sprite.Length);
 
-			return newSprite;
-		}
+		//    return newSprite;
+		//}
 
 		private void spriteBox_MouseUp(object sender, MouseEventArgs e) {
 			//if (e.Button == System.Windows.Forms.MouseButtons.Left || e.Button == System.Windows.Forms.MouseButtons.Right) {
@@ -568,9 +538,11 @@ namespace Merthsoft.TokenIDE {
 			try {
 #endif
 				if (IsColor) {
-					sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
+					//sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
+					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
 				} else {
-					sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
+					//sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
+					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
 				}
 #if !DEBUG
 			} catch (Exception ex) {
@@ -674,7 +646,7 @@ namespace Merthsoft.TokenIDE {
 			using (Bitmap image = new Bitmap(fileName)) {
 				spriteWidthBox.Value = image.Width;
 				spriteHeightBox.Value = image.Height;
-				sprite = image.PalettizeImage(Colors, 0);
+				sprite = new Sprite(image.PalettizeImage(Colors, 0));
 			}
 
 			updateHex();
@@ -701,7 +673,8 @@ namespace Merthsoft.TokenIDE {
 
 		private void undo() {
 			if (historyPosition == history.Count) {
-				history.Add(copySpriteArray());
+				//history.Add(copySpriteArray());
+				history.Add(sprite.Copy());
 			}
 
 			sprite = history[--historyPosition];
