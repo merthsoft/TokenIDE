@@ -11,7 +11,8 @@
     <RootNamespace>Merthsoft.TokenIDE</RootNamespace>
     <AssemblyName>TokenIDE</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -47,7 +48,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>36D5C5DEB49B520EECCAFD2B251C479DB2C43AA9</ManifestCertificateThumbprint>
@@ -79,6 +80,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileFolderDialog.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\AboutBox1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,7 +101,7 @@
     <Compile Include="Forms\DCSGUIDesigner.Designer.cs">
       <DependentUpon>DCSGUIDesigner.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\FolderSelectDialog.cs" />
+    <Compile Include="Forms\FolderSelectDialog.cs" />
     <Compile Include="Forms\GroupStats.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,10 +273,10 @@
     <None Include="Assets\Icons\icon_redo.png" />
     <None Include="Assets\Icons\icon_undo.png" />
     <Content Include="Assets\logo-curved.png" />
-    <Content Include="Tokens\TI-73.xml">
+    <Content Include="Tokens\DCS8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Tokens\TI-84+CSE.xml">
+    <Content Include="Tokens\TI-73.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Tokens\TI-82.xml">
@@ -289,6 +293,9 @@
     </Content>
     <Content Include="Tokens.ico" />
     <None Include="Assets\Tokens.png" />
+    <Content Include="Tokens\TI-84+CSE.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Tokens\Tokens.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -348,7 +355,7 @@
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Release (
   rename TokenIDE.exe Tokens.exe
-  "C:\ILRepack.exe" /targetplatform:v4 /out:TokenIDE.exe Tokens.exe FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
+  "C:\ILRepack.exe" /attr:Tokens.exe /parallel /targetplatform:v4 /out:TokenIDE.exe Tokens.exe FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
   del *.pdb
   del *.manifest
   del *.application

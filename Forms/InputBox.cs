@@ -16,7 +16,7 @@ namespace Merthsoft.TokenIDE {
 			this.textBox1.Text = defaultText;
 		}
 
-		public static string ShowInputBox(string title, string defaultText = "") {
+		public static string Show(string title, string defaultText = "") {
 			InputBox i = new InputBox(title, defaultText);
 			i.ShowDialog();
 			return i.outString;

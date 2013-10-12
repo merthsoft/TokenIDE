@@ -80,6 +80,7 @@ Schema file for TokenIDE
 				<xs:element ref="Styles" minOccurs="0" maxOccurs="16" />
 				<xs:element ref="Token" minOccurs="1" />
 			</xs:sequence>
+			<xs:attribute name="parentXml" type="xs:string" default="" use="optional" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>

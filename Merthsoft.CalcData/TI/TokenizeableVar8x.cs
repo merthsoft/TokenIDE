@@ -40,5 +40,10 @@ namespace Merthsoft.CalcData {
 			this.data = (byte[])(data[1]);
 			return (ushort)(2 + data.Length);
 		}
+
+		public ushort SetRawData(byte[] data) {
+			this.data = data;
+			return (ushort)data.Length;
+		}
 	}
 }

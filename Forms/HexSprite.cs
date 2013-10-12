@@ -10,10 +10,15 @@ using Merthsoft.Tokens;
 using Merthsoft.Extensions;
 using Merthsoft.TokenIDE.Properties;
 using System.Threading.Tasks;
+using Merthsoft.CalcData;
+using System.IO;
 
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
-		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max, }
+		private const string XLIBPIC_HEADER = "xLIBPIC";
+		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
+
+		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
 
 		Tool currentTool = Tool.Pencil;
 		ToolStripButton currentButton = null;
@@ -28,45 +33,71 @@ namespace Merthsoft.TokenIDE {
 			set { penWidthBox.Value = value; }
 		}
 
-		//List<int[,]> history;
+		public Palette SelectedPalette {
+			get { return (Palette)paletteChoice.SelectedIndex; }
+			set { paletteChoice.SelectedIndex = (int)value; }
+		}
+
 		List<Sprite> history;
 		int historyPosition;
 
-		//int[,] sprite;
-		//int[,] previewSprite = null;
 		Sprite sprite;
 		Sprite previewSprite = null;
 
-		int spriteWidth, spriteHeight;
-		int pixelSize;
+		int spriteWidth = 8;
+		int spriteHeight = 8;
+
+		public int SpriteWidth {
+			get { return spriteWidth; }
+			set {
+				spriteWidthBox.Value = value;
+			}
+		}
+
+		public int SpriteHeight {
+			get { return spriteHeight; }
+			set {
+				spriteHeightBox.Value = value;
+			}
+		}
+
+		public string Hex {
+			get {
+				return getHex();
+			}
+			set {
+				createSpriteFromHex(value);
+			}
+		}
+
+		int pixelSize = 5;
 		bool performResizeFlag = true;
-		public string outString = "";
+		public string OutString = "";
 
 		int leftPixel = 1;
 		int rightPixel = 0;
 
-		List<Color> Colors = new List<Color>() { 
-			Color.Cyan, Color.Blue, Color.Red, Color.Black, Color.Magenta, Color.Green, Color.Orange, Color.Brown, 
-			Color.Navy, Color.LightBlue, Color.Yellow, Color.White, Color.LightGray, Color.DarkGray, Color.Gray, Color.FromArgb(0x60, 0x60, 0x60),
+		List<Color> CelticPalette = new List<Color>() { 
+			Color.Cyan, 
+			MerthsoftExtensions.ColorFrom565(0,0,31), MerthsoftExtensions.ColorFrom565(31,0,0), MerthsoftExtensions.ColorFrom565(0,0,0), 
+			MerthsoftExtensions.ColorFrom565(31,0,31), MerthsoftExtensions.ColorFrom565(0,39,0), MerthsoftExtensions.ColorFrom565(31,35,4), 
+			MerthsoftExtensions.ColorFrom565(22,8,0), MerthsoftExtensions.ColorFrom565(0,0,15), MerthsoftExtensions.ColorFrom565(0,36,31), 
+			MerthsoftExtensions.ColorFrom565(31,63,0), MerthsoftExtensions.ColorFrom565(31,63,31), MerthsoftExtensions.ColorFrom565(28,56,28),
+			MerthsoftExtensions.ColorFrom565(24,48,24), MerthsoftExtensions.ColorFrom565(17,34,17), MerthsoftExtensions.ColorFrom565(10,21,10),
 		};
 
 		List<Brush> BrushList = new List<Brush>();
 		List<Pen> PenList = new List<Pen>();
 
-		public bool IsColor {
-			get { return colorCheckBox.Checked; }
-			set { colorCheckBox.Checked = value; }
-		}
-
-		public bool HasGCharacter {
-			get { return hasGBox.Checked; }
-			set { hasGBox.Checked = value; }
-		}
+		string fileName = null;
 
 		public HexSprite() {
 			InitializeComponent();
 
-			//history = new List<int[,]>();
+			Icon = Icon.FromHandle(Properties.Resources.icon_hexsprite.GetHicon());
+
+			sprite = new Sprite(8, 8);
+
 			history = new List<Sprite>();
 			historyPosition = 0;
 
@@ -75,11 +106,15 @@ namespace Merthsoft.TokenIDE {
 				this.Icon = icon;
 			}
 
-			Colors.ForEach(c => {
+			CelticPalette.ForEach(c => {
 				SolidBrush brush = new SolidBrush(c);
 				BrushList.Add(brush);
 				PenList.Add(new Pen(brush));
 			});
+
+			for (int i = 0; i < (int)Palette._max; i++) {
+				paletteChoice.Items.Add((Palette)i);
+			}
 
 			for (int i = 0; i < (int)Tool._max; i++) {
 				ToolStripButton toolButton = new ToolStripButton();
@@ -105,6 +140,7 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			clearHistory();
+			spriteBox.Invalidate();
 		}
 
 		void toolButton_Click(object sender, EventArgs e) {
@@ -115,54 +151,35 @@ namespace Merthsoft.TokenIDE {
 			currentTool = (Tool)button.Tag;
 		}
 
-		public HexSprite(bool color)
-			: this() {
-			IsColor = color;
-
-			spriteWidth = 8;
-			spriteHeight = 8;
-			//sprite = new int[spriteWidth, spriteHeight];
-			sprite = new Sprite(spriteWidth, spriteHeight);
-			pixelSize = 10;
-			updateHex();
-
-			if (IsColor) {
-				spriteWidthBox.Value = 32;
-				spriteHeightBox.Value = 32;
-				pixelSizeBox.Value = 8;
-			}
-
-			clearHistory();
-		}
-
-		public HexSprite(string hex, bool color) : this() {
-			IsColor = color;
-
-			HasGCharacter = hex.Contains('G');
-
+		private void createSpriteFromHex(string hex) {
+#if !DEBUG
 			try {
-				performResizeFlag = false;
-				resizeFromHex(hex, out spriteWidth, out spriteHeight);
-				spriteWidthBox.Value = spriteWidth;
-				spriteHeightBox.Value = spriteHeight;
-				performResizeFlag = true;
-			} catch {
-				spriteWidth = spriteHeight = 8;
+#endif
+			switch (SelectedPalette) {
+				case Palette.BlackAndWhite:
+					sprite = new Sprite(hex, SpriteWidth, SpriteHeight, 1);
+					break;
+				case Palette.CelticIICSE:
+					sprite = new Sprite(hex, SpriteWidth, SpriteHeight, CelticPalette.Count / 4);
+					break;
+				default:
+					throw new Exception("Can only create sprite from hex in Black and White or Celtic palette modes.");
 			}
-			hexBox.Text = hex;
-			pixelSize = 10;
-			MaintainDim.Checked = true;
-
-			clearHistory();
+#if !DEBUG
+			} catch (Exception ex) {
+				MessageBox.Show(ex.ToString());
+			}
+#endif
+			spriteBox.Invalidate();
 		}
 
 		private void Width_ValueChanged(object sender, EventArgs e) {
 			if (!performResizeFlag)
 				return;
 			if (MaintainDim.Checked) {
-				int delta = spriteWidth - (int)spriteWidthBox.Value;
+				int delta = SpriteWidth - (int)spriteWidthBox.Value;
 				performResizeFlag = false;
-				spriteHeightBox.Value = spriteHeight + delta;
+				spriteHeightBox.Value = SpriteHeight + delta;
 				performResizeFlag = true;
 			}
 			resizeSprite((int)spriteWidthBox.Value, (int)spriteHeightBox.Value);
@@ -172,39 +189,13 @@ namespace Merthsoft.TokenIDE {
 			if (!performResizeFlag)
 				return;
 			if (MaintainDim.Checked) {
-				int delta = spriteHeight - (int)spriteHeightBox.Value;
+				int delta = SpriteHeight - (int)spriteHeightBox.Value;
 				performResizeFlag = false;
-				spriteWidthBox.Value = spriteWidth + delta;
+				spriteWidthBox.Value = SpriteWidth + delta;
 				performResizeFlag = true;
 			}
-			
-			resizeSprite((int)spriteWidthBox.Value, (int)spriteHeightBox.Value);
-		}
 
-		private void resizeFromHex(string hex, out int newW, out int newH) {
-			if (IsColor) {
-				newW = newH = (int)Math.Ceiling(Math.Sqrt(hex.Length));
-				return;
-			}
-			newW = spriteWidth;
-			newH = spriteHeight;
-			// Nearest square
-			newW = newH = (int)Math.Ceiling(Math.Sqrt(hex.Length * 4));
-			// Byte align
-			int wAlign = (int)Math.Round(spriteWidth / 8.0) * 8;
-			if (wAlign != 0) {
-				spriteHeight += newW - wAlign;
-				newW = wAlign;
-			} else {
-				newW = 8;
-			}
-			// Adjust H to fit
-			while (newW * newH / 4 > hex.Length) {
-				newH--;
-			} 
-			while (newW * newH / 4 < hex.Length) {
-				newH++;
-			}
+			resizeSprite((int)spriteWidthBox.Value, (int)spriteHeightBox.Value);
 		}
 
 		private void resizeSprite(int newW, int newH) {
@@ -213,71 +204,66 @@ namespace Merthsoft.TokenIDE {
 			if (sprite != null) {
 				pushHistory();
 			}
-			//int[,] newSprite = new int[newW, newH];
+
 			Sprite newSprite = new Sprite(newW, newH);
-			for (int i = 0; i < Math.Min(spriteWidth, newW); i++) {
-				for (int j = 0; j < Math.Min(spriteHeight, newH); j++) {
+			for (int i = 0; i < Math.Min(SpriteWidth, newW); i++) {
+				for (int j = 0; j < Math.Min(SpriteHeight, newH); j++) {
 					newSprite[i, j] = sprite[i, j];
 				}
 			}
+
 			spriteWidth = newW;
 			spriteHeight = newH;
-			//if (ActiveHex.Checked) {
-			//    if (IsColor) {
-			//        //sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
-			//        sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
-			//    } else {
-			//        //sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
-			//        sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
-			//    }
-			//} else {
-				sprite = newSprite;
-			//}
+
+			sprite = newSprite;
 			spriteBox.Invalidate();
-			if (ActiveHex.Checked) {
-				updateHex();
-			}
 		}
 
 		private void spriteBox_Paint(object sender, PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-			spriteBox.Width = spriteWidth * pixelSize;
-			spriteBox.Height = spriteHeight * pixelSize;
+			spriteBox.Width = SpriteWidth * pixelSize;
+			spriteBox.Height = SpriteHeight * pixelSize;
 
-			//int[,] spriteToUse = previewSprite ?? ;
-			drawSprite(g, sprite);
-			if (previewSprite != null) { drawSprite(g, previewSprite); }
-
-			//g.FillRectangle(Brushes.PaleVioletRed, new Rectangle(mouseX, mouseY, pixelSize, pixelSize));
+			drawSprite(g, sprite, pixelSize, DrawGrid.Checked);
+			if (previewSprite != null) { drawSprite(g, previewSprite, pixelSize, DrawGrid.Checked); }
 		}
 
-		//private void drawSprite(Graphics g, int[,] spriteToUse) {
-		private void drawSprite(Graphics g, Sprite spriteToUse) {
+		private void drawSprite(Graphics g, Sprite spriteToUse, int pixelSize, bool drawGrid) {
 #if !DEBUG
 			try {
 #endif
-			for (int j = 0; j < spriteHeight; j++) {
-				for (int i = 0; i < spriteWidth; i++) {
-					//if (sprite[i, j] == 1) {
+			for (int j = 0; j < SpriteHeight; j++) {
+				for (int i = 0; i < SpriteWidth; i++) {
 					Rectangle box = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
 #if !DEBUG
 						try {
 #endif
 					int paletteIndex = spriteToUse[i, j];
 					if (paletteIndex == -1) { continue; }
-					if (IsColor) {
-						g.FillRectangle(BrushList[paletteIndex], box);
-					} else {
-						g.FillRectangle(paletteIndex == 0 ? Brushes.White : Brushes.Black, box);
+
+					switch (SelectedPalette) {
+						case Palette.BlackAndWhite:
+							g.FillRectangle(paletteIndex == 0 ? Brushes.White : Brushes.Black, box);
+							break;
+						case Palette.CelticIICSE:
+							g.FillRectangle(BrushList[paletteIndex], box);
+							break;
+						case Palette.xLIBC:
+							using (SolidBrush brush = new SolidBrush(MerthsoftExtensions.ColorFrom8BitHL(paletteIndex))) {
+								g.FillRectangle(brush, box);
+							}
+							break;
+						default:
+							break;
 					}
 #if !DEBUG
 						} catch (Exception ex) {
 							MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 						}
 #endif
-					//}
-					if (DrawGrid.Checked) {
+
+					if (drawGrid) {
 						Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
 						try {
 							g.DrawRectangle(Pens.DarkGray, grid);
@@ -293,59 +279,6 @@ namespace Merthsoft.TokenIDE {
 				MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 			}
 #endif
-		}
-
-		private void updateHex() {
-			return;
-			binBox.Text = "";
-			StringBuilder bin = new StringBuilder();
-			for (int j = 0; j < spriteHeight; j++) {
-				string t = "";
-				StringBuilder line = new StringBuilder();
-				for (int i = 0; i < spriteWidth; i++) {
-					if (i % 8 == 0) {
-						t += ",%";
-					}
-					t += sprite[i, j].ToString();
-					if (IsColor) {
-						line.Append(sprite[i, j].ToString("X1"));
-					} else {
-						line.Append(sprite[i, j].ToString());
-					}
-				}
-
-				if (!IsColor) {
-					line = new StringBuilder(HexHelper.BinToHex(line.ToString()));
-				}
-				// Try to backtrack and add G
-				if (HasGCharacter) {
-					int lineWidth = line.Length;
-					if (line[lineWidth - 1] == '0') {
-						int zeroCount = 1;
-						for (int k = lineWidth - 2; k >= 0; k--) {
-							if (line[k] == '0') {
-								zeroCount++;
-							} else {
-								break;
-							}
-						}
-
-						if (zeroCount > 1) {
-							line.Remove(lineWidth - zeroCount, zeroCount);
-							line.Append('G');
-						}
-					}
-				}
-
-				bin.Append(line);
-				binBox.Text = string.Concat(binBox.Text, ".db ", t.Substring(1), Environment.NewLine);
-			}
-
-			//if (IsColor) {
-			hexBox.Text = bin.ToString();
-			//} else {
-			//	hexBox.Text = HexHelper.BinToHex(bin.ToString());
-			//}
 		}
 
 		private void handleMouse(MouseEventArgs e) {
@@ -447,13 +380,12 @@ namespace Merthsoft.TokenIDE {
 					}
 					break;
 				case Tool.EyeDropper:
-					if (IsColor) {
+					if (SelectedPalette != Palette.BlackAndWhite && mouseX >= 0 && mouseY >= 0 && mouseX < SpriteWidth && mouseY < SpriteHeight ) {
 						if (button == System.Windows.Forms.MouseButtons.Left) {
-							leftPixel = sprite[mouseX, mouseY];
+							setLeftMouseButton(sprite[mouseX, mouseY]);
 						} else if (button == System.Windows.Forms.MouseButtons.Right) {
-							rightPixel = sprite[mouseX, mouseY];
+							setRightMouseButton(sprite[mouseX, mouseY]);
 						}
-						paletteBox.Invalidate();
 					}
 					break;
 				default:
@@ -461,25 +393,21 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			spriteBox.Invalidate();
-
-			if (ActiveHex.Checked) {
-				updateHex();
-			}
 		}
 
 		private void createPreviewSprite() {
 			//previewSprite = new int[spriteWidth, spriteHeight];
-			previewSprite = new Sprite(spriteWidth, spriteHeight);
-			for (int j = 0; j < spriteHeight; j++) {
-				for (int i = 0; i < spriteWidth; i++) {
+			previewSprite = new Sprite(SpriteWidth, SpriteHeight);
+			for (int j = 0; j < SpriteHeight; j++) {
+				for (int i = 0; i < SpriteWidth; i++) {
 					previewSprite[i, j] = -1;
 				}
 			}
 		}
 
 		private void copyPreviewSprite() {
-			for (int j = 0; j < spriteHeight; j++) {
-				for (int i = 0; i < spriteWidth; i++) {
+			for (int j = 0; j < SpriteHeight; j++) {
+				for (int i = 0; i < SpriteWidth; i++) {
 					if (previewSprite[i, j] != -1) {
 						sprite[i, j] = previewSprite[i, j];
 					}
@@ -520,20 +448,7 @@ namespace Merthsoft.TokenIDE {
 			toggleUndo(true);
 		}
 
-		//private int[,] copySpriteArray() {
-		//    int[,] newSprite = new int[spriteWidth, spriteHeight];
-		//    Array.Copy(sprite, newSprite, sprite.Length);
-
-		//    return newSprite;
-		//}
-
-		private void spriteBox_MouseUp(object sender, MouseEventArgs e) {
-			//if (e.Button == System.Windows.Forms.MouseButtons.Left || e.Button == System.Windows.Forms.MouseButtons.Right) {
-			//    mouseDown = false;
-			//    //pixelMode = -1;
-			//}
-
-			MouseEventArgs ne = new MouseEventArgs(MouseButtons.None, e.Clicks, e.X, e.Y, e.Delta);
+		private void spriteBox_MouseUp(object sender, MouseEventArgs e) {MouseEventArgs ne = new MouseEventArgs(MouseButtons.None, e.Clicks, e.X, e.Y, e.Delta);
 			handleMouse(ne);
 		}
 
@@ -546,94 +461,130 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Invalidate();
 		}
 
-		private void checkBox1_CheckedChanged(object sender, EventArgs e) {
-			if (ActiveHex.Checked)
-				updateHex();
-			spriteBox.Invalidate();
-		}
-
-		private void hexBox_TextChanged(object sender, EventArgs e) {
-#if !DEBUG
-			try {
-#endif
-				if (IsColor) {
-					//sprite = HexHelper.HexToArr(hexBox.Text, spriteWidth, spriteHeight);
-					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, Colors.Count / 4);
-				} else {
-					//sprite = HexHelper.HexBinToArr(hexBox.Text, spriteWidth, spriteHeight);
-					sprite = new Sprite(hexBox.Text, spriteWidth, spriteHeight, 1);
-				}
-#if !DEBUG
-			} catch (Exception ex) {
-				MessageBox.Show(ex.ToString());
-			}
-#endif
-			toolStripStatusLabel1.Text = "Len: " + hexBox.Text.Length.ToString();
-			if (ActiveHex.Checked) {
-				spriteBox.Invalidate();
-			}
-		}
-
-		private void ResizeFromHexButton_Click(object sender, EventArgs e) {
-			if (hexBox.Text == "")
-				return;
-			try {
-				performResizeFlag = false;
-				resizeFromHex(hexBox.Text, out spriteWidth, out spriteHeight);
-				spriteWidthBox.Value = spriteWidth;
-				spriteHeightBox.Value = spriteHeight;
-				performResizeFlag = true;
-			} catch (Exception ex) {
-				MessageBox.Show(ex.ToString());
-			}
-			spriteBox.Invalidate();
-		}
-
 		private void InsertButton_Click(object sender, EventArgs e) {
-			outString = hexBox.Text;
+			OutString = getHex();
 			Close();
+		}
+
+		private string getHex() {
+			StringBuilder bin = new StringBuilder();
+			for (int j = 0; j < SpriteHeight; j++) {
+				string t = "";
+				StringBuilder line = new StringBuilder();
+				for (int i = 0; i < SpriteWidth; i++) {
+					if (i % 8 == 0) {
+						t += ",%";
+					}
+					t += sprite[i, j].ToString();
+					
+					switch (SelectedPalette) {
+						case Palette.BlackAndWhite:
+							line.Append(sprite[i, j].ToString());
+							break;
+						case Palette.CelticIICSE:
+							line.Append(sprite[i, j].ToString("X1"));
+							break;
+						case Palette.xLIBC:
+							break;
+						default:
+							break;
+					}
+				}
+
+				if (SelectedPalette == Palette.BlackAndWhite) {
+					line = new StringBuilder(HexHelper.BinToHex(line.ToString()));
+				}
+				// Try to backtrack and add G
+				//if (HasGCharacter) {
+				//    int lineWidth = line.Length;
+				//    if (line[lineWidth - 1] == '0') {
+				//        int zeroCount = 1;
+				//        for (int k = lineWidth - 2; k >= 0; k--) {
+				//            if (line[k] == '0') {
+				//                zeroCount++;
+				//            } else {
+				//                break;
+				//            }
+				//        }
+
+				//        if (zeroCount > 1) {
+				//            line.Remove(lineWidth - zeroCount, zeroCount);
+				//            line.Append('G');
+				//        }
+				//    }
+				//}
+
+				bin.Append(line);
+			}
+
+			return bin.ToString();
 		}
 
 		private void paletteBox_Paint(object sender, PaintEventArgs e) {
 			Graphics g = e.Graphics;
-			const int boxWidth = 27;
-			const int boxHeight = 34;
+			drawPalette(g);
+		}
+
+		private void drawPalette(Graphics g) {
+			int boxWidth;
+			int boxHeight;
+			int colorCount;
+			int maxWidth;
+			
+			if (SelectedPalette == Palette.CelticIICSE) {
+				boxWidth = 44;
+				boxHeight = 44;
+				colorCount = CelticPalette.Count;
+				maxWidth = 352;
+			} else {
+				boxWidth = 11;
+				boxHeight = 11;
+				colorCount = 256;
+				maxWidth = 352;
+			}
 
 			int paletteX = 0;
 			int paletteY = 0;
-			for (int colorIndex = 0; colorIndex < Colors.Count; colorIndex++) {
-				Color c = Colors[colorIndex];
-				g.FillRect(BrushList[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-				g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 
-				if (colorIndex == leftPixel) {
-					using (Font newFont = new Font(FontFamily.GenericSansSerif, 7)) {
-						g.DrawString("L", newFont, c.GetBrightness() < 0.5f ? Brushes.White : Brushes.Black, paletteX + 5, paletteY + 20);
+			try {
+				for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
+					Color c;
+
+					if (SelectedPalette == Palette.CelticIICSE) {
+						c = CelticPalette[colorIndex];
+						g.FillRect(BrushList[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
+						g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
+					} else {
+						c = MerthsoftExtensions.ColorFrom8BitHL(colorIndex);
+						using (SolidBrush brush = new SolidBrush(c)) {
+							g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
+						}
 					}
-				} 
-				if (colorIndex == rightPixel) {
-					using (Font newFont = new Font(FontFamily.GenericSansSerif, 7)) {
-						g.DrawString("R", newFont, c.GetBrightness() < 0.5f ? Brushes.White : Brushes.Black, paletteX + 12, paletteY + 20);
+
+					paletteX += boxWidth;
+					if (paletteX >= maxWidth) {
+						paletteX = 0;
+						paletteY += boxHeight;
 					}
 				}
-
-				paletteX += boxWidth;
-				if (paletteX >= paletteBox.Width) {
-					paletteX = 0;
-					paletteY += boxHeight;
-				}
+			} catch {
+				throw;
 			}
 		}
 
-		private void colorCheckBox_CheckedChanged(object sender, EventArgs e) {
+		private void paletteChoice_SelectedIndexChanged(object sender, EventArgs e) {
 			pushHistory();
 
-			paletteBox.Visible = colorCheckBox.Checked;
+			palettePanel.Visible = SelectedPalette != Palette.BlackAndWhite;
+			paletteBox.Invalidate();
+			leftMousePictureBox.Invalidate();
+			rightMousePictureBox.Invalidate();
 
-			// Make all numbers 1 if it's black and white
-			if (!IsColor) {
-				for (int j = 0; j < spriteHeight; j++) {
-					for (int i = 0; i < spriteWidth; i++) {
+			// If you're changing palettes, just give up for now
+			// [TODO] Make this smarter?
+			if (sprite != null) {
+				for (int j = 0; j < SpriteHeight; j++) {
+					for (int i = 0; i < SpriteWidth; i++) {
 						if (sprite[i, j] == rightPixel) {
 							sprite[i, j] = 0;
 						} else {
@@ -643,45 +594,122 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 
-			leftPixel = 1;
-			rightPixel = 0;
+			setLeftMouseButton(1);
+			setRightMouseButton(0);
 
 			spriteBox.Invalidate();
-			updateHex();
 		}
 
 		private void paletteBox_MouseClick(object sender, MouseEventArgs e) {
-			int paletteIndex = (e.X / 27) + 8*(e.Y / 34);
-			
-			if (e.Button == System.Windows.Forms.MouseButtons.Left) {
-				leftPixel = paletteIndex;
-			} else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
-				rightPixel = paletteIndex;
+			selectPalette(e);
+		}
+
+		private void paletteBox_MouseMove(object sender, MouseEventArgs e) {
+			if (e.Button != System.Windows.Forms.MouseButtons.None) {
+				selectPalette(e);
+			}
+		}
+
+		private void selectPalette(MouseEventArgs e) {
+			if (!paletteBox.Bounds.Contains(e.Location)) { return; }
+
+			int boxWidth;
+			int boxHeight;
+			int maxWidth;
+
+			if (SelectedPalette == Palette.CelticIICSE) {
+				boxWidth = 44;
+				boxHeight = 44;
+				maxWidth = 352;
+			} else {
+				boxWidth = 11;
+				boxHeight = 11;
+				maxWidth = 352;
 			}
 
-			paletteBox.Invalidate();
+			int paletteIndex = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
+
+			if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+				setLeftMouseButton(paletteIndex);
+			} else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
+				setRightMouseButton(paletteIndex);
+			}
 		}
-		
+
+		private void setRightMouseButton(int paletteIndex) {
+			rightPixel = paletteIndex;
+			rightMousePictureBox.Invalidate();
+			rightMouseLabel.Text = string.Format("Right: ({0:X2})", paletteIndex);
+		}
+
+		private void setLeftMouseButton(int paletteIndex) {
+			leftPixel = paletteIndex;
+			leftMousePictureBox.Invalidate();
+			leftMouseLabel.Text = string.Format("Left: ({0:X2})", paletteIndex);
+		}
+
 		private void Open(string fileName) {
 			pushHistory();
-			using (Bitmap image = new Bitmap(fileName)) {
-				spriteWidthBox.Value = image.Width;
-				spriteHeightBox.Value = image.Height;
-				sprite = new Sprite(image.PalettizeImage(Colors, 0));
+			if (fileName.EndsWith(".8xv")) {
+				openAppVar(fileName);
+			} else {
+				using (Bitmap image = new Bitmap(fileName)) {
+					spriteWidthBox.Value = image.Width;
+					spriteHeightBox.Value = image.Height;
+					sprite = new Sprite(image.PalettizeImage(CelticPalette, 0));
+				}
 			}
-
-			updateHex();
 			spriteBox.Invalidate();
 		}
 
-		private void hasGBox_CheckedChanged(object sender, EventArgs e) {
-			updateHex();
+		private void openAppVar(string fileName) {
+			AppVar8x appVar = null;
+			using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
+			using (BinaryReader preader = new BinaryReader(pstream))
+				appVar = new AppVar8x(preader);
+			}
+			if (Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray()) == XLIBPIC_HEADER) {
+				openxLibPic(appVar);
+			}
+		}
+
+		private void openxLibPic(AppVar8x appVar) {
+			sprite = new Sprite(128, 64);
+			
+			SpriteWidth = 128;
+			SpriteHeight = 64;
+
+			SelectedPalette = Palette.xLIBC;
+			
+			int x = 0;
+			int y = 0;
+			int spriteX = 0;
+			int spriteY = 0;
+			for (int i = 7; i < appVar.Data.Length; i++) {
+				sprite[x + spriteX, y + spriteY] = appVar.Data[i];
+				spriteY++;
+				if (spriteY == 8) {
+					spriteY = 0;
+					spriteX++;
+				}
+				if (spriteX == 8) {
+					spriteX = 0;
+					spriteY = 0;
+					y += 8;
+					if (y == 64) {
+						y = 0;
+						x += 8;
+					}
+				}
+			}
 		}
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
+			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
+			fileName = f.FileName;
 		}
 
 		private void undoButton_Click(object sender, EventArgs e) {
@@ -706,29 +734,25 @@ namespace Merthsoft.TokenIDE {
 			toggleRedo(true);
 
 			spriteBox.Invalidate();
-			if (ActiveHex.Checked) {
-				updateHex();
-			}
 		}
 
 		private void copySpriteFromHistory(int position) {
 			sprite = history[position];
 			// If we're not in color, reduce it to ones and zeros
-			if (!IsColor) {
-				for (int i = 0; i < sprite.Width; i++) {
-					for (int j = 0; j < sprite.Height; j++) {
-						if (sprite[i, j] > 1) {
-							sprite[i, j] = 1;
-						}
-					}
-				}
-			}
+			// [TODO] Do somethign with this?
+			//if (!IsColor) {
+			//    for (int i = 0; i < sprite.Width; i++) {
+			//        for (int j = 0; j < sprite.Height; j++) {
+			//            if (sprite[i, j] > 1) {
+			//                sprite[i, j] = 1;
+			//            }
+			//        }
+			//    }
+			//}
 
 			performResizeFlag = false;
-			spriteHeight = sprite.Height;
-			spriteHeightBox.Value = sprite.Height;
-			spriteWidth = sprite.Width;
-			spriteWidthBox.Value = sprite.Width;
+			SpriteHeight = sprite.Height;
+			SpriteWidth = sprite.Width;
 			performResizeFlag = true;
 		}
 
@@ -740,9 +764,6 @@ namespace Merthsoft.TokenIDE {
 			toggleUndo(true);
 			
 			spriteBox.Invalidate();
-			if (ActiveHex.Checked) {
-				updateHex();
-			}
 		}
 
 		private void toggleUndo(bool enabled) {
@@ -753,6 +774,109 @@ namespace Merthsoft.TokenIDE {
 		private void toggleRedo(bool enabled) {
 			redoButton.Enabled = enabled;
 			redoToolStripMenuItem.Enabled = enabled;
+		}
+
+		private void leftMousePictureBox_Paint(object sender, PaintEventArgs e) {
+			Color c;
+
+			if (SelectedPalette == Palette.CelticIICSE) {
+				c = CelticPalette[leftPixel];
+			} else {
+				c = MerthsoftExtensions.ColorFrom8BitHL(leftPixel);
+			}
+
+			using (Brush brush = new SolidBrush(c)) {
+				e.Graphics.FillRectangle(brush, e.ClipRectangle);
+			}
+		}
+
+		private void rightMousePictureBox_Paint(object sender, PaintEventArgs e) {
+			Color c;
+
+			if (SelectedPalette == Palette.CelticIICSE) {
+				c = CelticPalette[rightPixel];
+			} else {
+				c = MerthsoftExtensions.ColorFrom8BitHL(rightPixel);
+			}
+
+			using (Brush brush = new SolidBrush(c)) {
+				e.Graphics.FillRectangle(brush, e.ClipRectangle);
+			}
+		}
+
+		private bool saveDialog() {
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.AddFilter("PNG", "*.png");
+			sfd.AddFilter("xLIB Picture", "*.8xv");
+			if (fileName != null) {
+
+				sfd.FileName = new FileInfo(fileName).GetFileName();
+			}
+
+			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return false; }
+
+			fileName = sfd.FileName;
+			return true;
+		}
+
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (fileName == null && !saveDialog()) { return; }
+			saveFile();
+		}
+
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!saveDialog()) { return; }
+			saveFile();
+		}
+
+		private void saveFile() {
+			if (fileName.EndsWith(".8xv") || fileName.EndsWith(".8cv")) {
+				saveXLibPic();
+			} else {
+				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height))
+				using (Graphics g = Graphics.FromImage(b)) {
+					drawSprite(g, sprite, 1, false);
+					b.Save(fileName);
+				}
+			}
+		}
+
+		private void saveXLibPic() {
+			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
+			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
+			using (MemoryStream ms = new MemoryStream(buffer)) {
+				ms.Write(Encoding.ASCII.GetBytes(XLIBPIC_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBPIC_HEADER));
+				
+				int x = 0;
+				int y = 0;
+				int spriteX = 0;
+				int spriteY = 0;
+				
+				for (int i = 0; i < sprite.Width * sprite.Height; i++) {
+					byte data = (byte)sprite[x + spriteX, y + spriteY];
+					ms.WriteByte(data);
+
+					spriteY++;
+					if (spriteY == 8) {
+						spriteY = 0;
+						spriteX++;
+					}
+					if (spriteX == 8) {
+						spriteX = 0;
+						spriteY = 0;
+						y += 8;
+						if (y == 64) {
+							y = 0;
+							x += 8;
+						}
+					}
+				}
+			}
+			appVar.SetRawData(buffer);
+			using (FileStream fs = new FileStream(fileName, FileMode.Create))
+			using (BinaryWriter bw = new BinaryWriter(fs)) {
+				appVar.Save(bw);
+			}
 		}
 	}
 }

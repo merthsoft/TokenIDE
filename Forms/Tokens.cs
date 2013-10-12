@@ -66,7 +66,10 @@ namespace Merthsoft.TokenIDE {
 			//Environment.CurrentDirectory = Application.StartupPath;
 			config = Config.ReadIni("TokenIDE.ini");
 
-			OpenTokensFile(Path.Combine(Application.StartupPath, config.TokenIDE.file.ToString()));
+			if (!OpenTokensFile(Path.Combine(Application.StartupPath, config.TokenIDE.file.ToString()))) {
+				MessageBox.Show(string.Format("Unable to load default file {0}, quitting.", config.TokenIDE.file.ToString()), "TokenIDE");
+				return;
+			}
 			editorFont = new Font(config.Font.family, float.Parse(config.Font.size));
 
 			AddNewTab();
@@ -386,15 +389,23 @@ namespace Merthsoft.TokenIDE {
 #if !DEBUG
 			try {
 #endif
-				HexSprite s;
-				if (ew.SelectedText != "") {
-					s = new HexSprite(ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", ""), color);
+				HexSprite s = new HexSprite();
+
+				if (color) {
+					s.SpriteHeight = s.SpriteWidth = 32;
+					s.SelectedPalette = HexSprite.Palette.CelticIICSE;
 				} else {
-					s = new HexSprite(color);
+					s.SpriteHeight = s.SpriteWidth = 8;
+					s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
 				}
+
+				if (ew.SelectedText != "") {
+					s.Hex = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
+				}
+
 				s.ShowDialog();
-				if (s.outString != "") {
-					ew.SelectedText = s.outString;
+				if (s.OutString != "") {
+					ew.SelectedText = s.OutString;
 				}
 #if !DEBUG
 			} catch (Exception ex) {
@@ -451,9 +462,9 @@ namespace Merthsoft.TokenIDE {
 			OpenTokensFile(xmlFileName);
 		}
 
-		private void OpenTokensFile(string xmlFileName) {
+		private bool OpenTokensFile(string xmlFileName) {
 			if (string.IsNullOrEmpty(xmlFileName) || !File.Exists(xmlFileName)) {
-				return;
+				return false;
 			}
 
 			XmlValidator.XmlValidator validator = new XmlValidator.XmlValidator();
@@ -466,6 +477,7 @@ namespace Merthsoft.TokenIDE {
 					}
 				}
 				MessageBox.Show("Error: The XML file you attempted to load did not match the schema. Please select a different file. See xml.err for a detailed list of errors.");
+				return false;
 			} else {
 				TokenData oldTokenData = TokenData;
 				TokenData = new TokenData(xmlFileName);
@@ -477,6 +489,8 @@ namespace Merthsoft.TokenIDE {
 					ew.Dirty = false;
 				}
 			}
+
+			return true;
 		}
 
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -675,7 +689,7 @@ namespace Merthsoft.TokenIDE {
 				return null;
 			}
 			if (string.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
-				currWindow.OnCalcName = InputBox.ShowInputBox("Program Name");
+				currWindow.OnCalcName = InputBox.Show("Program Name");
 				//currWindow.FileName = currWindow.ProgramName;
 			}
 			if (string.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
@@ -689,15 +703,25 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			if (string.IsNullOrWhiteSpace(currWindow.SaveDirectory)) {
-				var fbd = new FolderSelectDialog() {
+				//var fbd = new FolderSelectDialog() {
+				//    InitialDirectory = Environment.CurrentDirectory,
+				//    Title = "Save Directory",
+				//};
+				//FileFolderDialog ffd = new FileFolderDialog() { 
+				var fbd = new OpenFileDialog() {
 					InitialDirectory = Environment.CurrentDirectory,
-					Title = "Save Directory",
+					ValidateNames = false,
+					CheckFileExists = false,
+					CheckPathExists = false,
+					FileName = "Folder Selection.",
 				};
-				if (!fbd.ShowDialog()) {
+				if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
 					return null;
 				}
 
-				directory = fbd.FileName;
+				FileInfo fi = new FileInfo(fbd.FileName);
+				
+				directory = fi.DirectoryName;
 				currWindow.SaveDirectory = directory;
 			} else {
 				directory = currWindow.SaveDirectory;

@@ -25,6 +25,18 @@ namespace Merthsoft.Tokens {
 			public string IndentGroup { get; set; }
 			public bool IndentGroupTerminator { get; set; }
 			public string Bytes { get; set; }
+			public byte Byte { get; set; }
+			public byte[] ByteArray {
+				get {
+					byte[] byteArray = new byte[Bytes.Length/2];
+					for (int i = 0; i < Bytes.Length; i += 2) {
+						byte b = byte.Parse(Bytes.Substring(i, 2));
+						byteArray[i/2] = b;
+					}
+
+					return byteArray;
+				}
+			}
 
 			public TokenDictionaryEntry() {
 				SubTokens = new Dictionary<byte, TokenDictionaryEntry>();
@@ -94,8 +106,8 @@ namespace Merthsoft.Tokens {
 		public string CommentString { get; private set; }
 		public string DirectiveString { get; private set; }
 
-		public Dictionary<byte, TokenDictionaryEntry> Tokens { get { return tokens; } }
-		public Trie<string> Trie { get { return trie; } }
+		public Dictionary<byte, TokenDictionaryEntry> Tokens { get { return tokens; } private set { tokens = value; } }
+		public Trie<string> Trie { get { return trie; } private set { trie = value; } }
 		public List<string> GroupNames { get; private set; }
 		public Dictionary<string, Style> Styles { get; private set; }
 		public Dictionary<string, string> Comments { get; private set; }
@@ -110,7 +122,9 @@ namespace Merthsoft.Tokens {
 		/// </summary>
 		/// <param name="xmlFile">The xml file to read the tokens from.</param>
 		/// <returns></returns>
-		public TokenData(String xmlFile) {
+		public TokenData(string xmlFile) {
+			FileInfo fi = new FileInfo(xmlFile);
+
 			XmlDocument doc = new XmlDocument();
 			doc.Load(xmlFile);
 			XmlElement root = doc.DocumentElement;
@@ -130,8 +144,35 @@ namespace Merthsoft.Tokens {
 			//FontSize = styleNodes[0].ParentNode.GetAttributeOrDefault("fontSize", 12);
 			//FontFamily = styleNodes[0].ParentNode.GetAttributeOrDefault("fontFamily", "Consolas");
 
-			CommentString = styleNodes[0].ParentNode.GetAttributeOrDefault("commentString", "//");
-			DirectiveString = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", "#");
+			string parentXml = root.GetAttributeOrDefault("parentXml", null);
+			if (!string.IsNullOrWhiteSpace(parentXml)) {
+				if (!File.Exists(parentXml)) {
+					parentXml = Path.Combine(fi.DirectoryName, parentXml);
+				}
+				if (!File.Exists(parentXml)) {
+					throw new FileNotFoundException(string.Format("Could not find parent xml file.", parentXml));
+				}
+				TokenData parentData = new TokenData(parentXml);
+
+				Tokens = parentData.Tokens;
+				Trie = parentData.Trie;
+				Groups = parentData.Groups;
+				Comments = parentData.Comments;
+				Sites = parentData.Sites;
+				GroupNames = parentData.GroupNames;
+				Styles = parentData.Styles;
+				FlatTokens = parentData.FlatTokens;
+				CommentString = parentData.CommentString;
+				DirectiveString = DirectiveString = parentData.DirectiveString;
+			}
+
+			if (styleNodes.Count != 0) {
+				CommentString = styleNodes[0].ParentNode.GetAttributeOrDefault("commentString", CommentString ?? "//");
+				DirectiveString = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", DirectiveString ?? "#");
+			} else {
+				CommentString = "//";
+				DirectiveString = "#";
+			}
 
 			foreach (XmlNode node in styleNodes) {
 				Style s = new Style(node);
@@ -150,8 +191,44 @@ namespace Merthsoft.Tokens {
 			}
 
 			List<string> alts;
-			tokens = GetTokensFromNode(tokenNodes, out alts);
+			Dictionary<byte, TokenDictionaryEntry> newTokens = GetTokensFromNode(tokenNodes, out alts);
+
+			if (tokens == null) {
+				tokens = newTokens;
+			} else {
+				foreach (TokenDictionaryEntry token in newTokens.Values) {
+					Combine(tokens, token);
+				}
+			}
 			//Console.ReadLine();
+		}
+
+		private void Combine(Dictionary<byte, TokenDictionaryEntry> tokenDictionary, TokenDictionaryEntry newToken) {
+			// Doesn't exist in current dictionary, so add it and be done
+			if (!tokenDictionary.ContainsKey(newToken.Byte)) {
+				tokenDictionary[newToken.Byte] = newToken;
+				return;
+			}
+
+			var oldToken = tokenDictionary[newToken.Byte];
+
+			// It does exist, so do we overwrite or not?
+			if (!string.IsNullOrEmpty(newToken.Name)) {
+				oldToken.Name = newToken.Name;
+				oldToken.Alts = newToken.Alts;
+				oldToken.Comment = newToken.Comment;
+				oldToken.Group = newToken.Group;
+				oldToken.IndentGroup = newToken.IndentGroup;
+				oldToken.IndentGroupTerminator = newToken.IndentGroupTerminator;
+				oldToken.StringStarter = newToken.StringStarter;
+				oldToken.StringTerminator = newToken.StringTerminator;
+				oldToken.StyleType = newToken.StyleType;
+				oldToken.Site = newToken.Site;
+			}
+
+			foreach (var subToken in newToken.SubTokens.Values) {
+				Combine(oldToken.SubTokens, subToken);
+			}
 		}
 
 		public List<GroupEntry> GetAllInGroup(string group) {
@@ -177,18 +254,16 @@ namespace Merthsoft.Tokens {
 		}
 
 		private Dictionary<byte, TokenDictionaryEntry> GetTokensFromNode(XmlNodeList nodes, out List<string> alts, string prevBytes = "") {
-			Dictionary<byte, TokenDictionaryEntry> h = new Dictionary<byte, TokenDictionaryEntry>();
+			Dictionary<byte, TokenDictionaryEntry> currentTokens = new Dictionary<byte, TokenDictionaryEntry>();
 			alts = new List<string>();
 			foreach (XmlNode node in nodes) {
 				//alts = new List<string>();
 				if (node.NodeType != XmlNodeType.Comment) {
 					if (node.Name == "Token") {
-						string val = node.Attributes["byte"].Value;
-						byte key;
-						if (!byte.TryParse(val, out key)) {
-							key = (HexHelper.GetByteArray(val, 1))[0];
-						}
-						TokenDictionaryEntry value = new TokenDictionaryEntry();
+						byte key = getByteFromXml(node);
+
+						TokenDictionaryEntry value = new TokenDictionaryEntry() { Byte = key };
+
 						if (node.Attributes["string"] != null) {
 							value.Name = node.Attributes["string"].Value;
 							if (value.Name == "\\n") {
@@ -256,7 +331,7 @@ namespace Merthsoft.Tokens {
 						if (node.HasChildNodes) {
 							value.SubTokens = GetTokensFromNode(node.ChildNodes, out alts, prevBytes + key.ToString("X2"));
 						}
-						h.Add(key, value);
+						currentTokens.Add(key, value);
 						if (value.Name != null) {
 							if (FlatTokens.ContainsKey(value.Name)) {
 								throw new AmbiguousTokenException(value.Name);
@@ -279,7 +354,20 @@ namespace Merthsoft.Tokens {
 				}
 			}
 
-			return h;
+			return currentTokens;
+		}
+
+		private byte getByteFromXml(XmlNode node) {
+			string val = node.Attributes["byte"].Value;
+			byte key;
+			// starting with an "@" means it's a reference value
+			if (val.StartsWith("@")) {
+				key = FlatTokens[val.Substring(1)].Byte;
+			} else if (!byte.TryParse(val, out key)) {
+				key = (HexHelper.GetByteArray(val, 1))[0];
+			}
+
+			return key;
 		}
 
 		/// <summary>

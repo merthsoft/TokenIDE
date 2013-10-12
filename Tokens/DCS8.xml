@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tokens xmlns="http://merthsoft.com/Tokens" parentXml="TI-84+CSE.xml">
+	<Groups>
+		<Group name="Celtic" comment="Celtic II Libraries" site="http://dcs.cemetech.net/index.php/Third-Party_BASIC_Libraries_%28Color%29"/>
+		<Group name="xLib" comment="xLib Libraries" site="http://dcs.cemetech.net/index.php/Third-Party_BASIC_Libraries_%28Color%29"/>
+	</Groups>
+
+	<Styles>
+		<Style name="Hyrbid" foreground="Orange"/>
+	</Styles>
+
+	<!-- Celtic commands -->
+	<Token byte="@det(">
+		<Token byte="@0" string="ReadLine(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:ReadLine" group="Celtic" />
+		<Token byte="@1" string="ReplaceLine(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:ReplaceLine" group="Celtic">
+			<Token byte="@0">
+				<Token byte="@," string="BufSpriteSelect(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:BufSpriteSelect" group="Celtic" />
+			</Token>
+		</Token>
+		<Token byte="@2" string="InsertLine(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:InsertLine" group="Celtic" />
+		<Token byte="@3" string="SpecialChars(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:SpecialChars" group="Celtic" />
+		<Token byte="@4" string="CreateVar(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:CreateVar" group="Celtic" />
+		<Token byte="@5" string="ArcUnarcVar(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:ArcUnarcVar" group="Celtic" />
+		<Token byte="@6" string="DeleteVar(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:DeleteVar" group="Celtic" />
+		<Token byte="@7" string="DeleteLine(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:DeleteLine" group="Celtic" />
+		<Token byte="@8" string="VarStatus(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:VarStatus" group="Celtic" />
+		<Token byte="@9">
+			<Token byte="@," string="BufSprite(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:BufSprite" group="Celtic" />
+		</Token>
+	</Token>
+
+	<Token byte="$BB">
+		<Token byte="$26">
+			<Token byte="@0"><Token byte="@,">
+				<Token byte="@0" string="GetxLIBVersion(" style="Hyrbid" site="" group="xLib" />
+				<Token byte="@1"><Token byte="@," string="SetUpGraphics(" style="Hyrbid" site="" group="xLib">
+					<Token byte="@0" string="SetFullResolution(" style="Hyrbid" site="" group="xLib" />
+					<Token byte="@1" string="SetHalfResolution(" style="Hyrbid" site="" group="xLib" />
+				</Token></Token>
+				<Token byte="@2"><Token byte="@," string="ChangeSpeed(" style="Hyrbid" site="" group="xLib">
+					<Token byte="@0" string="SetSpeed6MHz(" style="Hyrbid" site="" group="xLib" />
+					<Token byte="@1" string="SetSpeet15MHz(" style="Hyrbid" site="" group="xLib" />
+				</Token></Token>
+			</Token></Token>
+		
+			<Token byte="@1"><Token byte="@," string="UserVariables(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@2"><Token byte="@," string="GetKey(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@3"><Token byte="@," string="DrawMap(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@4"><Token byte="@," string="DrawSprite(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@5"><Token byte="@," string="ManagePic(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@6"><Token byte="@," string="DrawString(" style="Hyrbid" site="" group="xLib" /></Token>
+		
+		</Token>
+	</Token>
+</Tokens>

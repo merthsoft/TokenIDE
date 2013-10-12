@@ -20,7 +20,7 @@ namespace Merthsoft.TokenIDE {
 		public Sprite(string hexData, int width, int height, int bitsPerPixel) {
 			Height = height;
 			Width = width;
-			sprite = HexHelper.HexToArr(hexData, Height, Width, bitsPerPixel);
+			sprite = HexHelper.HexToArr(hexData, Width, Height, bitsPerPixel);
 		}
 
 		public Sprite(int[,] sprite) {
@@ -173,8 +173,8 @@ namespace Merthsoft.TokenIDE {
 			DrawEllipseUsingRadius(h, k, hr, kr, color, plotWidth, fill);
 		}
 
-		private void incx(ref int x, ref int dxt, ref int d2xt, ref int t) { x++; dxt += d2xt; t += dxt; }
-		private void incy(ref int y, ref int dyt, ref int d2yt, ref int t) { y--; dyt += d2yt; t += dyt; }
+		private void incrementX(ref int x, ref int dxt, ref int d2xt, ref int t) { x++; dxt += d2xt; t += dxt; }
+		private void incrementY(ref int y, ref int dyt, ref int d2yt, ref int t) { y--; dyt += d2yt; t += dyt; }
 
 		/// <summary>
 		/// Draws a filled ellipse to the sprite.
@@ -213,12 +213,12 @@ namespace Merthsoft.TokenIDE {
 				}
 
 				if (t + yRadiusSquared * plotX <= crit1 || t + xRadiusSquared * plotY <= crit3) {
-					incx(ref plotX, ref dxt, ref d2xt, ref t);
+					incrementX(ref plotX, ref dxt, ref d2xt, ref t);
 				} else if (t - xRadiusSquared * plotY > crit2) {
-					incy(ref plotY, ref dyt, ref d2yt, ref t);
+					incrementY(ref plotY, ref dyt, ref d2yt, ref t);
 				} else {
-					incx(ref plotX, ref dxt, ref d2xt, ref t);
-					incy(ref plotY, ref dyt, ref d2yt, ref t);
+					incrementX(ref plotX, ref dxt, ref d2xt, ref t);
+					incrementY(ref plotY, ref dyt, ref d2yt, ref t);
 				}
 			}
 
