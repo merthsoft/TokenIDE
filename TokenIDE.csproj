@@ -127,6 +127,7 @@
     <Compile Include="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
+    <Compile Include="History.cs" />
     <Compile Include="PreprocessorException.cs" />
     <Compile Include="Controls\Prog8xEditWindow.cs">
       <SubType>UserControl</SubType>
