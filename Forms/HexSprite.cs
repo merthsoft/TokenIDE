@@ -12,10 +12,14 @@ using Merthsoft.TokenIDE.Properties;
 using System.Threading.Tasks;
 using Merthsoft.CalcData;
 using System.IO;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
 		private const string XLIBPIC_HEADER = "xLIBPIC";
+		private const string XLIBBG_HEADER = "xLIBBG ";
+
 		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
@@ -225,74 +229,68 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Width = SpriteWidth * pixelSize;
 			spriteBox.Height = SpriteHeight * pixelSize;
 
-			if (drawCanvas == null || drawCanvas.Width != spriteBox.Width || drawCanvas.Height != spriteBox.Height) {
-				drawCanvas = new Bitmap(spriteBox.Width, spriteBox.Height);
-				sprite.Invalidate();
-			}
-
-			using (Graphics g = Graphics.FromImage(drawCanvas)) {
-				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-				drawSprite(g, sprite, pixelSize, DrawGrid.Checked);	
-				
-				if (previewSprite != null) {
-					drawSprite(g, previewSprite, pixelSize, DrawGrid.Checked); 
+			try {
+				if (drawCanvas == null) {
+					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
+					sprite.Invalidate();
 				}
 
-				e.Graphics.DrawImage(drawCanvas, 0, 0);
+				lock (drawCanvas) {
+					if (drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
+						drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
+						sprite.Invalidate();
+					}
+					drawSprite(drawCanvas, sprite);
+					
+					if (previewSprite != null) {
+						drawSprite(drawCanvas, previewSprite);
+					}
+
+					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+					e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+					e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
+				}
+			} catch {
+				throw;
 			}
 		}
 
-		private void drawSprite(Graphics g, Sprite spriteToUse, int pixelSize, bool drawGrid) {
-#if !DEBUG
-			try {
-#endif
+		private void drawSprite(Bitmap b, Sprite spriteToUse) {
 			Rectangle drawBounds = spriteToUse.DirtyRectangle;
-			for (int j = drawBounds.Y; j < drawBounds.Y + drawBounds.Height; j++) {
-				for (int i = drawBounds.X; i < drawBounds.X + drawBounds.Width; i++) {
-					Rectangle box = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-#if !DEBUG
-						try {
-#endif
-					int paletteIndex = spriteToUse[i, j];
-					if (paletteIndex == -1) { continue; }
 
-					switch (SelectedPalette) {
-						case Palette.BlackAndWhite:
-							g.FillRectangle(paletteIndex == 0 ? Brushes.White : Brushes.Black, box);
-							break;
-						case Palette.CelticIICSE:
-							g.FillRectangle(BrushList[paletteIndex], box);
-							break;
-						case Palette.xLIBC:
-							using (SolidBrush brush = new SolidBrush(MerthsoftExtensions.ColorFrom8BitHL(paletteIndex))) {
-								g.FillRectangle(brush, box);
+			if (drawBounds == Rectangle.Empty) { return; }
+
+				BitmapData data = b.LockBits(drawBounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+				int stride = data.Stride;
+				int[] dataToCopy = new int[data.Height * data.Stride / 4];
+				Marshal.Copy(data.Scan0, dataToCopy, 0, dataToCopy.Length);
+				for (int j = 0; j < drawBounds.Height; j++) {
+					for (int i = 0; i < drawBounds.Width; i++) {
+						int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
+						
+						Color drawColor = Color.White;
+						if (paletteIndex == -1) { drawColor = Color.Transparent;  } else {
+							switch (SelectedPalette) {
+								case Palette.BlackAndWhite:
+									drawColor = paletteIndex == 0 ? Color.White : Color.Black;
+									break;
+								case Palette.CelticIICSE:
+									drawColor = CelticPalette[paletteIndex];
+									break;
+								case Palette.xLIBC:
+									drawColor = MerthsoftExtensions.ColorFrom8BitHL(paletteIndex);
+									break;
+								default:
+									break;
 							}
-							break;
-						default:
-							break;
-					}
-#if !DEBUG
-						} catch (Exception ex) {
-							MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 						}
-#endif
 
-					if (drawGrid) {
-						Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-						try {
-							g.DrawRectangle(Pens.DarkGray, grid);
-						} catch (Exception ex) {
-							MessageBox.Show(ex.ToString(), ex.GetType().ToString());
-						}
+						dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
 					}
 				}
-			}
+				Marshal.Copy(dataToCopy, 0, data.Scan0, dataToCopy.Length);
+				b.UnlockBits(data);
 
-#if !DEBUG
-			} catch (Exception ex) {
-				MessageBox.Show(ex.ToString(), ex.GetType().ToString());
-			}
-#endif
 			sprite.ClearDirtyRectangle();
 		}
 
@@ -688,19 +686,42 @@ namespace Merthsoft.TokenIDE {
 			using (BinaryReader preader = new BinaryReader(pstream))
 				appVar = new AppVar8x(preader);
 			}
-			if (Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray()) == XLIBPIC_HEADER) {
+			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
+			if (headerString == XLIBPIC_HEADER) {
 				openxLibPic(appVar);
+			} else if (headerString == XLIBBG_HEADER) {
+				openxLibBG(appVar);
+			}
+		}
+
+		private void openxLibBG(AppVar8x appVar) {
+			sprite = new Sprite(80, 60);
+
+			SpriteWidth = 80;
+			SpriteHeight = 60;
+
+			SelectedPalette = Palette.xLIBC;
+
+			int x = 0;
+			int y = 0;
+			for (int i = 7; i < appVar.Data.Length; i++) {
+				sprite[x, y] = appVar.Data[i];
+				y++;
+				if (y == 60) {
+					y = 0;
+					x++;
+				}
 			}
 		}
 
 		private void openxLibPic(AppVar8x appVar) {
 			sprite = new Sprite(128, 64);
-			
+
 			SpriteWidth = 128;
 			SpriteHeight = 64;
 
 			SelectedPalette = Palette.xLIBC;
-			
+
 			int x = 0;
 			int y = 0;
 			int spriteX = 0;
@@ -853,9 +874,9 @@ namespace Merthsoft.TokenIDE {
 			if (fileName.EndsWith(".8xv") || fileName.EndsWith(".8cv")) {
 				saveXLibPic();
 			} else {
-				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height))
-				using (Graphics g = Graphics.FromImage(b)) {
-					drawSprite(g, sprite, 1, false);
+				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
+				//using (Graphics g = Graphics.FromImage(b)) {
+					drawSprite(b, sprite);
 					b.Save(fileName);
 				}
 			}

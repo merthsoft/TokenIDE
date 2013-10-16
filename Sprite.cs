@@ -101,13 +101,15 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void setPoint(int x, int y, int color) {
-			sprite[x, y] = color;
-			if (DirtyRectangle.IsEmpty) {
-				DirtyRectangle = new Rectangle(x, y, 1, 1);
-			} else if (!DirtyRectangle.Contains(x, y)) {
-				//DirtyRectangle = DirtyRectangle.ExpandToPoint(x, y);
-				DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
+			if (sprite[x, y] != color) {
+				if (DirtyRectangle.IsEmpty) {
+					DirtyRectangle = new Rectangle(x, y, 1, 1);
+				} else if (!DirtyRectangle.Contains(x, y)) {
+					//DirtyRectangle = DirtyRectangle.ExpandToPoint(x, y);
+					DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
+				}
 			}
+			sprite[x, y] = color;
 		}
 
 		/// <summary>
