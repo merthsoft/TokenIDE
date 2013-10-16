@@ -33,7 +33,7 @@ namespace Merthsoft.TokenIDE {
 
 		public T Undo() {
 			if (HistoryPosition == 0) {
-				throw new IndexOutOfRangeException("Cannot Undo when there's no history.")
+				throw new IndexOutOfRangeException("Cannot Undo when there's no history.");
 			}
 
 			return history[--HistoryPosition];

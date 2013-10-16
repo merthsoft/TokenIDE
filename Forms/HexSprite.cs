@@ -23,6 +23,8 @@ namespace Merthsoft.TokenIDE {
 		Tool currentTool = Tool.Pencil;
 		ToolStripButton currentButton = null;
 
+		Bitmap drawCanvas;
+
 		int mouseX, mouseY;
 		int mouseXOld, mouseYOld;
 		MouseButtons button;
@@ -220,21 +222,33 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void spriteBox_Paint(object sender, PaintEventArgs e) {
-			Graphics g = e.Graphics;
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 			spriteBox.Width = SpriteWidth * pixelSize;
 			spriteBox.Height = SpriteHeight * pixelSize;
 
-			drawSprite(g, sprite, pixelSize, DrawGrid.Checked);
-			if (previewSprite != null) { drawSprite(g, previewSprite, pixelSize, DrawGrid.Checked); }
+			if (drawCanvas == null || drawCanvas.Width != spriteBox.Width || drawCanvas.Height != spriteBox.Height) {
+				drawCanvas = new Bitmap(spriteBox.Width, spriteBox.Height);
+				sprite.Invalidate();
+			}
+
+			using (Graphics g = Graphics.FromImage(drawCanvas)) {
+				g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+				drawSprite(g, sprite, pixelSize, DrawGrid.Checked);	
+				
+				if (previewSprite != null) {
+					drawSprite(g, previewSprite, pixelSize, DrawGrid.Checked); 
+				}
+
+				e.Graphics.DrawImage(drawCanvas, 0, 0);
+			}
 		}
 
 		private void drawSprite(Graphics g, Sprite spriteToUse, int pixelSize, bool drawGrid) {
 #if !DEBUG
 			try {
 #endif
-			for (int j = 0; j < SpriteHeight; j++) {
-				for (int i = 0; i < SpriteWidth; i++) {
+			Rectangle drawBounds = spriteToUse.DirtyRectangle;
+			for (int j = drawBounds.Y; j < drawBounds.Y + drawBounds.Height; j++) {
+				for (int i = drawBounds.X; i < drawBounds.X + drawBounds.Width; i++) {
 					Rectangle box = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
 #if !DEBUG
 						try {
@@ -279,6 +293,7 @@ namespace Merthsoft.TokenIDE {
 				MessageBox.Show(ex.ToString(), ex.GetType().ToString());
 			}
 #endif
+			sprite.ClearDirtyRectangle();
 		}
 
 		private void handleMouse(MouseEventArgs e) {
@@ -287,6 +302,10 @@ namespace Merthsoft.TokenIDE {
 			mouseYOld = mouseY;
 			mouseX = e.X / pixelSize;
 			mouseY = e.Y / pixelSize;
+
+			if (previewSprite != null) {
+				sprite.DirtyRectangle = previewSprite.DirtyRectangle;
+			}
 
 			int pixelColor = -1;
 
@@ -597,6 +616,7 @@ namespace Merthsoft.TokenIDE {
 			setLeftMouseButton(1);
 			setRightMouseButton(0);
 
+			sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 

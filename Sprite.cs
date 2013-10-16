@@ -14,18 +14,22 @@ namespace Merthsoft.TokenIDE {
 
 		public int this[int i, int j] {
 			get { return sprite[i, j]; }
-			set { sprite[i, j] = value; }
+			set { setPoint(i, j, value); }
 		}
+
+		public Rectangle DirtyRectangle { get; set; }
 
 		public Sprite(string hexData, int width, int height, int bitsPerPixel) {
 			Height = height;
 			Width = width;
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 			sprite = HexHelper.HexToArr(hexData, Width, Height, bitsPerPixel);
 		}
 
 		public Sprite(int[,] sprite) {
 			Height = sprite.GetLength(0);
 			Width = sprite.GetLength(1);
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 			this.sprite = new int[Width, Height];
 			Array.Copy(sprite, this.sprite, this.sprite.Length);
 		}
@@ -33,12 +37,14 @@ namespace Merthsoft.TokenIDE {
 		public Sprite(int width, int height) {
 			Height = height;
 			Width = width;
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 			sprite = new int[Width, Height];
 		}
 
 		public Sprite(Sprite oldSprite) {
 			Height = oldSprite.Height;
 			Width = oldSprite.Width;
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 			this.sprite = new int[Width, Height];
 			Array.Copy(oldSprite.sprite, this.sprite, this.sprite.Length);
 		}
@@ -67,6 +73,14 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		public void ClearDirtyRectangle() {
+			DirtyRectangle = Rectangle.Empty;
+		}
+
+		public void Invalidate() {
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
+		}
+
 		/// <summary>
 		/// Plots a point to the sprite.
 		/// </summary>
@@ -77,12 +91,22 @@ namespace Merthsoft.TokenIDE {
 		public void Plot(int x, int y, int color, int plotWidth = 1) {
 			if (plotWidth == 1) {
 				if (x >= 0 && y >= 0 && x < Width && y < Height) {
-					sprite[x, y] = color;
+					setPoint(x, y, color);
 				}
 			} else {
 				int r = (int)Math.Floor((plotWidth) / 2.0);
 				int evenOffSet = plotWidth % 2 == 0 ? 1 : 0;
 				sprite.DrawRectangle(x - r + evenOffSet, y - r + evenOffSet, x + r, y + r, color, 1, true);
+			}
+		}
+
+		private void setPoint(int x, int y, int color) {
+			sprite[x, y] = color;
+			if (DirtyRectangle.IsEmpty) {
+				DirtyRectangle = new Rectangle(x, y, 1, 1);
+			} else if (!DirtyRectangle.Contains(x, y)) {
+				//DirtyRectangle = DirtyRectangle.ExpandToPoint(x, y);
+				DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
 			}
 		}
 
