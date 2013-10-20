@@ -15,7 +15,7 @@ namespace Merthsoft.TokenIDE {
 				if ((components != null)) {
 					components.Dispose();
 				}
-				BrushList.ForEach(b => b.Dispose());
+				CelticBrushes.ForEach(b => b.Dispose());
 			}
 			base.Dispose(disposing);
 		}
@@ -27,9 +27,10 @@ namespace Merthsoft.TokenIDE {
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.paletteBox = new System.Windows.Forms.PictureBox();
 			this.MaintainDim = new System.Windows.Forms.CheckBox();
-			this.DrawGrid = new System.Windows.Forms.CheckBox();
+			this.drawGridBox = new System.Windows.Forms.CheckBox();
 			this.pixelSizeBox = new System.Windows.Forms.NumericUpDown();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
@@ -53,12 +54,19 @@ namespace Merthsoft.TokenIDE {
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.insertAndExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
-			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
+			this.useGBox = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -72,6 +80,7 @@ namespace Merthsoft.TokenIDE {
 			((System.ComponentModel.ISupportInitialize)(this.leftMousePictureBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.spritePanel.SuspendLayout();
+			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// paletteBox
@@ -95,18 +104,16 @@ namespace Merthsoft.TokenIDE {
 			this.MaintainDim.Text = "Maintain Dim";
 			this.MaintainDim.UseVisualStyleBackColor = true;
 			// 
-			// DrawGrid
+			// drawGridBox
 			// 
-			this.DrawGrid.AutoSize = true;
-			this.DrawGrid.Checked = true;
-			this.DrawGrid.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.DrawGrid.Location = new System.Drawing.Point(95, 32);
-			this.DrawGrid.Name = "DrawGrid";
-			this.DrawGrid.Size = new System.Drawing.Size(73, 17);
-			this.DrawGrid.TabIndex = 17;
-			this.DrawGrid.Text = "Draw Grid";
-			this.DrawGrid.UseVisualStyleBackColor = true;
-			this.DrawGrid.CheckedChanged += new System.EventHandler(this.DrawGrid_CheckedChanged);
+			this.drawGridBox.AutoSize = true;
+			this.drawGridBox.Location = new System.Drawing.Point(95, 31);
+			this.drawGridBox.Name = "drawGridBox";
+			this.drawGridBox.Size = new System.Drawing.Size(73, 17);
+			this.drawGridBox.TabIndex = 17;
+			this.drawGridBox.Text = "Draw Grid";
+			this.drawGridBox.UseVisualStyleBackColor = true;
+			this.drawGridBox.CheckedChanged += new System.EventHandler(this.DrawGrid_CheckedChanged);
 			// 
 			// pixelSizeBox
 			// 
@@ -125,7 +132,7 @@ namespace Merthsoft.TokenIDE {
 			this.pixelSizeBox.Size = new System.Drawing.Size(40, 20);
 			this.pixelSizeBox.TabIndex = 16;
 			this.pixelSizeBox.Value = new decimal(new int[] {
-            5,
+            2,
             0,
             0,
             0});
@@ -253,6 +260,7 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// topPanel
 			// 
+			this.topPanel.Controls.Add(this.useGBox);
 			this.topPanel.Controls.Add(this.paletteChoice);
 			this.topPanel.Controls.Add(this.label3);
 			this.topPanel.Controls.Add(this.penWidthBox);
@@ -261,7 +269,7 @@ namespace Merthsoft.TokenIDE {
 			this.topPanel.Controls.Add(this.label1);
 			this.topPanel.Controls.Add(this.label2);
 			this.topPanel.Controls.Add(this.pixelSizeBox);
-			this.topPanel.Controls.Add(this.DrawGrid);
+			this.topPanel.Controls.Add(this.drawGridBox);
 			this.topPanel.Controls.Add(this.MaintainDim);
 			this.topPanel.Controls.Add(this.palettePanel);
 			this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -380,7 +388,10 @@ namespace Merthsoft.TokenIDE {
 			this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
-            this.saveAsToolStripMenuItem});
+            this.saveAsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.insertAndExitToolStripMenuItem,
+            this.copyToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
@@ -390,9 +401,47 @@ namespace Merthsoft.TokenIDE {
 			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
+			// 
+			// saveToolStripMenuItem
+			// 
+			this.saveToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
+			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.saveToolStripMenuItem.Text = "Save";
+			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			// 
+			// saveAsToolStripMenuItem
+			// 
+			this.saveAsToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
+			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.saveAsToolStripMenuItem.Text = "Save As...";
+			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator2
+			// 
+			this.toolStripSeparator2.Name = "toolStripSeparator2";
+			this.toolStripSeparator2.Size = new System.Drawing.Size(181, 6);
+			// 
+			// insertAndExitToolStripMenuItem
+			// 
+			this.insertAndExitToolStripMenuItem.Name = "insertAndExitToolStripMenuItem";
+			this.insertAndExitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+			this.insertAndExitToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.insertAndExitToolStripMenuItem.Text = "Insert and Exit";
+			this.insertAndExitToolStripMenuItem.Click += new System.EventHandler(this.insertAndExitToolStripMenuItem_Click);
+			// 
+			// copyToolStripMenuItem
+			// 
+			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
+			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+			this.copyToolStripMenuItem.Text = "Copy";
+			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -430,25 +479,40 @@ namespace Merthsoft.TokenIDE {
 			this.spritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.spritePanel.Location = new System.Drawing.Point(0, 145);
 			this.spritePanel.Name = "spritePanel";
-			this.spritePanel.Size = new System.Drawing.Size(706, 445);
+			this.spritePanel.Size = new System.Drawing.Size(706, 423);
 			this.spritePanel.TabIndex = 25;
 			// 
-			// saveToolStripMenuItem
+			// statusStrip1
 			// 
-			this.saveToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
-			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.saveToolStripMenuItem.Text = "Save";
-			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.outputLabel});
+			this.statusStrip1.Location = new System.Drawing.Point(0, 568);
+			this.statusStrip1.Name = "statusStrip1";
+			this.statusStrip1.Size = new System.Drawing.Size(706, 22);
+			this.statusStrip1.TabIndex = 1;
+			this.statusStrip1.Text = "statusStrip1";
 			// 
-			// saveAsToolStripMenuItem
+			// outputLabel
 			// 
-			this.saveAsToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
-			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.saveAsToolStripMenuItem.Text = "Save As...";
-			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
+			this.outputLabel.Name = "outputLabel";
+			this.outputLabel.Size = new System.Drawing.Size(71, 17);
+			this.outputLabel.Text = "outputLabel";
+			this.outputLabel.TextChanged += new System.EventHandler(this.outputLabel_TextChanged);
+			// 
+			// clearTextTimer
+			// 
+			this.clearTextTimer.Interval = 500;
+			this.clearTextTimer.Tick += new System.EventHandler(this.clearTextTimer_Tick);
+			// 
+			// useGBox
+			// 
+			this.useGBox.AutoSize = true;
+			this.useGBox.Location = new System.Drawing.Point(95, 47);
+			this.useGBox.Name = "useGBox";
+			this.useGBox.Size = new System.Drawing.Size(126, 17);
+			this.useGBox.TabIndex = 31;
+			this.useGBox.Text = "Use \"G\" Optimization";
+			this.useGBox.UseVisualStyleBackColor = true;
 			// 
 			// HexSprite
 			// 
@@ -456,6 +520,7 @@ namespace Merthsoft.TokenIDE {
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(706, 590);
 			this.Controls.Add(this.spritePanel);
+			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.topPanel);
 			this.Controls.Add(this.mainToolStrip);
 			this.Controls.Add(this.menuStrip1);
@@ -480,6 +545,8 @@ namespace Merthsoft.TokenIDE {
 			this.menuStrip1.PerformLayout();
 			this.spritePanel.ResumeLayout(false);
 			this.spritePanel.PerformLayout();
+			this.statusStrip1.ResumeLayout(false);
+			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -493,7 +560,7 @@ namespace Merthsoft.TokenIDE {
 		private System.Windows.Forms.PictureBox spriteBox;
 		private System.Windows.Forms.NumericUpDown pixelSizeBox;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.CheckBox DrawGrid;
+		private System.Windows.Forms.CheckBox drawGridBox;
 		private System.Windows.Forms.CheckBox MaintainDim;
 		private System.Windows.Forms.PictureBox paletteBox;
 		private System.Windows.Forms.ToolStrip mainToolStrip;
@@ -519,6 +586,13 @@ namespace Merthsoft.TokenIDE {
 		private Panel spritePanel;
 		private ToolStripMenuItem saveToolStripMenuItem;
 		private ToolStripMenuItem saveAsToolStripMenuItem;
+		private ToolStripSeparator toolStripSeparator2;
+		private ToolStripMenuItem insertAndExitToolStripMenuItem;
+		private ToolStripMenuItem copyToolStripMenuItem;
+		private StatusStrip statusStrip1;
+		private ToolStripStatusLabel outputLabel;
+		private Timer clearTextTimer;
+		private CheckBox useGBox;
 
 	}
 }

@@ -1197,6 +1197,9 @@ to include changes if they're better!
 		<Token byte="$67" string="TextColor(" style="Command" group="Drawing Commands" /> 
 		<Token byte="$68" string="Asm84CPrgm" />
 		<Token byte="$6C" string="BorderColor " style="Command" group="Graph Commands" />
+		<Token byte="$73" string="plottinydot">
+			<Alt string="tinydotplot"/>
+		</Token>
 		<Token byte="$74" string="Thin" group="Graph Styles" />
 		<Token byte="$75" string="Dot-Thin" group="Graph Styles" />
 	</Token>

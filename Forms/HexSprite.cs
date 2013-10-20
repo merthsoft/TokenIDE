@@ -17,12 +17,14 @@ using System.Runtime.InteropServices;
 
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
-		private const string XLIBPIC_HEADER = "xLIBPIC";
-		private const string XLIBBG_HEADER = "xLIBBG ";
+		private const string XLIBTILES_HEADER = "xLIBPIC";
+		private const string XLIBBGPIC_HEADER = "xLIBBG ";
 
 		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
+
+		private enum SaveType { Png, XLibTiles, XLibBGPicture }
 
 		Tool currentTool = Tool.Pencil;
 		ToolStripButton currentButton = null;
@@ -76,9 +78,22 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		int pixelSize = 5;
+		int pixelSize = 2;
 		bool performResizeFlag = true;
 		public string OutString = "";
+
+		private bool useGCharacter {
+			get {
+				return useGBox.Checked;
+			}
+			set {
+				useGBox.Checked = true;
+			}
+		}
+
+		private bool drawGrid {
+			get { return drawGridBox.Checked; }
+		}
 
 		int leftPixel = 1;
 		int rightPixel = 0;
@@ -92,15 +107,19 @@ namespace Merthsoft.TokenIDE {
 			MerthsoftExtensions.ColorFrom565(24,48,24), MerthsoftExtensions.ColorFrom565(17,34,17), MerthsoftExtensions.ColorFrom565(10,21,10),
 		};
 
-		List<Brush> BrushList = new List<Brush>();
-		List<Pen> PenList = new List<Pen>();
+		List<Color> XLibPalette = new List<Color>();
+
+		List<SolidBrush> CelticBrushes = new List<SolidBrush>();
+		List<SolidBrush> XLibBrushes = new List<SolidBrush>();
 
 		string fileName = null;
+		SaveType saveType;
 
 		public HexSprite() {
 			InitializeComponent();
 
 			Icon = Icon.FromHandle(Properties.Resources.icon_hexsprite.GetHicon());
+			outputLabel.Text = "";
 
 			sprite = new Sprite(8, 8);
 
@@ -114,9 +133,14 @@ namespace Merthsoft.TokenIDE {
 
 			CelticPalette.ForEach(c => {
 				SolidBrush brush = new SolidBrush(c);
-				BrushList.Add(brush);
-				PenList.Add(new Pen(brush));
+				CelticBrushes.Add(brush);
 			});
+
+			for (int i = 0; i < 256; i++) {
+				Color color = MerthsoftExtensions.ColorFrom8BitHLRGB(i);
+				XLibPalette.Add(color);
+				XLibBrushes.Add(new SolidBrush(color));
+			}
 
 			for (int i = 0; i < (int)Palette._max; i++) {
 				paletteChoice.Items.Add((Palette)i);
@@ -158,25 +182,36 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void createSpriteFromHex(string hex) {
-#if !DEBUG
-			try {
-#endif
+			//performResizeFlag = false;
+			string widthString;
+			int width;
+			do {
+				widthString = InputBox.Show("Sprite width:", SpriteWidth.ToString());
+				if (widthString == null) {
+					return;
+				}
+			} while (!int.TryParse(widthString, out width));
+			SpriteWidth = width;
+			int height;
+			Sprite newSprite;
 			switch (SelectedPalette) {
 				case Palette.BlackAndWhite:
-					sprite = new Sprite(hex, SpriteWidth, SpriteHeight, 1);
+					newSprite = new Sprite(hex, SpriteWidth, out height, 1);
 					break;
 				case Palette.CelticIICSE:
-					sprite = new Sprite(hex, SpriteWidth, SpriteHeight, CelticPalette.Count / 4);
+					newSprite = new Sprite(hex, SpriteWidth, out height, CelticPalette.Count / 4);
 					break;
 				default:
 					throw new Exception("Can only create sprite from hex in Black and White or Celtic palette modes.");
 			}
-#if !DEBUG
-			} catch (Exception ex) {
-				MessageBox.Show(ex.ToString());
-			}
-#endif
+			SpriteHeight = height;
+			//performResizeFlag = true;
+			sprite = newSprite;
 			spriteBox.Invalidate();
+
+			if (hex.Contains("G")) {
+				useGCharacter = true;
+			}
 		}
 
 		private void Width_ValueChanged(object sender, EventArgs e) {
@@ -230,68 +265,87 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Height = SpriteHeight * pixelSize;
 
 			try {
-				if (drawCanvas == null) {
+				if (drawCanvas == null || drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
 					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
 					sprite.Invalidate();
 				}
 
 				lock (drawCanvas) {
-					if (drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
-						drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
-						sprite.Invalidate();
+					if (previewSprite != null) {
+						//sprite.DirtyRectangle = Rectangle.Union(sprite.DirtyRectangle, previewSprite.DirtyRectangle);
 					}
 					drawSprite(drawCanvas, sprite);
-					
-					if (previewSprite != null) {
-						drawSprite(drawCanvas, previewSprite);
-					}
 
-					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-					e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-					e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
+
+					if (previewSprite != null) {
+						//previewSprite.Invalidate();
+						drawSprite(drawCanvas, previewSprite, false);
+					}
+				}
+
+				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+				e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
+
+				if (drawGrid && pixelSize > 1) {
+					using (Pen p = new Pen(Color.DarkGray)) {
+						p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+						for (int j = 0; j < SpriteHeight; j++) {
+							for (int i = 0; i < SpriteWidth; i++) {
+								Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+								e.Graphics.DrawRectangle(p, grid);
+							}
+						}
+					}
 				}
 			} catch {
 				throw;
 			}
 		}
 
-		private void drawSprite(Bitmap b, Sprite spriteToUse) {
+		private void drawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true) {
 			Rectangle drawBounds = spriteToUse.DirtyRectangle;
 
 			if (drawBounds == Rectangle.Empty) { return; }
 
-				BitmapData data = b.LockBits(drawBounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-				int stride = data.Stride;
-				int[] dataToCopy = new int[data.Height * data.Stride / 4];
-				Marshal.Copy(data.Scan0, dataToCopy, 0, dataToCopy.Length);
-				for (int j = 0; j < drawBounds.Height; j++) {
-					for (int i = 0; i < drawBounds.Width; i++) {
-						int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
+			BitmapData data = b.LockBits(drawBounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+			int stride = data.Stride;
+			int[] dataToCopy = new int[data.Height * data.Stride / 4];
+			Marshal.Copy(data.Scan0, dataToCopy, 0, dataToCopy.Length);
+			for (int j = 0; j < drawBounds.Height; j++) {
+				for (int i = 0; i < drawBounds.Width; i++) {
+					//if (!clearDirty) {
+					//    dataToCopy[i + j * data.Stride / 4] = Color.HotPink.ToArgb();
+					//    continue;
+					//}
+					int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
 						
-						Color drawColor = Color.White;
-						if (paletteIndex == -1) { drawColor = Color.Transparent;  } else {
-							switch (SelectedPalette) {
-								case Palette.BlackAndWhite:
-									drawColor = paletteIndex == 0 ? Color.White : Color.Black;
-									break;
-								case Palette.CelticIICSE:
-									drawColor = CelticPalette[paletteIndex];
-									break;
-								case Palette.xLIBC:
-									drawColor = MerthsoftExtensions.ColorFrom8BitHL(paletteIndex);
-									break;
-								default:
-									break;
-							}
+					Color drawColor = Color.White;
+					if (paletteIndex == -1) { continue; } else {
+						switch (SelectedPalette) {
+							case Palette.BlackAndWhite:
+								drawColor = paletteIndex == 0 ? Color.White : Color.Black;
+								break;
+							case Palette.CelticIICSE:
+								drawColor = CelticPalette[paletteIndex];
+								break;
+							case Palette.xLIBC:
+								drawColor = XLibPalette[paletteIndex];
+								break;
+							default:
+								break;
 						}
-
-						dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
 					}
-				}
-				Marshal.Copy(dataToCopy, 0, data.Scan0, dataToCopy.Length);
-				b.UnlockBits(data);
 
-			sprite.ClearDirtyRectangle();
+					dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
+				}
+			}
+			Marshal.Copy(dataToCopy, 0, data.Scan0, dataToCopy.Length);
+			b.UnlockBits(data);
+
+			//if (clearDirty) {
+				sprite.ClearDirtyRectangle();
+			//}
 		}
 
 		private void handleMouse(MouseEventArgs e) {
@@ -413,18 +467,32 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void createPreviewSprite() {
+			Rectangle drawRect = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
+			Rectangle oldRectangle = Rectangle.Empty;
+			
+			if (previewSprite != null) {
+				oldRectangle = previewSprite.DirtyRectangle;
+				drawRect = oldRectangle;
+			}
+
 			//previewSprite = new int[spriteWidth, spriteHeight];
 			previewSprite = new Sprite(SpriteWidth, SpriteHeight);
-			for (int j = 0; j < SpriteHeight; j++) {
-				for (int i = 0; i < SpriteWidth; i++) {
+			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
+				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
 					previewSprite[i, j] = -1;
 				}
+			}
+			
+			previewSprite.ClearDirtyRectangle();
+			if (oldRectangle != Rectangle.Empty) {
+				previewSprite.DirtyRectangle = oldRectangle;
 			}
 		}
 
 		private void copyPreviewSprite() {
-			for (int j = 0; j < SpriteHeight; j++) {
-				for (int i = 0; i < SpriteWidth; i++) {
+			Rectangle drawRect = previewSprite.DirtyRectangle;
+			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
+				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
 					if (previewSprite[i, j] != -1) {
 						sprite[i, j] = previewSprite[i, j];
 					}
@@ -478,11 +546,6 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Invalidate();
 		}
 
-		private void InsertButton_Click(object sender, EventArgs e) {
-			OutString = getHex();
-			Close();
-		}
-
 		private string getHex() {
 			StringBuilder bin = new StringBuilder();
 			for (int j = 0; j < SpriteHeight; j++) {
@@ -502,6 +565,7 @@ namespace Merthsoft.TokenIDE {
 							line.Append(sprite[i, j].ToString("X1"));
 							break;
 						case Palette.xLIBC:
+							line.Append(sprite[i, j].ToString("X2"));
 							break;
 						default:
 							break;
@@ -512,24 +576,24 @@ namespace Merthsoft.TokenIDE {
 					line = new StringBuilder(HexHelper.BinToHex(line.ToString()));
 				}
 				// Try to backtrack and add G
-				//if (HasGCharacter) {
-				//    int lineWidth = line.Length;
-				//    if (line[lineWidth - 1] == '0') {
-				//        int zeroCount = 1;
-				//        for (int k = lineWidth - 2; k >= 0; k--) {
-				//            if (line[k] == '0') {
-				//                zeroCount++;
-				//            } else {
-				//                break;
-				//            }
-				//        }
+				if (useGCharacter) {
+					int lineWidth = line.Length;
+					if (line[lineWidth - 1] == '0') {
+						int zeroCount = 1;
+						for (int k = lineWidth - 2; k >= 0; k--) {
+							if (line[k] == '0') {
+								zeroCount++;
+							} else {
+								break;
+							}
+						}
 
-				//        if (zeroCount > 1) {
-				//            line.Remove(lineWidth - zeroCount, zeroCount);
-				//            line.Append('G');
-				//        }
-				//    }
-				//}
+						if (zeroCount > 1) {
+							line.Remove(lineWidth - zeroCount, zeroCount);
+							line.Append('G');
+						}
+					}
+				}
 
 				bin.Append(line);
 			}
@@ -540,6 +604,56 @@ namespace Merthsoft.TokenIDE {
 		private void paletteBox_Paint(object sender, PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			drawPalette(g);
+
+			//using (Bitmap b = new Bitmap(960, 160)) {
+			//    using (Graphics g1 = Graphics.FromImage(b)) {
+			//        drawxLibPalette(g1);
+			//    }
+			//    b.Save("rgbhlpalette.png");
+			//}
+		}
+
+		//private void drawxLibPalette(Graphics g) {
+		//    int boxWidth;
+		//    int boxHeight;
+		//    int colorCount;
+		//    int maxWidth;
+
+		//    boxWidth = 20;
+		//    boxHeight = 20;
+		//    colorCount = 256;
+		//    maxWidth = 640;
+
+		//    int paletteX = 0;
+		//    int paletteY = 0;
+
+		//    try {
+		//        for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
+		//            Color c = XLibPalette[colorIndex];
+		//            Brush brush = XLibBrushes[colorIndex];
+		//            g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
+		//            Brush newVariable = getBrightness(c) > 127 ? Brushes.Black : Brushes.White;
+		//            Font f = new System.Drawing.Font(Font.FontFamily, Font.Size - 2.25f);
+		//            g.DrawString(string.Format("{0}", colorIndex), f, newVariable, paletteX, paletteY);
+		//            g.DrawString(string.Format("0x{0:X2}", colorIndex), f, newVariable, paletteX, paletteY + f.Height);
+
+		//            paletteX += boxWidth;
+		//            if (paletteX >= maxWidth) {
+		//                paletteX = 0;
+		//                paletteY += boxHeight;
+		//            }
+		//        }
+		//    } catch {
+		//        throw;
+		//    }
+		//}
+
+		private double getBrightness(Color c) {
+			double red = c.R;
+			double green = c.G;
+			double blue = c.B;
+
+			return red * 0.299 + green * 0.587 + blue * 0.114;
 		}
 
 		private void drawPalette(Graphics g) {
@@ -569,13 +683,11 @@ namespace Merthsoft.TokenIDE {
 
 					if (SelectedPalette == Palette.CelticIICSE) {
 						c = CelticPalette[colorIndex];
-						g.FillRect(BrushList[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
+						g.FillRect(CelticBrushes[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 						g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 					} else {
-						c = MerthsoftExtensions.ColorFrom8BitHL(colorIndex);
-						using (SolidBrush brush = new SolidBrush(c)) {
-							g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-						}
+						SolidBrush brush = XLibBrushes[colorIndex];
+						g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 					}
 
 					paletteX += boxWidth;
@@ -592,10 +704,20 @@ namespace Merthsoft.TokenIDE {
 		private void paletteChoice_SelectedIndexChanged(object sender, EventArgs e) {
 			pushHistory();
 
-			palettePanel.Visible = SelectedPalette != Palette.BlackAndWhite;
-			paletteBox.Invalidate();
-			leftMousePictureBox.Invalidate();
-			rightMousePictureBox.Invalidate();
+			switch (SelectedPalette) {
+				case Palette.BlackAndWhite:
+					togglePalette(false);
+					toggleHexOutput(true);
+					break;
+				case Palette.CelticIICSE:
+					togglePalette(true);
+					toggleHexOutput(true);
+					break;
+				case Palette.xLIBC:
+					togglePalette(true);
+					toggleHexOutput(false);
+					break;
+			}
 
 			// If you're changing palettes, just give up for now
 			// [TODO] Make this smarter?
@@ -616,6 +738,21 @@ namespace Merthsoft.TokenIDE {
 
 			sprite.Invalidate();
 			spriteBox.Invalidate();
+		}
+
+		private void toggleHexOutput(bool enabled) {
+			useGBox.Enabled = enabled;
+			insertAndExitToolStripMenuItem.Enabled = enabled;
+			copyToolStripMenuItem.Enabled = enabled;
+		}
+
+		private void togglePalette(bool enabled) {
+			palettePanel.Visible = enabled;
+			if (enabled) {
+				paletteBox.Invalidate();
+				leftMousePictureBox.Invalidate();
+				rightMousePictureBox.Invalidate();
+			}
 		}
 
 		private void paletteBox_MouseClick(object sender, MouseEventArgs e) {
@@ -674,7 +811,20 @@ namespace Merthsoft.TokenIDE {
 				using (Bitmap image = new Bitmap(fileName)) {
 					spriteWidthBox.Value = image.Width;
 					spriteHeightBox.Value = image.Height;
-					sprite = new Sprite(image.PalettizeImage(CelticPalette, 0));
+					switch (SelectedPalette) {
+						case Palette.BlackAndWhite:
+							image.PosterizeImage();
+							sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
+							break;
+						case Palette.CelticIICSE:
+							sprite = new Sprite(image, CelticPalette, 0);
+							break;
+						case Palette.xLIBC:
+							sprite = new Sprite(image, XLibPalette);
+							break;
+					}
+					
+					saveType = SaveType.Png;
 				}
 			}
 			spriteBox.Invalidate();
@@ -687,19 +837,21 @@ namespace Merthsoft.TokenIDE {
 				appVar = new AppVar8x(preader);
 			}
 			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
-			if (headerString == XLIBPIC_HEADER) {
-				openxLibPic(appVar);
-			} else if (headerString == XLIBBG_HEADER) {
+			if (headerString == XLIBTILES_HEADER) {
+				saveType = SaveType.XLibTiles;
+				openxLibTiles(appVar);
+			} else if (headerString == XLIBBGPIC_HEADER) {
+				saveType = SaveType.XLibBGPicture;
 				openxLibBG(appVar);
 			}
 		}
 
 		private void openxLibBG(AppVar8x appVar) {
-			sprite = new Sprite(80, 60);
-
 			SpriteWidth = 80;
 			SpriteHeight = 60;
 
+			sprite = new Sprite(80, 60);
+			
 			SelectedPalette = Palette.xLIBC;
 
 			int x = 0;
@@ -714,11 +866,11 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		private void openxLibPic(AppVar8x appVar) {
-			sprite = new Sprite(128, 64);
-
+		private void openxLibTiles(AppVar8x appVar) {
 			SpriteWidth = 128;
 			SpriteHeight = 64;
+
+			sprite = new Sprite(128, 64);
 
 			SelectedPalette = Palette.xLIBC;
 
@@ -747,7 +899,7 @@ namespace Merthsoft.TokenIDE {
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.8xv", "*.8cv");
+			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
 			fileName = f.FileName;
@@ -818,45 +970,42 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void leftMousePictureBox_Paint(object sender, PaintEventArgs e) {
-			Color c;
+			Brush brush;
 
 			if (SelectedPalette == Palette.CelticIICSE) {
-				c = CelticPalette[leftPixel];
+				brush = CelticBrushes[leftPixel];
 			} else {
-				c = MerthsoftExtensions.ColorFrom8BitHL(leftPixel);
+				brush = XLibBrushes[leftPixel];
 			}
 
-			using (Brush brush = new SolidBrush(c)) {
-				e.Graphics.FillRectangle(brush, e.ClipRectangle);
-			}
+			e.Graphics.FillRectangle(brush, e.ClipRectangle);
 		}
 
 		private void rightMousePictureBox_Paint(object sender, PaintEventArgs e) {
-			Color c;
+			Brush brush;
 
 			if (SelectedPalette == Palette.CelticIICSE) {
-				c = CelticPalette[rightPixel];
+				brush = CelticBrushes[rightPixel];
 			} else {
-				c = MerthsoftExtensions.ColorFrom8BitHL(rightPixel);
+				brush = XLibBrushes[rightPixel];
 			}
 
-			using (Brush brush = new SolidBrush(c)) {
-				e.Graphics.FillRectangle(brush, e.ClipRectangle);
-			}
+			e.Graphics.FillRectangle(brush, e.ClipRectangle);
 		}
 
 		private bool saveDialog() {
 			SaveFileDialog sfd = new SaveFileDialog();
 			sfd.AddFilter("PNG", "*.png");
+			sfd.AddFilter("xLIB Tiles", "*.8xv");
 			sfd.AddFilter("xLIB Picture", "*.8xv");
 			if (fileName != null) {
-
 				sfd.FileName = new FileInfo(fileName).GetFileName();
 			}
 
 			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return false; }
-
+			
 			fileName = sfd.FileName;
+			saveType = (SaveType)(sfd.FilterIndex - 1);
 			return true;
 		}
 
@@ -871,22 +1020,54 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void saveFile() {
-			if (fileName.EndsWith(".8xv") || fileName.EndsWith(".8cv")) {
-				saveXLibPic();
+			if (saveType == SaveType.XLibTiles) {
+				saveXLibTiles();
+			} else if (saveType == SaveType.XLibBGPicture) {
+				saveXLibBGPic();
 			} else {
 				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
 				//using (Graphics g = Graphics.FromImage(b)) {
+					sprite.Invalidate();
 					drawSprite(b, sprite);
 					b.Save(fileName);
 				}
 			}
+			outputLabel.Text = "File saved.";
 		}
 
-		private void saveXLibPic() {
+
+		private void saveXLibBGPic() {
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
-				ms.Write(Encoding.ASCII.GetBytes(XLIBPIC_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBPIC_HEADER));
+				ms.Write(Encoding.ASCII.GetBytes(XLIBBGPIC_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBBGPIC_HEADER));
+
+				int x = 0;
+				int y = 0;
+
+				for (int i = 0; i < sprite.Width * sprite.Height; i++) {
+					byte data = (byte)sprite[x, y];
+					ms.WriteByte(data);
+					y++;
+					if (y == 60) {
+						y = 0;
+						x++;
+					}
+				}
+			}
+
+			appVar.SetRawData(buffer);
+			using (FileStream fs = new FileStream(fileName, FileMode.Create))
+			using (BinaryWriter bw = new BinaryWriter(fs)) {
+				appVar.Save(bw);
+			}
+		}
+
+		private void saveXLibTiles() {
+			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
+			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
+			using (MemoryStream ms = new MemoryStream(buffer)) {
+				ms.Write(Encoding.ASCII.GetBytes(XLIBTILES_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBTILES_HEADER));
 				
 				int x = 0;
 				int y = 0;
@@ -918,6 +1099,29 @@ namespace Merthsoft.TokenIDE {
 			using (BinaryWriter bw = new BinaryWriter(fs)) {
 				appVar.Save(bw);
 			}
+		}
+
+		private void insertAndExitToolStripMenuItem_Click(object sender, EventArgs e) {
+			OutString = getHex();
+			Close();
+		}
+
+		private void copyToolStripMenuItem_Click(object sender, EventArgs e) {
+			Clipboard.SetText(getHex(), TextDataFormat.Text);
+			outputLabel.Text = "Hex copied to clipboard.";
+		}
+
+		private void outputLabel_TextChanged(object sender, EventArgs e) {
+			clearTextTimer.Start();
+		}
+
+		private void clearTextTimer_Tick(object sender, EventArgs e) {
+			try {
+				Invoke((Action)delegate {
+					outputLabel.Text = "";
+					clearTextTimer.Stop();
+				});
+			} catch { }
 		}
 	}
 }

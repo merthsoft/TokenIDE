@@ -389,24 +389,28 @@ namespace Merthsoft.TokenIDE {
 #if !DEBUG
 			try {
 #endif
-				HexSprite s = new HexSprite();
+			HexSprite s = new HexSprite();
 
-				if (color) {
-					s.SpriteHeight = s.SpriteWidth = 32;
-					s.SelectedPalette = HexSprite.Palette.CelticIICSE;
-				} else {
-					s.SpriteHeight = s.SpriteWidth = 8;
-					s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
-				}
+			if (color) {
+				s.SpriteHeight = s.SpriteWidth = 32;
+				s.SelectedPalette = HexSprite.Palette.CelticIICSE;
+			} else {
+				s.SpriteHeight = s.SpriteWidth = 8;
+				s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
+			}
 
-				if (ew.SelectedText != "") {
-					s.Hex = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
+			if (ew.SelectedText != "") {
+				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
+				try { s.Hex = hexString; } catch { 
+					MessageBox.Show(string.Format("Unable to create sprite from {0}.", hexString));
+					return;
 				}
+			}
 
-				s.ShowDialog();
-				if (s.OutString != "") {
-					ew.SelectedText = s.OutString;
-				}
+			s.ShowDialog();
+			if (s.OutString != "") {
+				ew.SelectedText = s.OutString;
+			}
 #if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
