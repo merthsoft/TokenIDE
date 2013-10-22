@@ -87,10 +87,8 @@ namespace Merthsoft.TokenIDE {
 				byte[] data = _program.Data;
 				if (data != null) {
 					UpdateBytesLabel(data.Length);
-					//BytesBox.Text = BitConverter.ToString(data).Replace("-", "").Replace("3F", Environment.NewLine);
 					List<List<TokenData.TokenDictionaryEntry>> tokens;
 					ProgramText = TokenData.Detokenize(data, out tokens);
-					//UpdateTokensBox(tokens);
 				}
 				archivedCheckBox.Checked = _program.Archived;
 				if (_program is Prog8x) {
@@ -106,33 +104,9 @@ namespace Merthsoft.TokenIDE {
 			set;
 		}
 
-		//private string _FileName;
 		public string FileName {
-			get ;
-			//{
-			//    return _FileName;
-			//}
+			get;
 			set; 
-			//{
-			//    if (string.IsNullOrWhiteSpace(value)) {
-			//        _FileName = "";
-			//    } else {
-			//        FileInfo fileInfo = new FileInfo(value);
-			//        string ext = fileInfo.Extension;
-			//        string fileInfoName = fileInfo.Name;
-			//        if (!string.IsNullOrWhiteSpace(ext)) {
-			//            _FileName = fileInfoName.Substring(0, fileInfoName.Length - ext.Length);
-			//        } else {
-			//            _FileName = fileInfoName;
-			//        }
-			//        //if (ParentTabPage != null) {
-			//        //    ParentTabPage.Text = _FileName;
-			//        //}
-			//        if (!string.IsNullOrWhiteSpace(fileInfo.DirectoryName)) {
-			//            SaveDirectory = fileInfo.DirectoryName;
-			//        }
-			//    }
-			//}
 		}
 
 		private string _programName;
@@ -188,14 +162,6 @@ namespace Merthsoft.TokenIDE {
 
 				styles.Add("Error", ErrorStyle.Default);
 				styles.Add("ErrorString", new ErrorStyle(styles["String"] ?? ErrorStyle.Default));
-				
-				//Font newFont = new Font(TokenData.FontFamily, TokenData.FontSize);
-				
-				//if (font != null && !font.Equals(newFont)) { font.Dispose(); }
-				//font = newFont;
-
-				//ProgramTextBox.Font = font;
-				//TokensBox.Font = font;
 			}
 		}
 
@@ -214,14 +180,6 @@ namespace Merthsoft.TokenIDE {
 			get { return ProgramTextBox.Lines.ToArray(); }
 		}
 
-		//public string TokensText {
-		//    get { return TokensBox.Text; }
-		//}
-
-		//public string[] TokensLines {
-		//    get { return TokensBox.Lines.ToArray(); }
-		//}
-
 		public string SelectedText {
 			get { return ProgramTextBox.SelectedText; }
 			set { ProgramTextBox.SelectedText = value; }
@@ -230,10 +188,6 @@ namespace Merthsoft.TokenIDE {
 		private int LastLength { get; set; }
 
 		private bool StringFlag { get; set; }
-
-		//public string ByteText {
-		//    get { return BytesBox.Text; }
-		//}
 
 		public byte[] ByteData { get { return GenerateByteData(false, true); } }
 
@@ -244,8 +198,6 @@ namespace Merthsoft.TokenIDE {
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {
 			StringBuilder sb = new StringBuilder();
-			//using (StringReader sr = new StringReader(ProgramText)) {
-			//string line;
 			int lineNumber = 0;
 			Dictionary<string, string> directives = new Dictionary<string, string>();
 			Dictionary<string, string> backward = new Dictionary<string, string>();
@@ -253,34 +205,34 @@ namespace Merthsoft.TokenIDE {
 			Stack<bool> ifFlag = new Stack<bool>();
 			tokens = null;
 			try {
-				//while ((line = sr.ReadLine()) != null) {
 				for (int i = 0; i < ProgramTextBox.Lines.Count; i++) {
 					string line = ProgramTextBox.Lines[i];
 					lineNumber++;
-					if (!line.StartsWith(CommentString.ToString())) {
-						if (!line.StartsWith(DirectiveString.ToString())) {
-							foreach (string key in directives.Keys) {
-								if (directives[key] != null) {
-									line = line.Replace(key, directives[key]);
-								}
-							}
-							if (ifFlag.Count == 0 || ifFlag.Peek()) {
-								if (i != ProgramTextBox.Lines.Count - 1) {
-									sb.AppendLine(line);
-								} else {
-									sb.Append(line);
-								}
-							} else if (newLinesForComments) {
-								if (i != ProgramTextBox.Lines.Count - 1) {
-									sb.AppendLine();
-								}
-							}
-						} else {
-							HandlePreproc(line, directives, null, ref ifCount, ifFlag, breakOnError);
-							if (newLinesForComments) sb.AppendLine();
+
+					if (line.StartsWith(CommentString.ToString())) {
+						if (newLinesForComments) { sb.AppendLine(); }
+						continue;
+					}
+
+					if (line.StartsWith(DirectiveString.ToString())) {
+						HandlePreproc(line, directives, ref ifCount, ifFlag, breakOnError);
+						if (newLinesForComments) { sb.AppendLine(); }
+						continue;
+					}
+
+					foreach (string key in directives.Keys) {
+						if (directives[key] != null) {
+							line = line.Replace(key, directives[key]);
 						}
-					} else {
-						if (newLinesForComments) sb.AppendLine();
+					}
+					if (ifFlag.Count == 0 || ifFlag.Peek()) {
+						if (i == ProgramTextBox.Lines.Count - 1) {
+							sb.Append(line);
+						} else {
+							sb.AppendLine(line);
+						}
+					} else if (newLinesForComments && i != ProgramTextBox.Lines.Count - 1) {
+						sb.AppendLine();
 					}
 				}
 				if (ifCount != 0) {
@@ -298,7 +250,6 @@ namespace Merthsoft.TokenIDE {
 				return TokenData.Tokenize(programText, out _numTokens, out tokens, breakOnError);
 			} catch (TokenizationException ex) {
 				MessageBox.Show(ex.Message, "Building file failed.");
-				//ProgramTextBox.Selection = new Range(ProgramTextBox
 				ProgramTextBox.Selection = new Range(ProgramTextBox, ex.Location, ex.InvalidString.Length);
 				ProgramTextBox.DoSelectionVisible();
 				return null;
@@ -308,11 +259,12 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		private void HandlePreproc(string line, Dictionary<string, string> directives, Dictionary<string, string> reverseLookup, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
+		private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
 			if (string.IsNullOrWhiteSpace(line)) {
 				return;
 			}
 
+			Dictionary<string, string> reverseLookup = null;
 			string[] directive = line.Split(new[] {' '});
 			string replaceString = null;
 			if (directive.Length >= 3) {
@@ -323,7 +275,11 @@ namespace Merthsoft.TokenIDE {
 
 			switch (directive[0].Remove(0, DirectiveString.Length)) {
 				case "define":
-					directives.Add(directive[1], replaceString);
+					if (directives.ContainsKey(directive[1])) {
+						directives[directive[1]] = replaceString ?? directives[directive[1]];
+					} else {
+						directives.Add(directive[1], replaceString);
+					}
 					if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Add(replaceString, directive[1]); }
 					break;
 				case "undefine":
@@ -382,6 +338,8 @@ namespace Merthsoft.TokenIDE {
 			//readOnlyPanel.Height = splitContainer1.Panel1.Height - BytesBox.Height;
 			StringFlag = false;
 			New = true;
+
+			ProgramTextBox.HotkeysMapping[Keys.Control | Keys.Y] = FCTBAction.Redo;
 		}
 
 		private void ProgramText_TextChanged(object sender, TextChangedEventArgs e) {
@@ -406,13 +364,12 @@ namespace Merthsoft.TokenIDE {
 
 		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range) {
 			Dictionary<string, string> PreProcForward = new Dictionary<string, string>();
-			Dictionary<string, string> PreProcBackward = new Dictionary<string, string>();
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
 
 			// Do all the preproc up to this point?
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
-			    HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, PreProcBackward, ref ifCount, ifFlag, false);
+			    HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, ref ifCount, ifFlag, false);
 			}
 			
 			Place place = new Place(0, range.Start.iLine);
@@ -441,9 +398,8 @@ namespace Merthsoft.TokenIDE {
 						}
 						string lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, token.Length);
 
-						if (PreProcBackward.ContainsKey(token) && token != lineText) {
-							//lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
-							token = PreProcBackward[token];
+						if (PreProcForward.ContainsValue(token) && token != lineText) {
+							token = PreProcForward.First(v => v.Value == token && v.Key == lineText).Key;
 						} else if (lineText != token) {
 							foreach (string alt in entry.Alts) {
 								lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
@@ -490,29 +446,7 @@ namespace Merthsoft.TokenIDE {
 			//ProgramTextBox.Invalidate();
 		}
 
-//☃☃☃☃☃☃
-//Disp "☃☃☃☃☃☃☃☃"
-//Disp "\Disp "
-//Text(9,16,sub(" \|>=>|>Sigma\|<=<<|3",F,1
-
-		//private void UpdateTokensBox(List<List<TokenData.TokenDictionaryEntry>> tokens) {
-		//    StringBuilder sb = new StringBuilder(LastLength + 1024);
-			
-		//    foreach (var line in tokens) {
-		//        foreach (var entry in line) {
-		//            sb.Append("[");
-		//            sb.Append(entry.Name);
-		//            sb.Append("]");
-		//        };
-		//        sb.AppendLine();
-		//    }
-		//    sb.Length -= Environment.NewLine.Length;
-		//    LastLength = sb.Length;
-		//    TokensBox.Text = sb.ToString();
-		//}
-
 		public void RefreshBytes(bool setProgramText = true, byte[] data = null) {
-			//byte[] data = TokenData.Tokenize(ProgramTextBox.Text, out _numTokens);
 			List<List<TokenData.TokenDictionaryEntry>> tokens;
 			if (data == null) {
 				data = GenerateByteData(true, false, out tokens);
@@ -568,10 +502,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void ProgramTextBox_Scroll(object sender, ScrollEventArgs e) {
-			if (e.ScrollOrientation == ScrollOrientation.VerticalScroll) {
-				//TokensBox.VerticalScroll.Value = e.NewValue;
-				//TokensBox.Invalidate();
-			}
 		}
 
 		private void ProgramTextBox_SelectionChangedDelayed(object sender, EventArgs e) {

@@ -770,11 +770,23 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void changeSaveDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
-			var fbd = new FolderSelectDialog() {
-				Title = "Save Directory",
+			//var fbd = new FolderSelectDialog() {
+			//    Title = "Save Directory",
+			//    InitialDirectory = Environment.CurrentDirectory,
+			//};
+			//if (!fbd.ShowDialog()) {
+			//    return;
+			//}
+
+			var fbd = new OpenFileDialog() {
 				InitialDirectory = Environment.CurrentDirectory,
+				ValidateNames = false,
+				CheckFileExists = false,
+				CheckPathExists = false,
+				FileName = "Folder Selection.",
 			};
-			if (!fbd.ShowDialog()) {
+
+			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
 				return;
 			}
 

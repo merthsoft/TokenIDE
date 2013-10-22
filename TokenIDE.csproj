@@ -332,7 +332,7 @@
       <Project>{762E8292-3E30-41CE-B874-BB6D9D0319DC}</Project>
       <Name>Merthsoft.DynamicConfig</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\FastColoredTextBox\FastColoredTextBox.csproj">
+    <ProjectReference Include="FastColoredTextBox\FastColoredTextBox.csproj">
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
     </ProjectReference>
