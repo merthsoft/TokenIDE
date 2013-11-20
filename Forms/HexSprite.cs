@@ -288,12 +288,22 @@ namespace Merthsoft.TokenIDE {
 				e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
 
 				if (drawGrid && pixelSize > 1) {
-					using (Pen p = new Pen(Color.DarkGray)) {
-						p.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+					using (Pen smallGridPen = new Pen(Color.DarkGray)) {
+						smallGridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 						for (int j = 0; j < SpriteHeight; j++) {
 							for (int i = 0; i < SpriteWidth; i++) {
 								Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-								e.Graphics.DrawRectangle(p, grid);
+								e.Graphics.DrawRectangle(smallGridPen, grid);
+							}
+						}
+					}
+
+					using (Pen largeGridPen = new Pen(Color.Black)) {
+						largeGridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+						for (int j = 0; j < SpriteHeight; j += 8) {
+							for (int i = 0; i < SpriteWidth; i += 8) {
+								Rectangle grid = new Rectangle(i * pixelSize, j * pixelSize, pixelSize * 8, pixelSize * 8);
+								e.Graphics.DrawRectangle(largeGridPen, grid);
 							}
 						}
 					}

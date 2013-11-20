@@ -672,7 +672,7 @@ to include changes if they're better!
 		<Token byte="$0A" string="randInt(" />
 		<Token byte="$0B" string="randBin(" />
 		<Token byte="$0C" string="sub(" />
-		<Token byte="$0D" string="stdDev" />
+		<Token byte="$0D" string="stdDev(" />
 		<Token byte="$0E" string="variance(" />
 		<Token byte="$0F" string="inString(" />
 		<Token byte="$10" string="normalcdf(" />

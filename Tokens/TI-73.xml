@@ -538,7 +538,7 @@ to include changes if they're better!
 		<Token byte="$02" string="gcd(" />
 		<Token byte="$03" string="randInt(" />
 		<Token byte="$04" string="sub(" />
-		<Token byte="$05" string="stdDev" />
+		<Token byte="$05" string="stdDev(" />
 		<Token byte="$06" string="variance(" />
 		<Token byte="$07" string="inString(" />
 		<Token byte="$08" string="coin(" />

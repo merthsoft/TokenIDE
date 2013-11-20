@@ -16,6 +16,9 @@
 			<Token byte="@0">
 				<Token byte="@," string="BufSpriteSelect(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:BufSpriteSelect" group="Celtic" />
 			</Token>
+			<Token byte="@2">
+				<Token byte="@," string="DispColor(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:DispColor" group="Celtic" />
+			</Token>
 		</Token>
 		<Token byte="@2" string="InsertLine(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:InsertLine" group="Celtic" />
 		<Token byte="@3" string="SpecialChars(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:SpecialChars" group="Celtic" />
@@ -33,22 +36,113 @@
 		<Token byte="$26">
 			<Token byte="@0"><Token byte="@,">
 				<Token byte="@0" string="GetxLIBVersion(" style="Hyrbid" site="" group="xLib" />
-				<Token byte="@1"><Token byte="@," string="SetUpGraphics(" style="Hyrbid" site="" group="xLib">
-					<Token byte="@0" string="SetFullResolution(" style="Hyrbid" site="" group="xLib" />
-					<Token byte="@1" string="SetHalfResolution(" style="Hyrbid" site="" group="xLib" />
-				</Token></Token>
+				<Token byte="@1">
+					<Token byte="@," string="SetUpGraphics(" style="Hyrbid" site="" group="xLib">
+						<Token byte="@0"><Token byte="@," string="SetFullResolution(" style="Hyrbid" site="" group="xLib" comment="SetFullResolution(REDRAW_STATUS_BAR" /></Token>
+						<Token byte="@1" string="SetHalfResolution(" style="Hyrbid" site="" group="xLib" />
+					</Token>
+				</Token>
 				<Token byte="@2"><Token byte="@," string="ChangeSpeed(" style="Hyrbid" site="" group="xLib">
 					<Token byte="@0" string="SetSpeed6MHz(" style="Hyrbid" site="" group="xLib" />
-					<Token byte="@1" string="SetSpeet15MHz(" style="Hyrbid" site="" group="xLib" />
+					<Token byte="@1" string="SetSpeed15MHz(" style="Hyrbid" site="" group="xLib" />
 				</Token></Token>
+				<Token byte="@3"><Token byte="@," string="SetupColorMode(" style="Hyrbid" site="" group="xLib" comment="SetupColorMode(VALUE" /></Token>
 			</Token></Token>
 		
-			<Token byte="@1"><Token byte="@," string="UserVariables(" style="Hyrbid" site="" group="xLib" /></Token>
-			<Token byte="@2"><Token byte="@," string="GetKey(" style="Hyrbid" site="" group="xLib" /></Token>
-			<Token byte="@3"><Token byte="@," string="DrawMap(" style="Hyrbid" site="" group="xLib" /></Token>
-			<Token byte="@4"><Token byte="@," string="DrawSprite(" style="Hyrbid" site="" group="xLib" /></Token>
-			<Token byte="@5"><Token byte="@," string="ManagePic(" style="Hyrbid" site="" group="xLib" /></Token>
-			<Token byte="@6"><Token byte="@," string="DrawString(" style="Hyrbid" site="" group="xLib" /></Token>
+			<Token byte="@1">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="GetUservar(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@1"><Token byte="@," string="SetUservar(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="AddToUservar(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="SubFromUservar(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@2">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="GetKeyCheckList(" style="Hyrbid" site="" group="xLib">
+						<Token byte="@0" string="GetKey(" style="Hyrbid" site="" group="xLib" />
+					</Token></Token>
+					<Token byte="@1"><Token byte="@," string="GetKeyArrows(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="GetKeyArrowsDiagonals(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="GetKeyArrowsCheckTile(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@4"><Token byte="@," string="GetKeyArrowsDiagonalsCheckTile(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@3">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="DrawMapA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@1"><Token byte="@," string="DrawMapB(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="DrawMap_GetTileA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="DrawMap_GetTileB(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@4"><Token byte="@," string="DrawMap_SetTile(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@5"><Token byte="@," string="DrawMap_ReplaceTile(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@6"><Token byte="@," string="DrawMap_GetSectionA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@7"><Token byte="@," string="DrawMap_GetSectionB(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@4">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="DrawSpriteA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@1"><Token byte="@," string="DrawSpriteB(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="DrawSpriteList8x8A(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="DrawSpriteList8x8B(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@4"><Token byte="@," string="DrawSpriteTileBGA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@5"><Token byte="@," string="DrawSpriteTileBGB(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@5">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="LoadTilePic(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="LoadBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="DisplayBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@4"><Token byte="@," string="DrawPicSectionA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@5"><Token byte="@," string="DrawPicSectionB(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@6"><Token byte="@," string="LoadSingleTile(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@6">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="DrawString(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@1"><Token byte="@," string="DrawStringValueA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="DrawStringValueB(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@7">
+				<Token byte="@,">
+					<Token byte="@0"><Token byte="@," string="GetPixelA(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@1">
+							<Token byte="@," string="GetPixelB(" style="Hyrbid" site="" group="xLib" />
+							<Token byte="@0"><Token byte="@," string="InvertFilledRectangle(" style="Hyrbid" site="" group="xLib" /></Token>
+							<Token byte="@1"><Token byte="@," string="DrawCircle(" style="Hyrbid" site="" group="xLib" /></Token>
+							<Token byte="@2"><Token byte="@," string="DrawFilledCircle(" style="Hyrbid" site="" group="xLib" /></Token>
+						</Token>
+						<Token byte="@2"><Token byte="@," string="SetPixelA(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@3"><Token byte="@," string="SetPixelB(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@4"><Token byte="@," string="InvertPixel(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@5"><Token byte="@," string="DrawLine(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@6"><Token byte="@," string="InvertLine(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@7"><Token byte="@," string="DrawRectangle(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@8"><Token byte="@," string="InvertRectangle(" style="Hyrbid" site="" group="xLib" /></Token>
+						<Token byte="@9"><Token byte="@," string="FillRectangle(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+			
+			<Token byte="@8">
+				<Token byte="@,">
+					<Token byte="@0" string="GetLCDBuffer(" style="Hyrbid" site="" group="xLib" />
+					<Token byte="@1"><Token byte="@," string="SetLCDBuffer(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="SetGRAMOffset(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="GetRand(" style="Hyrbid" site="" group="xLib" /></Token>
+				</Token>
+			</Token>
+
+			<Token byte="@9" string="UpdateLCD(" style="Hyrbid" site="" group="xLib" comment="This function updates the LCD. Effectively it switches positions in LCD GRAM. " />
 		
 		</Token>
 	</Token>
