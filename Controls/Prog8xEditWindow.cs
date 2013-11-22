@@ -196,7 +196,7 @@ namespace Merthsoft.TokenIDE {
 			return GenerateByteData(newLinesForComments, breakOnError, out toss);
 		}
 
-		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {
+		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens, out int lengthWithoutComments) {
 			StringBuilder sb = new StringBuilder();
 			int lineNumber = 0;
 			Dictionary<string, string> directives = new Dictionary<string, string>();
@@ -204,19 +204,26 @@ namespace Merthsoft.TokenIDE {
 			int ifCount = 0;
 			Stack<bool> ifFlag = new Stack<bool>();
 			tokens = null;
+			int numCommentLines = 0;
 			try {
 				for (int i = 0; i < ProgramTextBox.Lines.Count; i++) {
 					string line = ProgramTextBox.Lines[i];
 					lineNumber++;
 
 					if (line.StartsWith(CommentString.ToString())) {
-						if (newLinesForComments) { sb.AppendLine(); }
+						if (newLinesForComments) {
+							sb.AppendLine();
+							numCommentLines++;
+						}
 						continue;
 					}
 
 					if (line.StartsWith(DirectiveString.ToString())) {
 						HandlePreproc(line, directives, ref ifCount, ifFlag, breakOnError);
-						if (newLinesForComments) { sb.AppendLine(); }
+						if (newLinesForComments) {
+							sb.AppendLine();
+							numCommentLines++;
+						}
 						continue;
 					}
 
@@ -233,6 +240,7 @@ namespace Merthsoft.TokenIDE {
 						}
 					} else if (newLinesForComments && i != ProgramTextBox.Lines.Count - 1) {
 						sb.AppendLine();
+						numCommentLines++;
 					}
 				}
 				if (ifCount != 0) {
@@ -241,25 +249,34 @@ namespace Merthsoft.TokenIDE {
 			} catch (Exception ex) {
 				if (breakOnError) {
 					MessageBox.Show(string.Format("Unable to parse line {0}.\nError: {1}", lineNumber, ex.Message), "Building file failed.");
+					lengthWithoutComments = 0;
 					return null;
 				}
 			}
 			//}
 			try {
 				string programText = sb.ToString();
-				return TokenData.Tokenize(programText, out _numTokens, out tokens, breakOnError);
+				byte[] data = TokenData.Tokenize(programText, out _numTokens, out tokens, breakOnError);
+				lengthWithoutComments = data.Length - numCommentLines;
+				return data;
 			} catch (TokenizationException ex) {
 				MessageBox.Show(ex.Message, "Building file failed.");
 				ProgramTextBox.Selection = new Range(ProgramTextBox, ex.Location, ex.InvalidString.Length);
 				ProgramTextBox.DoSelectionVisible();
+				lengthWithoutComments = 0;
 				return null;
 			} catch (Exception ex) {
 				MessageBox.Show(ex.Message, "Building file failed.");
+				lengthWithoutComments = 0;
 				return null;
 			}
 		}
 
-		private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
+		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {
+			int toss;
+			return GenerateByteData(newLinesForComments, breakOnError, out tokens, out toss);
+		}
+        private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
 			if (string.IsNullOrWhiteSpace(line)) {
 				return;
 			}
@@ -345,10 +362,11 @@ namespace Merthsoft.TokenIDE {
 		private void ProgramText_TextChanged(object sender, TextChangedEventArgs e) {
 			if (LiveUpdate) {
 				List<List<TokenData.TokenDictionaryEntry>> tokens;
-				byte[] byteData = GenerateByteData(true, false, out tokens);
+				int length;
+				byte[] byteData = GenerateByteData(true, false, out tokens, out length);
 				//TokenData.Detokenize(byteData, out tokens);
 				UpdateHighlight(tokens, e.ChangedRange);
-				UpdateBytesLabel(byteData.Length);
+				UpdateBytesLabel(length);
 				RefreshBytes(false, byteData);
 			}
 			Dirty = true;
@@ -370,6 +388,7 @@ namespace Merthsoft.TokenIDE {
 			// Do all the preproc up to this point?
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
 			    HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, ref ifCount, ifFlag, false);
+				PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
 			}
 			
 			Place place = new Place(0, range.Start.iLine);
@@ -399,7 +418,14 @@ namespace Merthsoft.TokenIDE {
 						string lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, token.Length);
 
 						if (PreProcForward.ContainsValue(token) && token != lineText) {
-							token = PreProcForward.First(v => v.Value == token && v.Key == lineText).Key;
+							var replacedToken = PreProcForward.FirstOrDefault(v => {
+								var key = v.Key;
+								return v.Value == token && key == ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, key.Length);
+							}).Key;
+							if (replacedToken == null) {
+								replacedToken = PreProcForward.FirstOrDefault(v => v.Value == token).Key;
+							}
+							token = replacedToken;
 						} else if (lineText != token) {
 							foreach (string alt in entry.Alts) {
 								lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
@@ -449,8 +475,9 @@ namespace Merthsoft.TokenIDE {
 		public void RefreshBytes(bool setProgramText = true, byte[] data = null) {
 			List<List<TokenData.TokenDictionaryEntry>> tokens;
 			if (data == null) {
-				data = GenerateByteData(true, false, out tokens);
-				UpdateBytesLabel(data.Length);
+				int length;
+				data = GenerateByteData(true, false, out tokens, out length);
+				UpdateBytesLabel(length);
 			}
 			if (setProgramText) {
 				ProgramText = TokenData.Detokenize(data, out tokens);

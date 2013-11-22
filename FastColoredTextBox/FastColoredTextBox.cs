@@ -4653,7 +4653,7 @@ namespace FastColoredTextBoxNS
                 for (int iChar = firstChar; iChar <= lastChar; iChar++)
                 {
                     StyleIndex style = line[from + iChar].style;
-                    if (currentStyleIndex != style)
+					if (currentStyleIndex != style || (this[iLine][iChar].Restart))
                     {
                         FlushRendering(e.Graphics, currentStyleIndex,
                                        new Point(startX + (iLastFlushedChar + 1)*CharWidth, y),
