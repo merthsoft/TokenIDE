@@ -16,6 +16,9 @@
 			<Token byte="@0">
 				<Token byte="@," string="BufSpriteSelect(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:BufSpriteSelect" group="Celtic" />
 			</Token>
+			<Token byte="@1">
+				<Token byte="@," string="ExecArcPrgm(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:ExecArcPrgm" group="Celtic" />
+			</Token>
 			<Token byte="@2">
 				<Token byte="@," string="DispColor(" style="Hyrbid" site="http://dcs.cemetech.net/index.php/DCSE:BasicLibs:DispColor" group="Celtic" />
 			</Token>
@@ -97,11 +100,11 @@
 			<Token byte="@5">
 				<Token byte="@,">
 					<Token byte="@0"><Token byte="@," string="LoadTilePic(" style="Hyrbid" site="" group="xLib" /></Token>
-					<Token byte="@2"><Token byte="@," string="LoadBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
-					<Token byte="@3"><Token byte="@," string="DisplayBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
-					<Token byte="@4"><Token byte="@," string="DrawPicSectionA(" style="Hyrbid" site="" group="xLib" /></Token>
-					<Token byte="@5"><Token byte="@," string="DrawPicSectionB(" style="Hyrbid" site="" group="xLib" /></Token>
-					<Token byte="@6"><Token byte="@," string="LoadSingleTile(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@1"><Token byte="@," string="LoadBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@2"><Token byte="@," string="DisplayBGPic(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@3"><Token byte="@," string="DrawPicSectionA(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@4"><Token byte="@," string="DrawPicSectionB(" style="Hyrbid" site="" group="xLib" /></Token>
+					<Token byte="@5"><Token byte="@," string="LoadSingleTile(" style="Hyrbid" site="" group="xLib" /></Token>
 				</Token>
 			</Token>
 			

@@ -42,6 +42,7 @@ namespace Merthsoft.TokenIDE {
 			this.redoButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.topPanel = new System.Windows.Forms.Panel();
+			this.useGBox = new System.Windows.Forms.CheckBox();
 			this.paletteChoice = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
@@ -66,7 +67,6 @@ namespace Merthsoft.TokenIDE {
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
-			this.useGBox = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -278,6 +278,16 @@ namespace Merthsoft.TokenIDE {
 			this.topPanel.Size = new System.Drawing.Size(706, 94);
 			this.topPanel.TabIndex = 23;
 			// 
+			// useGBox
+			// 
+			this.useGBox.AutoSize = true;
+			this.useGBox.Location = new System.Drawing.Point(95, 47);
+			this.useGBox.Name = "useGBox";
+			this.useGBox.Size = new System.Drawing.Size(126, 17);
+			this.useGBox.TabIndex = 31;
+			this.useGBox.Text = "Use \"G\" Optimization";
+			this.useGBox.UseVisualStyleBackColor = true;
+			// 
 			// paletteChoice
 			// 
 			this.paletteChoice.FormattingEnabled = true;
@@ -440,7 +450,7 @@ namespace Merthsoft.TokenIDE {
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
 			this.copyToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-			this.copyToolStripMenuItem.Text = "Copy";
+			this.copyToolStripMenuItem.Text = "Copy Hex";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
@@ -503,16 +513,6 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.clearTextTimer.Interval = 500;
 			this.clearTextTimer.Tick += new System.EventHandler(this.clearTextTimer_Tick);
-			// 
-			// useGBox
-			// 
-			this.useGBox.AutoSize = true;
-			this.useGBox.Location = new System.Drawing.Point(95, 47);
-			this.useGBox.Name = "useGBox";
-			this.useGBox.Size = new System.Drawing.Size(126, 17);
-			this.useGBox.TabIndex = 31;
-			this.useGBox.Text = "Use \"G\" Optimization";
-			this.useGBox.UseVisualStyleBackColor = true;
 			// 
 			// HexSprite
 			// 

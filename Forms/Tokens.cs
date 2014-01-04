@@ -407,15 +407,23 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 
-			s.ShowDialog();
-			if (s.OutString != "") {
-				ew.SelectedText = s.OutString;
-			}
+			s.PasteTextEvent += s_PasteTextEvent;
+			s.Show();
 #if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
 			}
 #endif
+		}
+
+		void s_PasteTextEvent(object sender, PasteTextEventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) {
+				MessageBox.Show("Unable to paste sprite hex into window.", "Hex Sprite", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return; 
+			}
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+			
+			ew.SelectedText = e.TextToPaste;
 		}
 
 		private void dCSGuiDesignerToolStripMenuItem_Click(object sender, EventArgs e) {

@@ -20,6 +20,8 @@ namespace Merthsoft.TokenIDE {
 		private const string XLIBTILES_HEADER = "xLIBPIC";
 		private const string XLIBBGPIC_HEADER = "xLIBBG ";
 
+		public event PasteTextEventHandler PasteTextEvent;
+
 		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
@@ -614,49 +616,7 @@ namespace Merthsoft.TokenIDE {
 		private void paletteBox_Paint(object sender, PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			drawPalette(g);
-
-			//using (Bitmap b = new Bitmap(960, 160)) {
-			//    using (Graphics g1 = Graphics.FromImage(b)) {
-			//        drawxLibPalette(g1);
-			//    }
-			//    b.Save("rgbhlpalette.png");
-			//}
 		}
-
-		//private void drawxLibPalette(Graphics g) {
-		//    int boxWidth;
-		//    int boxHeight;
-		//    int colorCount;
-		//    int maxWidth;
-
-		//    boxWidth = 20;
-		//    boxHeight = 20;
-		//    colorCount = 256;
-		//    maxWidth = 640;
-
-		//    int paletteX = 0;
-		//    int paletteY = 0;
-
-		//    try {
-		//        for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
-		//            Color c = XLibPalette[colorIndex];
-		//            Brush brush = XLibBrushes[colorIndex];
-		//            g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-		//            Brush newVariable = getBrightness(c) > 127 ? Brushes.Black : Brushes.White;
-		//            Font f = new System.Drawing.Font(Font.FontFamily, Font.Size - 2.25f);
-		//            g.DrawString(string.Format("{0}", colorIndex), f, newVariable, paletteX, paletteY);
-		//            g.DrawString(string.Format("0x{0:X2}", colorIndex), f, newVariable, paletteX, paletteY + f.Height);
-
-		//            paletteX += boxWidth;
-		//            if (paletteX >= maxWidth) {
-		//                paletteX = 0;
-		//                paletteY += boxHeight;
-		//            }
-		//        }
-		//    } catch {
-		//        throw;
-		//    }
-		//}
 
 		private double getBrightness(Color c) {
 			double red = c.R;
@@ -1030,23 +990,52 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void saveFile() {
-			if (saveType == SaveType.XLibTiles) {
-				saveXLibTiles();
-			} else if (saveType == SaveType.XLibBGPicture) {
-				saveXLibBGPic();
-			} else {
-				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
+			bool success = false;
+
+			switch (saveType) {
+				case SaveType.XLibTiles:
+					success = saveXLibTiles();
+					break;
+				case SaveType.XLibBGPicture:
+					success = saveXLibBGPic();
+					break;
+				case SaveType.Png:
+				default:
+					success = savePng();
+					break;
+			}
+
+			if (success) {
+				outputLabel.Text = "File saved.";
+			}
+		}
+
+		private bool savePng() {
+			bool success;
+			using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
 				//using (Graphics g = Graphics.FromImage(b)) {
-					sprite.Invalidate();
-					drawSprite(b, sprite);
+				sprite.Invalidate();
+				drawSprite(b, sprite);
+				try {
 					b.Save(fileName);
+					success = true;
+				} catch {
+					success = false;
 				}
 			}
-			outputLabel.Text = "File saved.";
+			return success;
 		}
 
 
-		private void saveXLibBGPic() {
+		private bool saveXLibBGPic() {
+			if (SelectedPalette != Palette.xLIBC) {
+				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette. Are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+			if (sprite.Width != 80 || sprite.Height != 60) {
+				var res = MessageBox.Show("xLIBC background pictures should be 80x60. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
@@ -1059,7 +1048,7 @@ namespace Merthsoft.TokenIDE {
 					byte data = (byte)sprite[x, y];
 					ms.WriteByte(data);
 					y++;
-					if (y == 60) {
+					if (y == sprite.Height) {
 						y = 0;
 						x++;
 					}
@@ -1071,9 +1060,19 @@ namespace Merthsoft.TokenIDE {
 			using (BinaryWriter bw = new BinaryWriter(fs)) {
 				appVar.Save(bw);
 			}
+
+			return true;
 		}
 
-		private void saveXLibTiles() {
+		private bool saveXLibTiles() {
+			if (SelectedPalette != Palette.xLIBC) {
+				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette, are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+			if (sprite.Width != 80 || sprite.Height != 60) {
+				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128x64. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
@@ -1109,10 +1108,16 @@ namespace Merthsoft.TokenIDE {
 			using (BinaryWriter bw = new BinaryWriter(fs)) {
 				appVar.Save(bw);
 			}
+
+			return true;
 		}
 
 		private void insertAndExitToolStripMenuItem_Click(object sender, EventArgs e) {
 			OutString = getHex();
+			PasteTextEventHandler temp = PasteTextEvent;
+			if (temp != null) {
+				temp(this, new PasteTextEventArgs(OutString));
+			}
 			Close();
 		}
 

@@ -128,6 +128,12 @@
     <Compile Include="Forms\Options.Designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\XlibCMapEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\XlibCMapEditor.Designer.cs">
+      <DependentUpon>XlibCMapEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="History.cs" />
     <Compile Include="PreprocessorException.cs" />
     <Compile Include="Controls\Prog8xEditWindow.cs">
@@ -167,6 +173,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="PasteText.cs" />
     <Compile Include="TokenStyle.cs" />
     <Compile Include="XmlValidator.cs" />
     <EmbeddedResource Include="Forms\AboutBox1.resx">
@@ -204,6 +211,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Tokens.resx">
       <DependentUpon>Tokens.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\XlibCMapEditor.resx">
+      <DependentUpon>XlibCMapEditor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -270,7 +280,6 @@
     <None Include="Assets\Icons\icon_ellipse.png" />
     <None Include="Assets\Icons\icon_ellipsefill.png" />
     <None Include="Assets\Icons\icon_rectanglefill.png" />
-    <None Include="Assets\Icons\icon_colorpicker.png" />
     <None Include="Assets\Icons\icon_eyedropper.png" />
     <None Include="Assets\Icons\icon_redo.png" />
     <None Include="Assets\Icons\icon_undo.png" />

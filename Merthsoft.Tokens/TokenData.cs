@@ -127,6 +127,20 @@ namespace Merthsoft.Tokens {
 
 			XmlDocument doc = new XmlDocument();
 			doc.Load(xmlFile);
+			readTokenData(doc, fi.DirectoryName);
+		}
+
+		public TokenData(XmlDocument doc, string searchFolder = null) {
+			readTokenData(doc, searchFolder);
+		}
+
+		public TokenData(string xml, string searchFolder) {
+			XmlDocument doc = new XmlDocument();
+			doc.LoadXml(xml);
+			readTokenData(doc, searchFolder);
+		}
+
+		private void readTokenData(XmlDocument doc, string searchFolder) {
 			XmlElement root = doc.DocumentElement;
 			XmlNamespaceManager nsMan = new XmlNamespaceManager(root.OwnerDocument.NameTable);
 			nsMan.AddNamespace("t", "http://merthsoft.com/Tokens");
@@ -146,8 +160,8 @@ namespace Merthsoft.Tokens {
 
 			string parentXml = root.GetAttributeOrDefault("parentXml", null);
 			if (!string.IsNullOrWhiteSpace(parentXml)) {
-				if (!File.Exists(parentXml)) {
-					parentXml = Path.Combine(fi.DirectoryName, parentXml);
+				if (!File.Exists(parentXml) && searchFolder != null) {
+					parentXml = Path.Combine(searchFolder, parentXml);
 				}
 				if (!File.Exists(parentXml)) {
 					throw new FileNotFoundException(string.Format("Could not find parent xml file.", parentXml));
@@ -200,7 +214,6 @@ namespace Merthsoft.Tokens {
 					Combine(tokens, token);
 				}
 			}
-			//Console.ReadLine();
 		}
 
 		private void Combine(Dictionary<byte, TokenDictionaryEntry> tokenDictionary, TokenDictionaryEntry newToken) {
