@@ -1,28 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Diagnostics;
+using System.Drawing;
 using System.IO;
+using System.Text;
+using System.Windows.Forms;
+using System.Xml.Schema;
+using Merthsoft.CalcData;
+using Merthsoft.DynamicConfig;
+using Merthsoft.TokenIDE.Forms;
+using Merthsoft.TokenIDE.Project;
+using Merthsoft.TokenIDE.Properties;
 using Merthsoft.Tokens;
 using Merthsoft.Tokens.DCSGUI;
-using XmlValidator;
-using System.Text;
-using Merthsoft.CalcData;
-using System.Xml.Schema;
-using Merthsoft.TokenIDE.Properties;
-using Merthsoft.TokenIDE.Project;
-using System.Linq;
-using Merthsoft.DynamicConfig;
-using System.Drawing;
-using System.Diagnostics;
-using FolderSelect;
-using Merthsoft.Extensions;
 
 namespace Merthsoft.TokenIDE {
+
 	public partial class Tokens : Form {
-		IEditWindow currWindow;
+		private IEditWindow currWindow;
 		//UserControl currWindow;
 
-		List<TokensProject> projects;
+		private List<TokensProject> projects;
 
 		private int NumWindows {
 			get {
@@ -30,8 +28,9 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		TokenData _tokenData;
-		TokenData TokenData {
+		private TokenData _tokenData;
+
+		private TokenData TokenData {
 			get { return _tokenData; }
 			set {
 				_tokenData = value;
@@ -56,9 +55,9 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		dynamic config;
+		private dynamic config;
 
-		Font editorFont;
+		private Font editorFont;
 
 		public Tokens(string[] files) {
 			InitializeComponent();
@@ -109,7 +108,7 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		void t_Click(object sender, EventArgs e) {
+		private void t_Click(object sender, EventArgs e) {
 			if (currWindow.SaveDirectory == null) {
 				return;
 			}
@@ -177,27 +176,28 @@ namespace Merthsoft.TokenIDE {
 					if (fi.Length > short.MaxValue / 4) {
 						ewProg.LiveUpdate = false;
 					}
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) 
+					using (FileStream pstream = new FileStream(fileName, FileMode.Open))
 					using (BinaryReader preader = new BinaryReader(pstream)) {
 						Prog8x newProg8x = new Prog8x(preader);
 						if (newProg8x.IsAsm) {
 							if (MessageBox.Show(
-									string.Format("{0} is an assembly program, are you sure you want to open it?", fileName), 
+									string.Format("{0} is an assembly program, are you sure you want to open it?", fileName),
 									"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
 								) == System.Windows.Forms.DialogResult.No) {
-									currWindow = prevWindow;
-									return;
+								currWindow = prevWindow;
+								return;
 							}
 						}
 						ewProg.Program = newProg8x;
 					}
-				
+
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
 					ewProg.ReadOnly = false;
 					ewProg.ProgramTextBox.Font = editorFont;
 					break;
+
 				case ".txt":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
 					if (fi.Length > short.MaxValue / 4) {
@@ -213,6 +213,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.ParentTabPage = tp;
 					ewProg.ProgramTextBox.Font = editorFont;
 					break;
+
 				case ".bin":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
 					if (fi.Length > short.MaxValue / 4) {
@@ -231,6 +232,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.ParentTabPage = tp;
 					ewProg.ProgramTextBox.Font = editorFont;
 					break;
+
 				case ".8xv":
 					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
 					if (fi.Length > short.MaxValue / 4) {
@@ -247,6 +249,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.ReadOnly = false;
 					ewProg.ProgramTextBox.Font = editorFont;
 					break;
+
 				case ".8xl":
 					currWindow = ewList = new List8xEditWindow(fileName);
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
@@ -257,6 +260,7 @@ namespace Merthsoft.TokenIDE {
 					tp.Controls.Add(ewList);
 					ewList.ParentTabPage = tp;
 					break;
+
 				default:
 					throw new Exception(string.Format("File type not supported: {0}.", fi.Extension));
 			}
@@ -314,25 +318,30 @@ namespace Merthsoft.TokenIDE {
 			if (varType == null && calcType == null) {
 				return ".bin";
 			}
-			
+
 			string prefix = null;
 			string suffix = null;
 			switch (calcType) {
 				case Var8x.CalcType.Calc8x:
 					prefix = "8x";
 					break;
+
 				case Var8x.CalcType.Calc83:
 					prefix = "83";
 					break;
+
 				case Var8x.CalcType.Calc82:
 					prefix = "82";
 					break;
+
 				case Var8x.CalcType.Calc73:
 					prefix = "73";
 					break;
+
 				case Var8x.CalcType.Calc85:
 					prefix = "85";
 					break;
+
 				default:
 					break;
 			}
@@ -341,6 +350,7 @@ namespace Merthsoft.TokenIDE {
 				case Var8x.VarType.AppVar:
 					suffix = "v";
 					break;
+
 				case Var8x.VarType.Program:
 				case Var8x.VarType.ProgramLocked:
 					suffix = "p";
@@ -401,7 +411,7 @@ namespace Merthsoft.TokenIDE {
 
 			if (ew.SelectedText != "") {
 				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
-				try { s.Hex = hexString; } catch { 
+				try { s.Hex = hexString; } catch {
 					MessageBox.Show(string.Format("Unable to create sprite from {0}.", hexString));
 					return;
 				}
@@ -416,13 +426,27 @@ namespace Merthsoft.TokenIDE {
 #endif
 		}
 
-		void s_PasteTextEvent(object sender, PasteTextEventArgs e) {
+		private void xLIBCColorPicerToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+			int color;
+			ColorPicker c = new ColorPicker();
+			if (ew.SelectedText != "" && int.TryParse(ew.SelectedText, out color) && color >= 0 && color < 256) {
+				c.SelectedColor = color;
+			}
+			c.StartPosition = FormStartPosition.CenterParent;
+			c.PasteTextEvent += s_PasteTextEvent;
+			c.Show();
+		}
+
+		private void s_PasteTextEvent(object sender, PasteTextEventArgs e) {
 			if (!(currWindow is Prog8xEditWindow)) {
-				MessageBox.Show("Unable to paste sprite hex into window.", "Hex Sprite", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return; 
+				MessageBox.Show("Unable to paste into window.", "Paste", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
 			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-			
+
 			ew.SelectedText = e.TextToPaste;
 		}
 
@@ -651,7 +675,7 @@ namespace Merthsoft.TokenIDE {
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
 			CloseTab();
 		}
-		
+
 		private void CloseTab() {
 			if (currWindow.Dirty) {
 				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
@@ -719,7 +743,7 @@ namespace Merthsoft.TokenIDE {
 				//    InitialDirectory = Environment.CurrentDirectory,
 				//    Title = "Save Directory",
 				//};
-				//FileFolderDialog ffd = new FileFolderDialog() { 
+				//FileFolderDialog ffd = new FileFolderDialog() {
 				var fbd = new OpenFileDialog() {
 					InitialDirectory = Environment.CurrentDirectory,
 					ValidateNames = false,
@@ -732,7 +756,7 @@ namespace Merthsoft.TokenIDE {
 				}
 
 				FileInfo fi = new FileInfo(fbd.FileName);
-				
+
 				directory = fi.DirectoryName;
 				currWindow.SaveDirectory = directory;
 			} else {
@@ -893,12 +917,11 @@ namespace Merthsoft.TokenIDE {
 				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
 			}
 			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
-				//OpenFile(((ProjectItem)selectedNode.Tag).File);
+			//OpenFile(((ProjectItem)selectedNode.Tag).File);
 			//}
 		}
 
 		private void buildAllToolStripMenuItem_Click(object sender, EventArgs e) {
-
 		}
 
 		private void projectTree_AfterExpand(object sender, TreeViewEventArgs e) {
@@ -908,11 +931,10 @@ namespace Merthsoft.TokenIDE {
 		private void EditWindows_MouseClick(object sender, MouseEventArgs e) {
 			//if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
 			//        CloseTab(EditWindows.Tab);
-			//}			
+			//}
 		}
 
 		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-
 		}
 
 		private void blockCountsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -924,7 +946,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void Tokens_Load(object sender, EventArgs e) {
-
 		}
 
 		private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1105,7 +1126,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void projectTree_AfterSelect(object sender, TreeViewEventArgs e) {
-
 		}
 
 		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1114,6 +1134,10 @@ namespace Merthsoft.TokenIDE {
 
 		private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e) {
 			hexSprite(false);
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+			this.Close();
 		}
 	}
 }

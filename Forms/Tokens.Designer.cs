@@ -42,6 +42,8 @@
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.changeTokenFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.changeSaveDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,6 +102,7 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.xLIBCColorPicerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -132,7 +135,9 @@
             this.toolStripMenuItem1,
             this.toolStripSeparator2,
             this.changeTokenFileToolStripMenuItem,
-            this.changeSaveDirectoryToolStripMenuItem});
+            this.changeSaveDirectoryToolStripMenuItem,
+            this.toolStripSeparator8,
+            this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
 			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
 			this.fileToolStripMenuItem.Text = "File";
@@ -263,6 +268,19 @@
 			this.changeSaveDirectoryToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
 			this.changeSaveDirectoryToolStripMenuItem.Text = "Change Save Directory";
 			this.changeSaveDirectoryToolStripMenuItem.Click += new System.EventHandler(this.changeSaveDirectoryToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator8
+			// 
+			this.toolStripSeparator8.Name = "toolStripSeparator8";
+			this.toolStripSeparator8.Size = new System.Drawing.Size(190, 6);
+			// 
+			// exitToolStripMenuItem
+			// 
+			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.exitToolStripMenuItem.Text = "Exit";
+			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
 			// editToolStripMenuItem
 			// 
@@ -429,7 +447,8 @@
 			// 
 			this.hexSpriteEditorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.blackAndWhiteToolStripMenuItem,
-            this.colorSpritesToolStripMenuItem});
+            this.colorSpritesToolStripMenuItem,
+            this.xLIBCColorPicerToolStripMenuItem});
 			this.hexSpriteEditorToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_hexsprite;
 			this.hexSpriteEditorToolStripMenuItem.Name = "hexSpriteEditorToolStripMenuItem";
 			this.hexSpriteEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
@@ -796,6 +815,13 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
+			// xLIBCColorPicerToolStripMenuItem
+			// 
+			this.xLIBCColorPicerToolStripMenuItem.Name = "xLIBCColorPicerToolStripMenuItem";
+			this.xLIBCColorPicerToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+			this.xLIBCColorPicerToolStripMenuItem.Text = "xLIBC Color Picker";
+			this.xLIBCColorPicerToolStripMenuItem.Click += new System.EventHandler(this.xLIBCColorPicerToolStripMenuItem_Click);
+			// 
 			// Tokens
 			// 
 			this.AllowDrop = true;
@@ -915,6 +941,9 @@
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStripMenuItem colorSpritesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem blackAndWhiteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem xLIBCColorPicerToolStripMenuItem;
 	}
 }
 

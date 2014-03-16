@@ -1,44 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Merthsoft.Tokens;
+using Merthsoft.CalcData;
 using Merthsoft.Extensions;
 using Merthsoft.TokenIDE.Properties;
-using System.Threading.Tasks;
-using Merthsoft.CalcData;
-using System.IO;
-using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
 
 namespace Merthsoft.TokenIDE {
+
 	public partial class HexSprite : Form {
 		private const string XLIBTILES_HEADER = "xLIBPIC";
 		private const string XLIBBGPIC_HEADER = "xLIBBG ";
 
 		public event PasteTextEventHandler PasteTextEvent;
 
-		enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
+		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
 
 		private enum SaveType { Png, XLibTiles, XLibBGPicture }
 
-		Tool currentTool = Tool.Pencil;
-		ToolStripButton currentButton = null;
+		private Tool currentTool = Tool.Pencil;
+		private ToolStripButton currentButton = null;
 
-		Bitmap drawCanvas;
+		private Bitmap drawCanvas;
 
-		int mouseX, mouseY;
-		int mouseXOld, mouseYOld;
-		MouseButtons button;
-		bool drawing;
-		int shapeX, shapeY;
-		int penWidth {
+		private int mouseX, mouseY;
+		private int mouseXOld, mouseYOld;
+		private MouseButtons button;
+		private bool drawing;
+		private int shapeX, shapeY;
+
+		private int penWidth {
 			get { return (int)penWidthBox.Value; }
 			set { penWidthBox.Value = value; }
 		}
@@ -48,14 +46,14 @@ namespace Merthsoft.TokenIDE {
 			set { paletteChoice.SelectedIndex = (int)value; }
 		}
 
-		List<Sprite> history;
-		int historyPosition;
+		private List<Sprite> history;
+		private int historyPosition;
 
-		Sprite sprite;
-		Sprite previewSprite = null;
+		private Sprite sprite;
+		private Sprite previewSprite = null;
 
-		int spriteWidth = 8;
-		int spriteHeight = 8;
+		private int spriteWidth = 8;
+		private int spriteHeight = 8;
 
 		public int SpriteWidth {
 			get { return spriteWidth; }
@@ -80,8 +78,8 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		int pixelSize = 2;
-		bool performResizeFlag = true;
+		private int pixelSize = 2;
+		private bool performResizeFlag = true;
 		public string OutString = "";
 
 		private bool useGCharacter {
@@ -97,25 +95,25 @@ namespace Merthsoft.TokenIDE {
 			get { return drawGridBox.Checked; }
 		}
 
-		int leftPixel = 1;
-		int rightPixel = 0;
+		private int leftPixel = 1;
+		private int rightPixel = 0;
 
-		List<Color> CelticPalette = new List<Color>() { 
-			Color.Cyan, 
-			MerthsoftExtensions.ColorFrom565(0,0,31), MerthsoftExtensions.ColorFrom565(31,0,0), MerthsoftExtensions.ColorFrom565(0,0,0), 
-			MerthsoftExtensions.ColorFrom565(31,0,31), MerthsoftExtensions.ColorFrom565(0,39,0), MerthsoftExtensions.ColorFrom565(31,35,4), 
-			MerthsoftExtensions.ColorFrom565(22,8,0), MerthsoftExtensions.ColorFrom565(0,0,15), MerthsoftExtensions.ColorFrom565(0,36,31), 
+		private List<Color> CelticPalette = new List<Color>() {
+			Color.Cyan,
+			MerthsoftExtensions.ColorFrom565(0,0,31), MerthsoftExtensions.ColorFrom565(31,0,0), MerthsoftExtensions.ColorFrom565(0,0,0),
+			MerthsoftExtensions.ColorFrom565(31,0,31), MerthsoftExtensions.ColorFrom565(0,39,0), MerthsoftExtensions.ColorFrom565(31,35,4),
+			MerthsoftExtensions.ColorFrom565(22,8,0), MerthsoftExtensions.ColorFrom565(0,0,15), MerthsoftExtensions.ColorFrom565(0,36,31),
 			MerthsoftExtensions.ColorFrom565(31,63,0), MerthsoftExtensions.ColorFrom565(31,63,31), MerthsoftExtensions.ColorFrom565(28,56,28),
 			MerthsoftExtensions.ColorFrom565(24,48,24), MerthsoftExtensions.ColorFrom565(17,34,17), MerthsoftExtensions.ColorFrom565(10,21,10),
 		};
 
-		List<Color> XLibPalette = new List<Color>();
+		private List<Color> XLibPalette = new List<Color>();
 
-		List<SolidBrush> CelticBrushes = new List<SolidBrush>();
-		List<SolidBrush> XLibBrushes = new List<SolidBrush>();
+		private List<SolidBrush> CelticBrushes = new List<SolidBrush>();
+		private List<SolidBrush> XLibBrushes = new List<SolidBrush>();
 
-		string fileName = null;
-		SaveType saveType;
+		private string fileName = null;
+		private SaveType saveType;
 
 		public HexSprite() {
 			InitializeComponent();
@@ -175,7 +173,7 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Invalidate();
 		}
 
-		void toolButton_Click(object sender, EventArgs e) {
+		private void toolButton_Click(object sender, EventArgs e) {
 			ToolStripButton button = (ToolStripButton)sender;
 			currentButton.Checked = false;
 			button.Checked = true;
@@ -200,9 +198,11 @@ namespace Merthsoft.TokenIDE {
 				case Palette.BlackAndWhite:
 					newSprite = new Sprite(hex, SpriteWidth, out height, 1);
 					break;
+
 				case Palette.CelticIICSE:
 					newSprite = new Sprite(hex, SpriteWidth, out height, CelticPalette.Count / 4);
 					break;
+
 				default:
 					throw new Exception("Can only create sprite from hex in Black and White or Celtic palette modes.");
 			}
@@ -278,7 +278,6 @@ namespace Merthsoft.TokenIDE {
 					}
 					drawSprite(drawCanvas, sprite);
 
-
 					if (previewSprite != null) {
 						//previewSprite.Invalidate();
 						drawSprite(drawCanvas, previewSprite, false);
@@ -331,19 +330,22 @@ namespace Merthsoft.TokenIDE {
 					//    continue;
 					//}
 					int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
-						
+
 					Color drawColor = Color.White;
 					if (paletteIndex == -1) { continue; } else {
 						switch (SelectedPalette) {
 							case Palette.BlackAndWhite:
 								drawColor = paletteIndex == 0 ? Color.White : Color.Black;
 								break;
+
 							case Palette.CelticIICSE:
 								drawColor = CelticPalette[paletteIndex];
 								break;
+
 							case Palette.xLIBC:
 								drawColor = XLibPalette[paletteIndex];
 								break;
+
 							default:
 								break;
 						}
@@ -356,7 +358,7 @@ namespace Merthsoft.TokenIDE {
 			b.UnlockBits(data);
 
 			//if (clearDirty) {
-				sprite.ClearDirtyRectangle();
+			sprite.ClearDirtyRectangle();
 			//}
 		}
 
@@ -377,6 +379,7 @@ namespace Merthsoft.TokenIDE {
 				case MouseButtons.Left:
 					pixelColor = leftPixel;
 					break;
+
 				case MouseButtons.Right:
 					pixelColor = rightPixel;
 					break;
@@ -388,16 +391,19 @@ namespace Merthsoft.TokenIDE {
 						sprite.Plot(mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
+
 				case Tool.Pen:
 					if (button != System.Windows.Forms.MouseButtons.None) {
 						sprite.DrawLine(mouseXOld, mouseYOld, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
+
 				case Tool.Flood:
 					if (button != System.Windows.Forms.MouseButtons.None) {
 						sprite.FloodFill(mouseX, mouseY, pixelColor);
 					}
 					break;
+
 				case Tool.Line:
 					if (!drawing) {
 						shapeX = mouseX;
@@ -413,6 +419,7 @@ namespace Merthsoft.TokenIDE {
 						previewSprite.DrawLine(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
+
 				case Tool.Rectangle:
 				case Tool.RectangleFill:
 					if (!drawing) {
@@ -429,6 +436,7 @@ namespace Merthsoft.TokenIDE {
 						previewSprite.DrawRectangle(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.RectangleFill);
 					}
 					break;
+
 				case Tool.Ellipse:
 				case Tool.EllipseFill:
 					if (!drawing) {
@@ -445,6 +453,7 @@ namespace Merthsoft.TokenIDE {
 						previewSprite.DrawEllipse(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.EllipseFill);
 					}
 					break;
+
 				case Tool.Circle:
 				case Tool.CircleFill:
 					if (!drawing) {
@@ -462,8 +471,9 @@ namespace Merthsoft.TokenIDE {
 						previewSprite.DrawCircle(shapeX, shapeY, radius, pixelColor, penWidth, currentTool == Tool.CircleFill);
 					}
 					break;
+
 				case Tool.EyeDropper:
-					if (SelectedPalette != Palette.BlackAndWhite && mouseX >= 0 && mouseY >= 0 && mouseX < SpriteWidth && mouseY < SpriteHeight ) {
+					if (SelectedPalette != Palette.BlackAndWhite && mouseX >= 0 && mouseY >= 0 && mouseX < SpriteWidth && mouseY < SpriteHeight) {
 						if (button == System.Windows.Forms.MouseButtons.Left) {
 							setLeftMouseButton(sprite[mouseX, mouseY]);
 						} else if (button == System.Windows.Forms.MouseButtons.Right) {
@@ -471,6 +481,7 @@ namespace Merthsoft.TokenIDE {
 						}
 					}
 					break;
+
 				default:
 					break;
 			}
@@ -481,7 +492,7 @@ namespace Merthsoft.TokenIDE {
 		private void createPreviewSprite() {
 			Rectangle drawRect = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
 			Rectangle oldRectangle = Rectangle.Empty;
-			
+
 			if (previewSprite != null) {
 				oldRectangle = previewSprite.DirtyRectangle;
 				drawRect = oldRectangle;
@@ -494,7 +505,7 @@ namespace Merthsoft.TokenIDE {
 					previewSprite[i, j] = -1;
 				}
 			}
-			
+
 			previewSprite.ClearDirtyRectangle();
 			if (oldRectangle != Rectangle.Empty) {
 				previewSprite.DirtyRectangle = oldRectangle;
@@ -545,7 +556,8 @@ namespace Merthsoft.TokenIDE {
 			toggleUndo(true);
 		}
 
-		private void spriteBox_MouseUp(object sender, MouseEventArgs e) {MouseEventArgs ne = new MouseEventArgs(MouseButtons.None, e.Clicks, e.X, e.Y, e.Delta);
+		private void spriteBox_MouseUp(object sender, MouseEventArgs e) {
+			MouseEventArgs ne = new MouseEventArgs(MouseButtons.None, e.Clicks, e.X, e.Y, e.Delta);
 			handleMouse(ne);
 		}
 
@@ -568,17 +580,20 @@ namespace Merthsoft.TokenIDE {
 						t += ",%";
 					}
 					t += sprite[i, j].ToString();
-					
+
 					switch (SelectedPalette) {
 						case Palette.BlackAndWhite:
 							line.Append(sprite[i, j].ToString());
 							break;
+
 						case Palette.CelticIICSE:
 							line.Append(sprite[i, j].ToString("X1"));
 							break;
+
 						case Palette.xLIBC:
 							line.Append(sprite[i, j].ToString("X2"));
 							break;
+
 						default:
 							break;
 					}
@@ -631,7 +646,7 @@ namespace Merthsoft.TokenIDE {
 			int boxHeight;
 			int colorCount;
 			int maxWidth;
-			
+
 			if (SelectedPalette == Palette.CelticIICSE) {
 				boxWidth = 44;
 				boxHeight = 44;
@@ -679,10 +694,12 @@ namespace Merthsoft.TokenIDE {
 					togglePalette(false);
 					toggleHexOutput(true);
 					break;
+
 				case Palette.CelticIICSE:
 					togglePalette(true);
 					toggleHexOutput(true);
 					break;
+
 				case Palette.xLIBC:
 					togglePalette(true);
 					toggleHexOutput(false);
@@ -786,14 +803,16 @@ namespace Merthsoft.TokenIDE {
 							image.PosterizeImage();
 							sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
 							break;
+
 						case Palette.CelticIICSE:
 							sprite = new Sprite(image, CelticPalette, 0);
 							break;
+
 						case Palette.xLIBC:
 							sprite = new Sprite(image, XLibPalette);
 							break;
 					}
-					
+
 					saveType = SaveType.Png;
 				}
 			}
@@ -803,8 +822,8 @@ namespace Merthsoft.TokenIDE {
 		private void openAppVar(string fileName) {
 			AppVar8x appVar = null;
 			using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
-			using (BinaryReader preader = new BinaryReader(pstream))
-				appVar = new AppVar8x(preader);
+				using (BinaryReader preader = new BinaryReader(pstream))
+					appVar = new AppVar8x(preader);
 			}
 			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
 			if (headerString == XLIBTILES_HEADER) {
@@ -821,7 +840,7 @@ namespace Merthsoft.TokenIDE {
 			SpriteHeight = 60;
 
 			sprite = new Sprite(80, 60);
-			
+
 			SelectedPalette = Palette.xLIBC;
 
 			int x = 0;
@@ -925,7 +944,7 @@ namespace Merthsoft.TokenIDE {
 				toggleRedo(false);
 			}
 			toggleUndo(true);
-			
+
 			spriteBox.Invalidate();
 		}
 
@@ -973,7 +992,7 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return false; }
-			
+
 			fileName = sfd.FileName;
 			saveType = (SaveType)(sfd.FilterIndex - 1);
 			return true;
@@ -996,9 +1015,11 @@ namespace Merthsoft.TokenIDE {
 				case SaveType.XLibTiles:
 					success = saveXLibTiles();
 					break;
+
 				case SaveType.XLibBGPicture:
 					success = saveXLibBGPic();
 					break;
+
 				case SaveType.Png:
 				default:
 					success = savePng();
@@ -1026,14 +1047,13 @@ namespace Merthsoft.TokenIDE {
 			return success;
 		}
 
-
 		private bool saveXLibBGPic() {
 			if (SelectedPalette != Palette.xLIBC) {
 				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette. Are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 			if (sprite.Width != 80 || sprite.Height != 60) {
-				var res = MessageBox.Show("xLIBC background pictures should be 80x60. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				var res = MessageBox.Show("xLIBC background pictures should be 80 wide by 60 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
@@ -1069,20 +1089,20 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette, are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
-			if (sprite.Width != 80 || sprite.Height != 60) {
-				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128x64. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+			if (sprite.Width != 128 || sprite.Height != 64) {
+				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(XLIBTILES_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBTILES_HEADER));
-				
+
 				int x = 0;
 				int y = 0;
 				int spriteX = 0;
 				int spriteY = 0;
-				
+
 				for (int i = 0; i < sprite.Width * sprite.Height; i++) {
 					byte data = (byte)sprite[x + spriteX, y + spriteY];
 					ms.WriteByte(data);
@@ -1096,7 +1116,7 @@ namespace Merthsoft.TokenIDE {
 						spriteX = 0;
 						spriteY = 0;
 						y += 8;
-						if (y == 64) {
+						if (y == sprite.Height) {
 							y = 0;
 							x += 8;
 						}
