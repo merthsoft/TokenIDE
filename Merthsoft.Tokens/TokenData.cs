@@ -47,6 +47,10 @@ namespace Merthsoft.Tokens {
 				StringStarter = false;
 				StyleType = null;
 			}
+
+			public override string ToString() {
+				return Name;
+			}
 		}
 
 		public class GroupEntry : IComparable<GroupEntry> {
@@ -397,7 +401,7 @@ namespace Merthsoft.Tokens {
 		/// <summary>
 		/// Tokenizes a given string.
 		/// </summary>
-		/// <param name="data">The strng to convert to tokes.</param>
+		/// <param name="data">The string to convert to tokes.</param>
 		/// <param name="numTokens">The number of tokens in this string.</param>
 		/// <returns>An array of tokens as bytes.</returns>
 		public byte[] Tokenize(string data, out int numTokens, out List<List<TokenData.TokenDictionaryEntry>> tokens, bool exceptionOnUnknownToken) {

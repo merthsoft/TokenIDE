@@ -1056,7 +1056,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("xLIBC background pictures should be 80 wide by 60 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
-			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
+			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(XLIBBGPIC_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBBGPIC_HEADER));
@@ -1093,7 +1093,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
-			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x);
+			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(XLIBTILES_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBTILES_HEADER));

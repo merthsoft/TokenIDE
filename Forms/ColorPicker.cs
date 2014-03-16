@@ -10,9 +10,9 @@ using System.Windows.Forms;
 namespace Merthsoft.TokenIDE.Forms {
 	public partial class ColorPicker : Form {
 		public event PasteTextEventHandler PasteTextEvent;
-
-		List<Color> XLibPalette = new List<Color>();
+				
 		List<SolidBrush> XLibBrushes = new List<SolidBrush>();
+		List<Color> XLibPalette = new List<Color>();
 
 		private int selectedColor;
 		public int SelectedColor {
@@ -36,6 +36,14 @@ namespace Merthsoft.TokenIDE.Forms {
 				XLibPalette.Add(color);
 				XLibBrushes.Add(new SolidBrush(color));
 			}
+		}
+
+		private void button2_Click(object sender, EventArgs e) {
+			Clipboard.SetText(SelectedColor.ToString());
+		}
+
+		private void button3_Click(object sender, EventArgs e) {
+			Close();
 		}
 
 		private void drawPalette(Graphics g) {
@@ -83,9 +91,12 @@ namespace Merthsoft.TokenIDE.Forms {
 			}
 		}
 
-		private void paletteBox_Paint(object sender, PaintEventArgs e) {
-			Graphics g = e.Graphics;
-			drawPalette(g);
+		private void insertButton_Click(object sender, EventArgs e) {
+			PasteTextEventHandler temp = PasteTextEvent;
+			if (temp != null) {
+				temp(this, new PasteTextEventArgs(SelectedColor.ToString()));
+			}
+			Close();
 		}
 
 		private void paletteBox_MouseClick(object sender, MouseEventArgs e) {
@@ -97,6 +108,14 @@ namespace Merthsoft.TokenIDE.Forms {
 				if (!paletteBox.Bounds.Contains(e.Location)) { return; }
 				selectPalette(e);
 			}
+		}
+
+		private void paletteBox_Paint(object sender, PaintEventArgs e) {
+			Graphics g = e.Graphics;
+			drawPalette(g);
+		}
+		private void pixelBox_Paint(object sender, PaintEventArgs e) {
+			e.Graphics.FillRectangle(XLibBrushes[selectedColor], e.ClipRectangle);
 		}
 
 		private void selectPalette(MouseEventArgs e) {
@@ -123,26 +142,6 @@ namespace Merthsoft.TokenIDE.Forms {
 			//} else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
 			//	setRightMouseButton(paletteIndex);
 			//}
-		}
-
-		private void pixelBox_Paint(object sender, PaintEventArgs e) {
-			e.Graphics.FillRectangle(XLibBrushes[selectedColor], e.ClipRectangle);
-		}
-
-		private void button2_Click(object sender, EventArgs e) {
-			Clipboard.SetText(SelectedColor.ToString());
-		}
-
-		private void button3_Click(object sender, EventArgs e) {
-			Close();
-		}
-
-		private void insertButton_Click(object sender, EventArgs e) {
-			PasteTextEventHandler temp = PasteTextEvent;
-			if (temp != null) {
-				temp(this, new PasteTextEventArgs(SelectedColor.ToString()));
-			}
-			Close();
 		}
 	}
 }

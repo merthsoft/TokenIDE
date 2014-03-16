@@ -15,11 +15,13 @@ using Merthsoft.Tokens;
 using Merthsoft.Tokens.DCSGUI;
 
 namespace Merthsoft.TokenIDE {
-
 	public partial class Tokens : Form {
+		private TokenData _tokenData;
+		private dynamic config;
 		private IEditWindow currWindow;
 		//UserControl currWindow;
 
+		private Font editorFont;
 		private List<TokensProject> projects;
 
 		private int NumWindows {
@@ -27,8 +29,6 @@ namespace Merthsoft.TokenIDE {
 				return EditWindows.TabPages.Count;
 			}
 		}
-
-		private TokenData _tokenData;
 
 		private TokenData TokenData {
 			get { return _tokenData; }
@@ -54,10 +54,6 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 		}
-
-		private dynamic config;
-
-		private Font editorFont;
 
 		public Tokens(string[] files) {
 			InitializeComponent();
@@ -108,46 +104,460 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		private void t_Click(object sender, EventArgs e) {
-			if (currWindow.SaveDirectory == null) {
-				return;
+		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData, bool archived, bool locked = false) {
+			string name = window.OnCalcName;
+			Var8x var = null;
+			string ext = getExtension(varType, calcType);
+
+			FileInfo fi = new FileInfo(window.FileName);
+			if (!string.IsNullOrWhiteSpace(fi.Extension)) {
+				window.FileName = window.FileName.Remove(window.FileName.Length - fi.Extension.Length);
 			}
+			window.FileName += ext;
 
-			ToolStripMenuItem t = (ToolStripMenuItem)sender;
-			string[] vals = (string[])t.Tag;
-			string program = replaceTokens(vals[1]);
-			string args = replaceTokens(vals[2]);
+			using (StreamWriter s = new StreamWriter(Path.Combine(dir, name + ext))) {
+				if (!(varType.HasValue && calcType.HasValue)) {
+					s.BaseStream.Write(rawData, 0, rawData.Length);
+				} else {
+					if (varType == Var8x.VarType.AppVar) {
+						var = new AppVar8x(name, calcType.Value);
+					} else {
+						var = new Prog8x(name, calcType.Value);
+						((Prog8x)var).Locked = locked;
+					}
+					var.Archived = archived;
 
-			if (program == null || args == null) {
-				return;
-			}
-			//MessageBox.Show(args, program);
-			Process.Start(program, args);
-		}
-
-		private string replaceTokens(string val) {
-			val = val.Replace("%file%", Path.Combine(currWindow.SaveDirectory, currWindow.FileName));
-			val = val.Replace("%tokendir%", Application.StartupPath);
-			if (val.Contains("%files%")) {
-				StringBuilder sb = new StringBuilder();
-				foreach (TabPage page in EditWindows.TabPages) {
-					IEditWindow window = (IEditWindow)(page.Controls[0]);
-					if (window.SaveDirectory == null) { return null; }
-					sb.AppendFormat("\"{0}\" ", Path.Combine(window.SaveDirectory, window.FileName));
+					var.SetData(new object[] { numTokens.ToString(), rawData });
+					var.Save(new BinaryWriter(s.BaseStream));
 				}
-				val = val.Replace("%files%", sb.ToString());
 			}
-
-			return val;
 		}
 
-		private void openFileToolStripMenuItem_Click(object sender, EventArgs e) {
-			//try {
-			FileDialog fd = new OpenFileDialog();
-			if (fd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
-			if (fd.FileName == string.Empty || fd.FileName == null)
+		public void dumpTokens(Dictionary<byte, TokenData.TokenDictionaryEntry> data, StringBuilder sb) {
+			foreach (var token in data) {
+				if (token.Value.Name != null) {
+					sb.AppendFormat(string.Format("{0} - {1}", token.Value.Bytes, token.Value.Name.Replace("{", "{{").Replace("}", "}}").Replace("\\", "\\\\")));
+				}
+				sb.AppendLine();
+				dumpTokens(token.Value.SubTokens, sb);
+			}
+		}
+
+		public string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
+			if (varType == null && calcType == null) {
+				return ".bin";
+			}
+
+			string prefix = null;
+			string suffix = null;
+			switch (calcType) {
+				case Var8x.CalcType.Calc8x:
+					prefix = "8x";
+					break;
+
+				case Var8x.CalcType.Calc83:
+					prefix = "83";
+					break;
+
+				case Var8x.CalcType.Calc82:
+					prefix = "82";
+					break;
+
+				case Var8x.CalcType.Calc73:
+					prefix = "73";
+					break;
+
+				case Var8x.CalcType.Calc85:
+					prefix = "85";
+					break;
+
+				default:
+					break;
+			}
+
+			switch (varType) {
+				case Var8x.VarType.AppVar:
+					suffix = "v";
+					break;
+
+				case Var8x.VarType.Program:
+				case Var8x.VarType.ProgramLocked:
+					suffix = "p";
+					break;
+			}
+
+			return "." + prefix + suffix;
+		}
+
+		private static void AddProjectItem(TreeNode treeNode, ProjectFile projItem) {
+			TreeNode progNode = new TreeNode(projItem.ToString());
+			progNode.Tag = projItem;
+			progNode.ImageKey = progNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_prog.png" : "icon_project_appvars.png";
+			treeNode.Nodes.Add(progNode);
+		}
+
+		private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
+			AboutBox1 a = new AboutBox1();
+			a.ShowDialog();
+		}
+
+		private void AddMemorySection(PojectSection mem, TreeNode treeNode) {
+			TreeNode programsNode = new TreeNode("Programs");
+			AddProjectItems(mem.Programs, programsNode);
+			treeNode.Nodes.Add(programsNode);
+
+			TreeNode appVarNodes = new TreeNode("AppVars");
+			appVarNodes.Tag = mem.Programs;
+			appVarNodes.ContextMenuStrip = addItemContextMenuStrip;
+			appVarNodes.ImageKey = appVarNodes.SelectedImageKey = "icon_project_appvars.png";
+			foreach (var appVarItem in mem.AppVars) {
+				TreeNode appVarNode = new TreeNode(appVarItem.ToString());
+				appVarNode.Tag = appVarItem;
+				appVarNode.ImageKey = appVarNode.SelectedImageKey = "icon_appvar.png";
+				appVarNodes.Nodes.Add(appVarNode);
+			}
+			treeNode.Nodes.Add(appVarNodes);
+		}
+
+		private void AddNewTab() {
+			TabPage tp = new TabPage("new file");
+			Prog8xEditWindow ew = new Prog8xEditWindow(TokenData, "new file");
+			ew.FirstFileFlag = true;
+			ew.Program = new Prog8x("");
+			ew.ParentTabPage = tp;
+			tp.Controls.Add(ew);
+			EditWindows.TabPages.Add(tp);
+			currWindow = ew;
+
+			ew.ProgramTextBox.Font = editorFont;
+			ew.DragEnter += TokenIDE_DragEnter;
+			ew.DragDrop += TokenIDE_DragDrop;
+		}
+
+		private void AddProject(TokensProject proj) {
+			leftTabControl.SelectedTab = ProjectTab;
+
+			projects.Add(proj);
+
+			TreeNode projectNode = new TreeNode(proj.Name);
+			projectNode.ImageKey = "icon_project.png";
+			projectNode.Tag = proj;
+
+			TreeNode ramNode = new TreeNode("RAM");
+			ramNode.ImageKey = "icon_project_blank.png";
+			ramNode.Tag = proj.Ram;
+			AddMemorySection(proj.Ram, ramNode);
+			projectNode.Nodes.Add(ramNode);
+
+			TreeNode archiveNode = new TreeNode("Archive");
+			archiveNode.ImageKey = "icon_project_blank.png";
+			archiveNode.Tag = proj.Archive;
+			AddMemorySection(proj.Archive, archiveNode);
+			projectNode.Nodes.Add(archiveNode);
+
+			projectTree.Nodes.Add(projectNode);
+			projectNode.Expand();
+		}
+
+		private void AddProjectItems(List<ProjectFile> section, TreeNode treeNode) {
+			treeNode.Tag = section;
+			treeNode.ContextMenuStrip = addItemContextMenuStrip;
+			treeNode.ImageKey = treeNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_project_progs.png" : "icon_project_appvars.png";
+			foreach (ProjectFile projItem in section) {
+				AddProjectItem(treeNode, projItem);
+			}
+		}
+
+		private void binaryFileToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(null, null);
+		}
+
+		private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e) {
+			hexSprite(false);
+		}
+
+		private void blockCountsToolStripMenuItem_Click(object sender, EventArgs e) {
+			Prog8xEditWindow editWindow = currWindow as Prog8xEditWindow;
+			if (currWindow == null) { return; }
+
+			GroupStats gs = new GroupStats(editWindow);
+			gs.Show();
+		}
+
+		private void buildAllToolStripMenuItem_Click(object sender, EventArgs e) {
+		}
+
+		private void buildFile(Var8x.VarType? varType, Var8x.CalcType? calcType) {
+			var prevCursor = Cursor;
+			Cursor = Cursors.WaitCursor;
+			string dir;
+			byte[] data = setUpSave(out dir);
+			if (data == null) {
 				return;
-			OpenFile(fd.FileName);
+			}
+			try {
+				bool locked = false;
+				if (currWindow is Prog8xEditWindow) {
+					locked = ((Prog8xEditWindow)currWindow).Locked;
+				}
+
+				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data, currWindow.Archived, locked);
+				statusLabel.Text = "Build succeeded";
+			} catch (Exception ex) {
+				statusLabel.Text = string.Concat("Build failed: ", ex.Message);
+			}
+			Cursor = prevCursor;
+		}
+
+		private void changeSaveDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
+			//var fbd = new FolderSelectDialog() {
+			//    Title = "Save Directory",
+			//    InitialDirectory = Environment.CurrentDirectory,
+			//};
+			//if (!fbd.ShowDialog()) {
+			//    return;
+			//}
+
+			var fbd = new OpenFileDialog() {
+				InitialDirectory = Environment.CurrentDirectory,
+				ValidateNames = false,
+				CheckFileExists = false,
+				CheckPathExists = false,
+				FileName = "Folder Selection.",
+			};
+
+			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
+				return;
+			}
+
+			currWindow.SaveDirectory = fbd.FileName;
+		}
+
+		private void changeTokenFileToolStripMenuItem_Click(object sender, EventArgs e) {
+			OpenFileDialog f = new OpenFileDialog();
+			f.AddFilter("Token Files", "*.xml");
+			if (f.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
+			string xmlFileName = f.FileName;
+			OpenTokensFile(xmlFileName);
+		}
+
+		private void CloseTab() {
+			if (currWindow.Dirty) {
+				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
+					MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
+					return;
+				}
+			}
+			EditWindows.TabPages.Remove(currWindow.ParentTabPage);
+			if (currWindow == null) {
+				AddNewTab();
+			}
+		}
+
+		private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
+			CloseTab();
+		}
+
+		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) {
+			hexSprite(true);
+		}
+
+		private void CompileToolStripMenuItem_Click(object sender, EventArgs e) {
+			Var8x.VarType varType = Var8x.VarType.Program;
+			Var8x.CalcType calcType = Var8x.CalcType.Calc8x;
+			buildFile(varType, calcType);
+		}
+
+		private void dCSGuiDesignerToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+			DCSGUIDesigner d = new DCSGUIDesigner();
+			d.ShowDialog();
+			if (d.outControls == null)
+				return;
+			string s = "OpenGUIStack(\n";
+			foreach (GUIItem dgi in d.outControls) {
+				s += dgi.GetOutString() + "\n";
+			}
+			s += "RenderGUI(";
+			ew.SelectedText = s;
+		}
+
+		private void dumpTokensToolStripMenuItem_Click(object sender, EventArgs e) {
+			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
+			if (window == null) { return; }
+			TokenData data = window.TokenData;
+			StringBuilder sb = new StringBuilder();
+			dumpTokens(data.Tokens, sb);
+
+			window.ProgramText = sb.ToString();
+		}
+
+		private void EditWindows_MouseClick(object sender, MouseEventArgs e) {
+			//if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
+			//        CloseTab(EditWindows.Tab);
+			//}
+		}
+
+		private void EditWindows_SelectedIndexChanged(object sender, EventArgs e) {
+			if (EditWindows.TabPages.Count > 0) {
+				currWindow = (IEditWindow)EditWindows.SelectedTab.Controls[0];
+			} else {
+				currWindow = null;
+			}
+		}
+
+		private void existingItemToolStripMenuItem_Click(object sender, EventArgs e) {
+			TokensProject project = GetProject(projectTree.SelectedNode.Parent.Parent);
+			var fileDialog = new OpenFileDialog() {
+				InitialDirectory = project.BaseDirectory,
+				Filter = "Text Files (*.txt)|*.txt",
+				CheckFileExists = true,
+				Multiselect = true,
+			};
+			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
+
+			List<ProjectFile> section = (List<ProjectFile>)projectTree.SelectedNode.Tag;
+			foreach (string fileName in fileDialog.FileNames) {
+				FileInfo fileInfo = new FileInfo(fileName);
+				string projectFilePath = Path.Combine(project.BaseDirectory, fileInfo.Name);
+				if (!File.Exists(projectFilePath)) {
+					File.Copy(fileName, projectFilePath);
+				}
+
+				var newProjectFile = new ProjectFile() { Path = fileInfo.Name };
+
+				//string outName = fileInfo.FileName() + projectTree.SelectedNode.Text == "Program" ? ".8xp" : ".8xk";
+				//newProjectFile.Output = Path.Combine(project.OutDirectory, fileName);
+				section.Add(newProjectFile);
+				AddProjectItem(projectTree.SelectedNode, newProjectFile);
+			}
+		}
+
+		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
+			this.Close();
+		}
+
+		private void fileToolStripMenuItem2_Click(object sender, EventArgs e) {
+			AddNewTab();
+		}
+
+		private void findToolStripMenuItem_Click(object sender, EventArgs e) {
+			//Find f = new Find(currWindow);
+			//f.Show();
+			if (currWindow is Prog8xEditWindow) {
+				var ew = (Prog8xEditWindow)currWindow;
+				FastColoredTextBoxNS.FindForm f = new FastColoredTextBoxNS.FindForm(ew.ProgramTextBox);
+				f.Show();
+			}
+		}
+
+		private TokensProject GetProject(TreeNode node) {
+			if (node.Parent == null) {
+				return (TokensProject)node.Tag;
+			}
+			return GetProject(node.Parent);
+		}
+
+		private void hexSprite(bool color) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+#if !DEBUG
+			try {
+#endif
+			HexSprite s = new HexSprite();
+
+			if (color) {
+				s.SpriteHeight = s.SpriteWidth = 32;
+				s.SelectedPalette = HexSprite.Palette.CelticIICSE;
+			} else {
+				s.SpriteHeight = s.SpriteWidth = 8;
+				s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
+			}
+
+			if (ew.SelectedText != "") {
+				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
+				try { s.Hex = hexString; } catch {
+					MessageBox.Show(string.Format("Unable to create sprite from {0}.", hexString));
+					return;
+				}
+			}
+
+			s.PasteTextEvent += handlePasteEvent;
+			s.Show();
+#if !DEBUG
+			} catch (Exception ex) {
+				MessageBox.Show(ex.ToString());
+			}
+#endif
+		}
+
+		private void hexSpriteEditorToolStripMenuItem_Click(object sender, EventArgs e) {
+		}
+
+		private void hexViewToolStripMenuItem_Click(object sender, EventArgs e) {
+			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
+			if (window == null) { return; }
+			List<List<TokenData.TokenDictionaryEntry>> tokens;
+			window.GenerateByteData(false, false, out tokens);
+			StringBuilder sb = new StringBuilder();
+			foreach (var line in tokens) {
+				foreach (var token in line) {
+					sb.AppendFormat("[{0}:{1}] ", token.Name, token.Bytes);
+				}
+				sb.AppendLine();
+			}
+
+			TextBox tb = new TextBox();
+			tb.Dock = DockStyle.Fill;
+			tb.Multiline = true;
+			tb.ScrollBars = ScrollBars.Both;
+			tb.Font = editorFont;
+			tb.WordWrap = false;
+			tb.Text = sb.ToString();
+
+			Form f = new Form();
+			f.Text = "Hex View";
+			f.Controls.Add(tb);
+
+			f.Show();
+		}
+
+		private void imageEditosToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+			ImageEditor i = new ImageEditor();
+			i.ShowDialog();
+			if (i.OutStrings != null) {
+				string s = "";
+				foreach (string str in i.OutStrings) {
+					s += str + "\n";
+				}
+				ew.SelectedText = s;
+			}
+		}
+
+		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
+			if (docLinkLabel.Text == "") { return; }
+			System.Diagnostics.Process.Start(docLinkLabel.Text);
+		}
+
+		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
+		}
+
+		private void navigateToDocsToolStripMenuItem_Click(object sender, EventArgs e) {
+			TreeNode n = TokensTree.SelectedNode;
+			while (!TokenData.Sites.ContainsKey(n.Text) && n.Parent != null) {
+				n = n.Parent;
+			}
+			if (!TokenData.Sites.ContainsKey(n.Text)) {
+				MessageBox.Show(string.Format("No online documentation available for {0}.", TokensTree.SelectedNode.Text));
+				return;
+			}
+			System.Diagnostics.Process.Start(TokenData.Sites[n.Text]);
 		}
 
 		private void OpenFile(string fileName) {
@@ -280,222 +690,13 @@ namespace Merthsoft.TokenIDE {
 			//}
 		}
 
-		private void CompileToolStripMenuItem_Click(object sender, EventArgs e) {
-			Var8x.VarType varType = Var8x.VarType.Program;
-			Var8x.CalcType calcType = Var8x.CalcType.Calc8x;
-			buildFile(varType, calcType);
-		}
-
-		private void buildFile(Var8x.VarType? varType, Var8x.CalcType? calcType) {
-			var prevCursor = Cursor;
-			Cursor = Cursors.WaitCursor;
-			string dir;
-			byte[] data = setUpSave(out dir);
-			if (data == null) {
+		private void openFileToolStripMenuItem_Click(object sender, EventArgs e) {
+			//try {
+			FileDialog fd = new OpenFileDialog();
+			if (fd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
+			if (fd.FileName == string.Empty || fd.FileName == null)
 				return;
-			}
-			try {
-				bool locked = false;
-				if (currWindow is Prog8xEditWindow) {
-					locked = ((Prog8xEditWindow)currWindow).Locked;
-				}
-
-				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data, currWindow.Archived, locked);
-				statusLabel.Text = "Build succeeded";
-			} catch (Exception ex) {
-				statusLabel.Text = string.Concat("Build failed: ", ex.Message);
-			}
-			Cursor = prevCursor;
-		}
-
-		private void tokenize83pToolStripMenuItem_Click(object sender, EventArgs e) {
-			Var8x.VarType varType = Var8x.VarType.Program;
-			Var8x.CalcType calcType = Var8x.CalcType.Calc83;
-			buildFile(varType, calcType);
-		}
-
-		public string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
-			if (varType == null && calcType == null) {
-				return ".bin";
-			}
-
-			string prefix = null;
-			string suffix = null;
-			switch (calcType) {
-				case Var8x.CalcType.Calc8x:
-					prefix = "8x";
-					break;
-
-				case Var8x.CalcType.Calc83:
-					prefix = "83";
-					break;
-
-				case Var8x.CalcType.Calc82:
-					prefix = "82";
-					break;
-
-				case Var8x.CalcType.Calc73:
-					prefix = "73";
-					break;
-
-				case Var8x.CalcType.Calc85:
-					prefix = "85";
-					break;
-
-				default:
-					break;
-			}
-
-			switch (varType) {
-				case Var8x.VarType.AppVar:
-					suffix = "v";
-					break;
-
-				case Var8x.VarType.Program:
-				case Var8x.VarType.ProgramLocked:
-					suffix = "p";
-					break;
-			}
-
-			return "." + prefix + suffix;
-		}
-
-		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData, bool archived, bool locked = false) {
-			string name = window.OnCalcName;
-			Var8x var = null;
-			string ext = getExtension(varType, calcType);
-
-			FileInfo fi = new FileInfo(window.FileName);
-			if (!string.IsNullOrWhiteSpace(fi.Extension)) {
-				window.FileName = window.FileName.Remove(window.FileName.Length - fi.Extension.Length);
-			}
-			window.FileName += ext;
-
-			using (StreamWriter s = new StreamWriter(Path.Combine(dir, name + ext))) {
-				if (!(varType.HasValue && calcType.HasValue)) {
-					s.BaseStream.Write(rawData, 0, rawData.Length);
-				} else {
-					if (varType == Var8x.VarType.AppVar) {
-						var = new AppVar8x(name, calcType.Value);
-					} else {
-						var = new Prog8x(name, calcType.Value);
-						((Prog8x)var).Locked = locked;
-					}
-					var.Archived = archived;
-
-					var.SetData(new object[] { numTokens.ToString(), rawData });
-					var.Save(new BinaryWriter(s.BaseStream));
-				}
-			}
-		}
-
-		private void hexSpriteEditorToolStripMenuItem_Click(object sender, EventArgs e) {
-		}
-
-		private void hexSprite(bool color) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-#if !DEBUG
-			try {
-#endif
-			HexSprite s = new HexSprite();
-
-			if (color) {
-				s.SpriteHeight = s.SpriteWidth = 32;
-				s.SelectedPalette = HexSprite.Palette.CelticIICSE;
-			} else {
-				s.SpriteHeight = s.SpriteWidth = 8;
-				s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
-			}
-
-			if (ew.SelectedText != "") {
-				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
-				try { s.Hex = hexString; } catch {
-					MessageBox.Show(string.Format("Unable to create sprite from {0}.", hexString));
-					return;
-				}
-			}
-
-			s.PasteTextEvent += s_PasteTextEvent;
-			s.Show();
-#if !DEBUG
-			} catch (Exception ex) {
-				MessageBox.Show(ex.ToString());
-			}
-#endif
-		}
-
-		private void xLIBCColorPicerToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-			int color;
-			ColorPicker c = new ColorPicker();
-			if (ew.SelectedText != "" && int.TryParse(ew.SelectedText, out color) && color >= 0 && color < 256) {
-				c.SelectedColor = color;
-			}
-			c.StartPosition = FormStartPosition.CenterParent;
-			c.PasteTextEvent += s_PasteTextEvent;
-			c.Show();
-		}
-
-		private void s_PasteTextEvent(object sender, PasteTextEventArgs e) {
-			if (!(currWindow is Prog8xEditWindow)) {
-				MessageBox.Show("Unable to paste into window.", "Paste", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return;
-			}
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-			ew.SelectedText = e.TextToPaste;
-		}
-
-		private void dCSGuiDesignerToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-			DCSGUIDesigner d = new DCSGUIDesigner();
-			d.ShowDialog();
-			if (d.outControls == null)
-				return;
-			string s = "OpenGUIStack(\n";
-			foreach (GUIItem dgi in d.outControls) {
-				s += dgi.GetOutString() + "\n";
-			}
-			s += "RenderGUI(";
-			ew.SelectedText = s;
-		}
-
-		private void imageEditosToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-			ImageEditor i = new ImageEditor();
-			i.ShowDialog();
-			if (i.OutStrings != null) {
-				string s = "";
-				foreach (string str in i.OutStrings) {
-					s += str + "\n";
-				}
-				ew.SelectedText = s;
-			}
-		}
-
-		private void aboutToolStripMenuItem_Click(object sender, EventArgs e) {
-			AboutBox1 a = new AboutBox1();
-			a.ShowDialog();
-		}
-
-		private void SchemaStringValidationHandler(object sender, ValidationEventArgs args) {
-			throw new Exception("Shaun, what the fuck did you do?!");
-		}
-
-		private void changeTokenFileToolStripMenuItem_Click(object sender, EventArgs e) {
-			OpenFileDialog f = new OpenFileDialog();
-			f.AddFilter("Token Files", "*.xml");
-			if (f.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
-			string xmlFileName = f.FileName;
-			OpenTokensFile(xmlFileName);
+			OpenFile(fd.FileName);
 		}
 
 		private bool OpenTokensFile(string xmlFileName) {
@@ -529,15 +730,119 @@ namespace Merthsoft.TokenIDE {
 			return true;
 		}
 
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (EditWindows.SelectedTab.Controls[0] is Prog8xEditWindow) {
-				SaveTextFile(false);
+		private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
+			Options o = new Options();
+			o.SelectedFont = editorFont;
+			o.TokenFile = config.TokenIDE.file;
+			o.TokenData = TokenData;
+			DialogResult result = o.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK) {
+				config.TokenIDE.file = o.TokenFile;
+				editorFont = o.SelectedFont;
+				config.Font.family = editorFont.FontFamily.Name;
+				config.Font.size = editorFont.SizeInPoints;
+				Config.WriteIni(config, "TokenIDE.ini");
+				foreach (TabPage window in EditWindows.Controls) {
+					Prog8xEditWindow editWindow = window.Controls[0] as Prog8xEditWindow;
+					if (editWindow == null) { continue; }
+					editWindow.ProgramTextBox.Font = editorFont;
+					editWindow.Invalidate();
+				}
 			}
 		}
 
+		private void projectToolStripMenuItem_Click(object sender, EventArgs e) {
+			OpenFileDialog ofd = new OpenFileDialog();
+			ofd.AddFilter("Tokens Project", "*.xml");
+			ofd.CheckFileExists = true;
+			if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK || ofd.FileName == "") { return; }
+
+			TokensProject proj = TokensProject.Open(ofd.FileName);
+			AddProject(proj);
+
+			buildAllToolStripMenuItem.Enabled = true;
+		}
+
+		private void projectToolStripMenuItem1_Click(object sender, EventArgs e) {
+			NewProjectWizard wizard = new NewProjectWizard() {
+				ProjectName = "New Project",
+				BaseDirectory = Path.Combine(string.IsNullOrWhiteSpace(currWindow.SaveDirectory) ? Environment.CurrentDirectory : currWindow.SaveDirectory, "New Project"),
+			};
+
+			if (wizard.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
+				return;
+			}
+
+			var project = new TokensProject() {
+				Name = wizard.ProjectName,
+				BaseDirectory = wizard.BaseDirectory,
+				OutDirectory = wizard.OutDirectory,
+				FileName = Path.Combine(wizard.BaseDirectory, wizard.ProjectName + ".xml"),
+			};
+
+			AddProject(project);
+
+			if (!Directory.Exists(project.BaseDirectory)) {
+				Directory.CreateDirectory(project.BaseDirectory);
+			}
+
+			if (!Directory.Exists(project.OutDirectory)) {
+				Directory.CreateDirectory(project.OutDirectory);
+			}
+
+			project.Save();
+		}
+
+		private void projectTree_AfterExpand(object sender, TreeViewEventArgs e) {
+			if (e.Node.Nodes.Count == 1) { e.Node.Nodes[0].Expand(); }
+		}
+
+		private void projectTree_AfterSelect(object sender, TreeViewEventArgs e) {
+		}
+
+		private void projectTree_DoubleClick(object sender, EventArgs e) {
+			TreeNode selectedNode = projectTree.SelectedNode;
+			if (selectedNode == null) { return; }
+
+			TokensProject selectedProject = GetProject(projectTree.SelectedNode.Parent.Parent);
+
+			if (selectedNode.Nodes == null || selectedNode.Nodes.Count == 0 &&
+				(selectedNode.Text != "Programs" && selectedNode.Text != "AppVars")) {
+				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
+			}
+			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
+			//OpenFile(((ProjectItem)selectedNode.Tag).File);
+			//}
+		}
+
+		private void projectTree_MouseClick(object sender, MouseEventArgs e) {
+			projectTree.SelectedNode = projectTree.GetNodeAt(e.Location);
+		}
+
+		private string replaceTokens(string val) {
+			val = val.Replace("%file%", Path.Combine(currWindow.SaveDirectory, currWindow.FileName));
+			val = val.Replace("%tokendir%", Application.StartupPath);
+			if (val.Contains("%files%")) {
+				StringBuilder sb = new StringBuilder();
+				foreach (TabPage page in EditWindows.TabPages) {
+					IEditWindow window = (IEditWindow)(page.Controls[0]);
+					if (window.SaveDirectory == null) { return null; }
+					sb.AppendFormat("\"{0}\" ", Path.Combine(window.SaveDirectory, window.FileName));
+				}
+				val = val.Replace("%files%", sb.ToString());
+			}
+
+			return val;
+		}
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
 			if (EditWindows.SelectedTab.Controls[0] is Prog8xEditWindow) {
 				SaveTextFile(true);
+			}
+		}
+
+		private void saveProject() {
+			foreach (TokensProject proj in projects) {
+				proj.Save();
 			}
 		}
 
@@ -576,147 +881,14 @@ namespace Merthsoft.TokenIDE {
 			return;
 		}
 
-		//private bool SaveProgram(string dir, string programName, bool checkExists) {
-		//    programName = programName + ".txt";
-		//    if (checkExists && File.Exists(programName)) {
-		//        var res = MessageBox.Show("Are you sure you want to overwrite " + programName, "File Already Exists", MessageBoxButtons.YesNo);
-		//        if (res != System.Windows.Forms.DialogResult.Yes) {
-		//            statusLabel.Text = "Save failed";
-		//            return false;
-		//        }
-		//    }
-		//    try {
-		//        using (StreamWriter sw = new StreamWriter(programName, false)) {
-		//            sw.Write(currWindow.ProgramText.Replace("\n", Environment.NewLine));
-		//        }
-		//        statusLabel.Text = "Save succeeded";
-		//    } catch (Exception ex) {
-		//        statusLabel.Text = string.Concat("Save failed: ", ex.ToString());
-		//        return false;
-		//    }
-		//    currWindow.Dirty = false;
-		//    return true;
-		//}
-
-		private void EditWindows_SelectedIndexChanged(object sender, EventArgs e) {
-			if (EditWindows.TabPages.Count > 0) {
-				currWindow = (IEditWindow)EditWindows.SelectedTab.Controls[0];
-			} else {
-				currWindow = null;
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (EditWindows.SelectedTab.Controls[0] is Prog8xEditWindow) {
+				SaveTextFile(false);
 			}
 		}
 
-		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
-			TokensTree.SelectedNode = e.Node;
-			if (TokenData.Comments.ContainsKey(e.Node.Text)) {
-				string comment = TokenData.Comments[e.Node.Text];
-				if (comment != null) {
-					commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
-				} else {
-					commentBox.Text = "No data available for this command.";
-				}
-			} else {
-				commentBox.Text = "";
-			}
-		}
-
-		private void TokensTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
-
-			if (e.Node.Nodes.Count == 0 && e.Node.IsSelected) {
-				ew.SelectedText = ((Merthsoft.Tokens.TokenData.GroupEntry)e.Node.Tag).Main;
-				ew.ProgramTextBox.Focus();
-			}
-		}
-
-		private void navigateToDocsToolStripMenuItem_Click(object sender, EventArgs e) {
-			TreeNode n = TokensTree.SelectedNode;
-			while (!TokenData.Sites.ContainsKey(n.Text) && n.Parent != null) {
-				n = n.Parent;
-			}
-			if (!TokenData.Sites.ContainsKey(n.Text)) {
-				MessageBox.Show(string.Format("No online documentation available for {0}.", TokensTree.SelectedNode.Text));
-				return;
-			}
-			System.Diagnostics.Process.Start(TokenData.Sites[n.Text]);
-		}
-
-		private void fileToolStripMenuItem2_Click(object sender, EventArgs e) {
-			AddNewTab();
-		}
-
-		private void TokensTree_AfterSelect(object sender, TreeViewEventArgs e) {
-			if (e.Node != null) {
-				if (TokenData.Comments.ContainsKey(e.Node.Text)) {
-					string comment = TokenData.Comments[e.Node.Text];
-					if (comment != null) {
-						commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
-					} else {
-						commentBox.Text = "No data available for this command.";
-					}
-
-					TreeNode n = e.Node;
-					while (!TokenData.Sites.ContainsKey(n.Text) && n.Parent != null) {
-						n = n.Parent;
-					}
-					if (!TokenData.Sites.ContainsKey(n.Text)) {
-						docLinkLabel.Text = "";
-					} else {
-						docLinkLabel.Text = TokenData.Sites[n.Text];
-					}
-					mainToolTip.SetToolTip(docLinkLabel, docLinkLabel.Text);
-				} else {
-					commentBox.Text = "";
-				}
-			}
-		}
-
-		private void closeToolStripMenuItem_Click(object sender, EventArgs e) {
-			CloseTab();
-		}
-
-		private void CloseTab() {
-			if (currWindow.Dirty) {
-				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
-					MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
-					return;
-				}
-			}
-			EditWindows.TabPages.Remove(currWindow.ParentTabPage);
-			if (currWindow == null) {
-				AddNewTab();
-			}
-		}
-
-		private void AddNewTab() {
-			TabPage tp = new TabPage("new file");
-			Prog8xEditWindow ew = new Prog8xEditWindow(TokenData, "new file");
-			ew.FirstFileFlag = true;
-			ew.Program = new Prog8x("");
-			ew.ParentTabPage = tp;
-			tp.Controls.Add(ew);
-			EditWindows.TabPages.Add(tp);
-			currWindow = ew;
-
-			ew.ProgramTextBox.Font = editorFont;
-			ew.DragEnter += TokenIDE_DragEnter;
-			ew.DragDrop += TokenIDE_DragDrop;
-		}
-
-		private void TokenIDE_FormClosing(object sender, FormClosingEventArgs e) {
-			bool dirty = false;
-			foreach (TabPage tp in EditWindows.TabPages) {
-				if (((IEditWindow)tp.Controls[0]).Dirty) {
-					dirty = true;
-				}
-			}
-			if (dirty) {
-				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
-						MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
-					e.Cancel = true;
-				}
-			}
+		private void SchemaStringValidationHandler(object sender, ValidationEventArgs args) {
+			throw new Exception("Shaun, what the fuck did you do?!");
 		}
 
 		private byte[] setUpSave(out string directory) {
@@ -768,6 +940,85 @@ namespace Merthsoft.TokenIDE {
 			return data;
 		}
 
+		private void statusLabel_TextChanged(object sender, EventArgs e) {
+			if (statusLabel.Text == "") { return; }
+			statusLabelClear.Start();
+		}
+
+		private void statusLabelClear_Tick(object sender, EventArgs e) {
+			statusLabel.Text = "";
+		}
+
+		private void t_Click(object sender, EventArgs e) {
+			if (currWindow.SaveDirectory == null) {
+				return;
+			}
+
+			ToolStripMenuItem t = (ToolStripMenuItem)sender;
+			string[] vals = (string[])t.Tag;
+			string program = replaceTokens(vals[1]);
+			string args = replaceTokens(vals[2]);
+
+			if (program == null || args == null) {
+				return;
+			}
+			//MessageBox.Show(args, program);
+
+			try {
+				Process.Start(program, args);
+			} catch (Exception ex) {
+				MessageBox.Show(string.Format("Error running program {0}:{1}{2}", program, Environment.NewLine, ex.Message), program, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private void TokenIDE_DragDrop(object sender, DragEventArgs e) {
+			// Extract the data from the DataObject-Container into a string list
+			string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+			foreach (string file in fileList) {
+				OpenFile(file);
+			}
+		}
+
+		private void TokenIDE_DragEnter(object sender, DragEventArgs e) {
+			// Check if the Dataformat of the data can be accepted
+			// (we only accept file drops from Explorer, etc.)
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+		}
+
+		private void TokenIDE_FormClosing(object sender, FormClosingEventArgs e) {
+			bool dirty = false;
+			foreach (TabPage tp in EditWindows.TabPages) {
+				if (((IEditWindow)tp.Controls[0]).Dirty) {
+					dirty = true;
+				}
+			}
+			if (dirty) {
+				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
+						MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
+					e.Cancel = true;
+				}
+			}
+		}
+
+		private void tokenize73pToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc73);
+		}
+
+		private void tokenize82pToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc82);
+		}
+
+		private void tokenize83pToolStripMenuItem_Click(object sender, EventArgs e) {
+			Var8x.VarType varType = Var8x.VarType.Program;
+			Var8x.CalcType calcType = Var8x.CalcType.Calc83;
+			buildFile(varType, calcType);
+		}
+
+		private void tokenize85pToolStripMenuItem_Click(object sender, EventArgs e) {
+			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc85);
+		}
+
 		private void tokenize8xvToolStripMenuItem_Click(object sender, EventArgs e) {
 			//string dir;
 			//byte[] data = setUpSave(out dir);
@@ -786,358 +1037,106 @@ namespace Merthsoft.TokenIDE {
 			buildFile(Var8x.VarType.AppVar, Var8x.CalcType.Calc8x);
 		}
 
-		private void TokenIDE_DragDrop(object sender, DragEventArgs e) {
-			// Extract the data from the DataObject-Container into a string list
-			string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-
-			foreach (string file in fileList) {
-				OpenFile(file);
-			}
-		}
-
-		private void TokenIDE_DragEnter(object sender, DragEventArgs e) {
-			// Check if the Dataformat of the data can be accepted
-			// (we only accept file drops from Explorer, etc.)
-			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
-		}
-
-		private void changeSaveDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
-			//var fbd = new FolderSelectDialog() {
-			//    Title = "Save Directory",
-			//    InitialDirectory = Environment.CurrentDirectory,
-			//};
-			//if (!fbd.ShowDialog()) {
-			//    return;
-			//}
-
-			var fbd = new OpenFileDialog() {
-				InitialDirectory = Environment.CurrentDirectory,
-				ValidateNames = false,
-				CheckFileExists = false,
-				CheckPathExists = false,
-				FileName = "Folder Selection.",
-			};
-
-			if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
-				return;
-			}
-
-			currWindow.SaveDirectory = fbd.FileName;
-		}
-
-		private void findToolStripMenuItem_Click(object sender, EventArgs e) {
-			//Find f = new Find(currWindow);
-			//f.Show();
-			if (currWindow is Prog8xEditWindow) {
-				var ew = (Prog8xEditWindow)currWindow;
-				FastColoredTextBoxNS.FindForm f = new FastColoredTextBoxNS.FindForm(ew.ProgramTextBox);
-				f.Show();
-			}
-		}
-
-		private void projectToolStripMenuItem_Click(object sender, EventArgs e) {
-			OpenFileDialog ofd = new OpenFileDialog();
-			ofd.AddFilter("Tokens Project", "*.xml");
-			ofd.CheckFileExists = true;
-			if (ofd.ShowDialog() != System.Windows.Forms.DialogResult.OK || ofd.FileName == "") { return; }
-
-			TokensProject proj = TokensProject.Open(ofd.FileName);
-			AddProject(proj);
-
-			buildAllToolStripMenuItem.Enabled = true;
-		}
-
-		private void AddProject(TokensProject proj) {
-			leftTabControl.SelectedTab = ProjectTab;
-
-			projects.Add(proj);
-
-			TreeNode projectNode = new TreeNode(proj.Name);
-			projectNode.ImageKey = "icon_project.png";
-			projectNode.Tag = proj;
-
-			TreeNode ramNode = new TreeNode("RAM");
-			ramNode.ImageKey = "icon_project_blank.png";
-			ramNode.Tag = proj.Ram;
-			AddMemorySection(proj.Ram, ramNode);
-			projectNode.Nodes.Add(ramNode);
-
-			TreeNode archiveNode = new TreeNode("Archive");
-			archiveNode.ImageKey = "icon_project_blank.png";
-			archiveNode.Tag = proj.Archive;
-			AddMemorySection(proj.Archive, archiveNode);
-			projectNode.Nodes.Add(archiveNode);
-
-			projectTree.Nodes.Add(projectNode);
-			projectNode.Expand();
-		}
-
-		private void AddMemorySection(PojectSection mem, TreeNode treeNode) {
-			TreeNode programsNode = new TreeNode("Programs");
-			AddProjectItems(mem.Programs, programsNode);
-			treeNode.Nodes.Add(programsNode);
-
-			TreeNode appVarNodes = new TreeNode("AppVars");
-			appVarNodes.Tag = mem.Programs;
-			appVarNodes.ContextMenuStrip = addItemContextMenuStrip;
-			appVarNodes.ImageKey = appVarNodes.SelectedImageKey = "icon_project_appvars.png";
-			foreach (var appVarItem in mem.AppVars) {
-				TreeNode appVarNode = new TreeNode(appVarItem.ToString());
-				appVarNode.Tag = appVarItem;
-				appVarNode.ImageKey = appVarNode.SelectedImageKey = "icon_appvar.png";
-				appVarNodes.Nodes.Add(appVarNode);
-			}
-			treeNode.Nodes.Add(appVarNodes);
-		}
-
-		private void AddProjectItems(List<ProjectFile> section, TreeNode treeNode) {
-			treeNode.Tag = section;
-			treeNode.ContextMenuStrip = addItemContextMenuStrip;
-			treeNode.ImageKey = treeNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_project_progs.png" : "icon_project_appvars.png";
-			foreach (ProjectFile projItem in section) {
-				AddProjectItem(treeNode, projItem);
-			}
-		}
-
-		private static void AddProjectItem(TreeNode treeNode, ProjectFile projItem) {
-			TreeNode progNode = new TreeNode(projItem.ToString());
-			progNode.Tag = projItem;
-			progNode.ImageKey = progNode.SelectedImageKey = treeNode.Text == "Programs" ? "icon_prog.png" : "icon_project_appvars.png";
-			treeNode.Nodes.Add(progNode);
-		}
-
-		private void projectTree_DoubleClick(object sender, EventArgs e) {
-			TreeNode selectedNode = projectTree.SelectedNode;
-			if (selectedNode == null) { return; }
-
-			TokensProject selectedProject = GetProject(projectTree.SelectedNode.Parent.Parent);
-
-			if (selectedNode.Nodes == null || selectedNode.Nodes.Count == 0 &&
-				(selectedNode.Text != "Programs" && selectedNode.Text != "AppVars")) {
-				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
-			}
-			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
-			//OpenFile(((ProjectItem)selectedNode.Tag).File);
-			//}
-		}
-
-		private void buildAllToolStripMenuItem_Click(object sender, EventArgs e) {
-		}
-
-		private void projectTree_AfterExpand(object sender, TreeViewEventArgs e) {
-			if (e.Node.Nodes.Count == 1) { e.Node.Nodes[0].Expand(); }
-		}
-
-		private void EditWindows_MouseClick(object sender, MouseEventArgs e) {
-			//if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
-			//        CloseTab(EditWindows.Tab);
-			//}
-		}
-
-		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-		}
-
-		private void blockCountsToolStripMenuItem_Click(object sender, EventArgs e) {
-			Prog8xEditWindow editWindow = currWindow as Prog8xEditWindow;
-			if (currWindow == null) { return; }
-
-			GroupStats gs = new GroupStats(editWindow);
-			gs.Show();
-		}
-
 		private void Tokens_Load(object sender, EventArgs e) {
 		}
 
-		private void optionsToolStripMenuItem_Click(object sender, EventArgs e) {
-			Options o = new Options();
-			o.SelectedFont = editorFont;
-			o.TokenFile = config.TokenIDE.file;
-			o.TokenData = TokenData;
-			DialogResult result = o.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK) {
-				config.TokenIDE.file = o.TokenFile;
-				editorFont = o.SelectedFont;
-				config.Font.family = editorFont.FontFamily.Name;
-				config.Font.size = editorFont.SizeInPoints;
-				Config.WriteIni(config, "TokenIDE.ini");
-				foreach (TabPage window in EditWindows.Controls) {
-					Prog8xEditWindow editWindow = window.Controls[0] as Prog8xEditWindow;
-					if (editWindow == null) { continue; }
-					editWindow.ProgramTextBox.Font = editorFont;
-					editWindow.Invalidate();
+		private void TokensTree_AfterSelect(object sender, TreeViewEventArgs e) {
+			if (e.Node != null) {
+				if (TokenData.Comments.ContainsKey(e.Node.Text)) {
+					string comment = TokenData.Comments[e.Node.Text];
+					if (comment != null) {
+						commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
+					} else {
+						commentBox.Text = "No data available for this command.";
+					}
+
+					TreeNode n = e.Node;
+					while (!TokenData.Sites.ContainsKey(n.Text) && n.Parent != null) {
+						n = n.Parent;
+					}
+					if (!TokenData.Sites.ContainsKey(n.Text)) {
+						docLinkLabel.Text = "";
+					} else {
+						docLinkLabel.Text = TokenData.Sites[n.Text];
+					}
+					mainToolTip.SetToolTip(docLinkLabel, docLinkLabel.Text);
+				} else {
+					commentBox.Text = "";
 				}
 			}
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
-			if (docLinkLabel.Text == "") { return; }
-			System.Diagnostics.Process.Start(docLinkLabel.Text);
-		}
-
-		private void tokenize82pToolStripMenuItem_Click(object sender, EventArgs e) {
-			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc82);
-		}
-
-		private void tokenize73pToolStripMenuItem_Click(object sender, EventArgs e) {
-			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc73);
-		}
-
-		private void hexViewToolStripMenuItem_Click(object sender, EventArgs e) {
-			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
-			if (window == null) { return; }
-			List<List<TokenData.TokenDictionaryEntry>> tokens;
-			window.GenerateByteData(false, false, out tokens);
-			StringBuilder sb = new StringBuilder();
-			foreach (var line in tokens) {
-				foreach (var token in line) {
-					sb.AppendFormat("[{0}:{1}] ", token.Name, token.Bytes);
+		//private bool SaveProgram(string dir, string programName, bool checkExists) {
+		//    programName = programName + ".txt";
+		//    if (checkExists && File.Exists(programName)) {
+		//        var res = MessageBox.Show("Are you sure you want to overwrite " + programName, "File Already Exists", MessageBoxButtons.YesNo);
+		//        if (res != System.Windows.Forms.DialogResult.Yes) {
+		//            statusLabel.Text = "Save failed";
+		//            return false;
+		//        }
+		//    }
+		//    try {
+		//        using (StreamWriter sw = new StreamWriter(programName, false)) {
+		//            sw.Write(currWindow.ProgramText.Replace("\n", Environment.NewLine));
+		//        }
+		//        statusLabel.Text = "Save succeeded";
+		//    } catch (Exception ex) {
+		//        statusLabel.Text = string.Concat("Save failed: ", ex.ToString());
+		//        return false;
+		//    }
+		//    currWindow.Dirty = false;
+		//    return true;
+		//}
+		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+			TokensTree.SelectedNode = e.Node;
+			if (TokenData.Comments.ContainsKey(e.Node.Text)) {
+				string comment = TokenData.Comments[e.Node.Text];
+				if (comment != null) {
+					commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
+				} else {
+					commentBox.Text = "No data available for this command.";
 				}
-				sb.AppendLine();
-			}
-
-			TextBox tb = new TextBox();
-			tb.Dock = DockStyle.Fill;
-			tb.Multiline = true;
-			tb.ScrollBars = ScrollBars.Both;
-			tb.Font = editorFont;
-			tb.WordWrap = false;
-			tb.Text = sb.ToString();
-
-			Form f = new Form();
-			f.Text = "Hex View";
-			f.Controls.Add(tb);
-
-			f.Show();
-		}
-
-		public void dumpTokens(Dictionary<byte, TokenData.TokenDictionaryEntry> data, StringBuilder sb) {
-			foreach (var token in data) {
-				if (token.Value.Name != null) {
-					sb.AppendFormat(string.Format("{0} - {1}", token.Value.Bytes, token.Value.Name.Replace("{", "{{").Replace("}", "}}").Replace("\\", "\\\\")));
-				}
-				sb.AppendLine();
-				dumpTokens(token.Value.SubTokens, sb);
+			} else {
+				commentBox.Text = "";
 			}
 		}
 
-		private void dumpTokensToolStripMenuItem_Click(object sender, EventArgs e) {
-			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
-			if (window == null) { return; }
-			TokenData data = window.TokenData;
-			StringBuilder sb = new StringBuilder();
-			dumpTokens(data.Tokens, sb);
+		private void TokensTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 
-			window.ProgramText = sb.ToString();
-		}
-
-		private void tokenize85pToolStripMenuItem_Click(object sender, EventArgs e) {
-			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc85);
-		}
-
-		private void statusLabel_TextChanged(object sender, EventArgs e) {
-			if (statusLabel.Text == "") { return; }
-			statusLabelClear.Start();
-		}
-
-		private void statusLabelClear_Tick(object sender, EventArgs e) {
-			statusLabel.Text = "";
-		}
-
-		private void binaryFileToolStripMenuItem_Click(object sender, EventArgs e) {
-			buildFile(null, null);
-		}
-
-		private void projectToolStripMenuItem1_Click(object sender, EventArgs e) {
-			NewProjectWizard wizard = new NewProjectWizard() {
-				ProjectName = "New Project",
-				BaseDirectory = Path.Combine(string.IsNullOrWhiteSpace(currWindow.SaveDirectory) ? Environment.CurrentDirectory : currWindow.SaveDirectory, "New Project"),
-			};
-
-			if (wizard.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) {
-				return;
+			if (e.Node.Nodes.Count == 0 && e.Node.IsSelected) {
+				ew.SelectedText = ((Merthsoft.Tokens.TokenData.GroupEntry)e.Node.Tag).Main;
+				ew.ProgramTextBox.Focus();
 			}
-
-			var project = new TokensProject() {
-				Name = wizard.ProjectName,
-				BaseDirectory = wizard.BaseDirectory,
-				OutDirectory = wizard.OutDirectory,
-				FileName = Path.Combine(wizard.BaseDirectory, wizard.ProjectName + ".xml"),
-			};
-
-			AddProject(project);
-
-			if (!Directory.Exists(project.BaseDirectory)) {
-				Directory.CreateDirectory(project.BaseDirectory);
-			}
-
-			if (!Directory.Exists(project.OutDirectory)) {
-				Directory.CreateDirectory(project.OutDirectory);
-			}
-
-			project.Save();
-		}
-
-		private void projectTree_MouseClick(object sender, MouseEventArgs e) {
-			projectTree.SelectedNode = projectTree.GetNodeAt(e.Location);
-		}
-
-		private void existingItemToolStripMenuItem_Click(object sender, EventArgs e) {
-			TokensProject project = GetProject(projectTree.SelectedNode.Parent.Parent);
-			var fileDialog = new OpenFileDialog() {
-				InitialDirectory = project.BaseDirectory,
-				Filter = "Text Files (*.txt)|*.txt",
-				CheckFileExists = true,
-				Multiselect = true,
-			};
-			if (fileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
-
-			List<ProjectFile> section = (List<ProjectFile>)projectTree.SelectedNode.Tag;
-			foreach (string fileName in fileDialog.FileNames) {
-				FileInfo fileInfo = new FileInfo(fileName);
-				string projectFilePath = Path.Combine(project.BaseDirectory, fileInfo.Name);
-				if (!File.Exists(projectFilePath)) {
-					File.Copy(fileName, projectFilePath);
-				}
-
-				var newProjectFile = new ProjectFile() { Path = fileInfo.Name };
-
-				//string outName = fileInfo.FileName() + projectTree.SelectedNode.Text == "Program" ? ".8xp" : ".8xk";
-				//newProjectFile.Output = Path.Combine(project.OutDirectory, fileName);
-				section.Add(newProjectFile);
-				AddProjectItem(projectTree.SelectedNode, newProjectFile);
-			}
-		}
-
-		private TokensProject GetProject(TreeNode node) {
-			if (node.Parent == null) {
-				return (TokensProject)node.Tag;
-			}
-			return GetProject(node.Parent);
 		}
 
 		private void toolStripMenuItem1_Click(object sender, EventArgs e) {
 			saveProject();
 		}
 
-		private void saveProject() {
-			foreach (TokensProject proj in projects) {
-				proj.Save();
+		private void xLIBCColorPicerToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+			int color;
+			ColorPicker c = new ColorPicker();
+			if (ew.SelectedText != "" && int.TryParse(ew.SelectedText, out color) && color >= 0 && color < 256) {
+				c.SelectedColor = color;
 			}
+			c.StartPosition = FormStartPosition.CenterParent;
+			c.PasteTextEvent += handlePasteEvent;
+			c.Show();
 		}
 
-		private void projectTree_AfterSelect(object sender, TreeViewEventArgs e) {
-		}
+		private void handlePasteEvent(object sender, PasteTextEventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) {
+				MessageBox.Show("Unable to paste into window.", "Paste", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 
-		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) {
-			hexSprite(true);
-		}
-
-		private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e) {
-			hexSprite(false);
-		}
-
-		private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-			this.Close();
+			ew.SelectedText = e.TextToPaste;
 		}
 	}
 }

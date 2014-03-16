@@ -1,20 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using Merthsoft.Tokens;
-using System.IO;
-using Merthsoft.CalcData;
-using System.Threading;
 using FastColoredTextBoxNS;
+using Merthsoft.CalcData;
+using Merthsoft.Tokens;
 
 namespace Merthsoft.TokenIDE {
 	public partial class Prog8xEditWindow : UserControl, IEditWindow {
-		Dictionary<string, TokenStyle> styles;
+		public class Replacement {
+			public int Location { get; set; }
+			public string OldValue { get; set; }
+			public string NewValue { get; set; }
+
+			public Replacement(int location, string oldValue, string newValue) {
+				Location = location;
+				OldValue = oldValue;
+				NewValue = newValue;
+			}
+		}
+
+		private int _numTokens;
+		private TokenizeableVar8x _program;
+		private string _programName;
+		private TokenData _TokenData;
+		private bool dirty;
+		private bool liveUpdate;
+		private Dictionary<string, TokenStyle> styles;
 
 		public bool Archived {
 			get { return _program == null ? false : _program.Archived; }
@@ -25,28 +40,11 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 		}
-		
-		public TabPage ParentTabPage { get; set; }
 
-		public bool FirstFileFlag { get; set; }
+		public byte[] ByteData { get { return GenerateByteData(false, true); } }
 
-		public bool ReadOnly {
-			get {
-				return readOnlyCheckBox.Checked;
-			}
-			set {
-				readOnlyCheckBox.Checked = value;
-			}
-		}
+		public Var8x CalcVar { get { return Program; } set { Program = (TokenizeableVar8x)value; } }
 
-		public bool HasSaved {
-			get;
-			set;
-		}
-
-		public bool New { get; set; }
-
-		private bool dirty;
 		public bool Dirty {
 			get {
 				return dirty;
@@ -58,9 +56,18 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public bool Opening { get; set; }
+		public string FileName {
+			get;
+			set;
+		}
 
-		private bool liveUpdate;
+		public bool FirstFileFlag { get; set; }
+
+		public bool HasSaved {
+			get;
+			set;
+		}
+
 		public bool LiveUpdate {
 			get {
 				return liveUpdate;
@@ -71,11 +78,30 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		private int NumberOfLines { get; set; }
+		public bool Locked { get { return ((Prog8x)_program).Locked; } }
 
-		public Var8x CalcVar { get { return Program; } set { Program = (TokenizeableVar8x)value; } }
+		public bool New { get; set; }
 
-		private TokenizeableVar8x _program;
+		public int NumTokens { get { return _numTokens; } }
+
+		public string OnCalcName {
+			get {
+				return _programName ?? "";
+			}
+			set {
+				_programName = value;
+				_program.Name = _programName;
+				byte[] data = TokenData.Tokenize(ProgramTextBox.Text, out _numTokens);
+				UpdateBytesLabel(data.Length);
+				if (ParentTabPage != null) {
+					ParentTabPage.Text = _programName;
+				}
+			}
+		}
+
+		public bool Opening { get; set; }
+
+		public TabPage ParentTabPage { get; set; }
 		public TokenizeableVar8x Program {
 			get {
 				return _program;
@@ -99,44 +125,33 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		public string[] ProgramLines {
+			get { return ProgramTextBox.Lines.ToArray(); }
+		}
+
+		public string ProgramText {
+			get { return ProgramTextBox.Text; }
+			set { ProgramTextBox.Text = value; LastLength = value.Length; }
+		}
+
+		public bool ReadOnly {
+			get {
+				return readOnlyCheckBox.Checked;
+			}
+			set {
+				readOnlyCheckBox.Checked = value;
+			}
+		}
 		public string SaveDirectory {
 			get;
 			set;
 		}
 
-		public string FileName {
-			get;
-			set; 
+		public string SelectedText {
+			get { return ProgramTextBox.SelectedText; }
+			set { ProgramTextBox.SelectedText = value; }
 		}
 
-		private string _programName;
-		public string OnCalcName {
-			get {
-				return _programName ?? "";
-			}
-			set {
-				_programName = value;
-				_program.Name = _programName;
-				byte[] data = TokenData.Tokenize(ProgramTextBox.Text, out _numTokens); 
-				UpdateBytesLabel(data.Length);
-				if (ParentTabPage != null) {
-					ParentTabPage.Text = _programName;
-				}
-			}
-		}
-
-		private void UpdateBytesLabel(int length) {
-			int nameLength = OnCalcName.StartsWith("new file") ? 0 : OnCalcName.Length;
-			bytesLabels.Text = string.Format("Bytes: {0}", length + 9 + nameLength);
-		}
-
-		private void UpdateSelectionLabel(int selectionLength, int selectionTokens, int selectionBytes) {
-			selectionLabel.Text = string.Format("Selection: {0} characters, {1} tokens, {2} bytes", selectionLength, selectionTokens, selectionBytes);
-		}
-
-		private Font font { get; set; }
-
-		private TokenData _TokenData;
 		public TokenData TokenData {
 			get {
 				return _TokenData;
@@ -166,30 +181,30 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private string CommentString { get { return TokenData.CommentString; } }
+
 		private string DirectiveString { get { return TokenData.DirectiveString; } }
 
-		private int _numTokens;
-		public int NumTokens { get { return _numTokens; } }
-
-		public string ProgramText {
-			get { return ProgramTextBox.Text; }
-			set { ProgramTextBox.Text = value; LastLength = value.Length; }
-		}
-
-		public string[] ProgramLines {
-			get { return ProgramTextBox.Lines.ToArray(); }
-		}
-
-		public string SelectedText {
-			get { return ProgramTextBox.SelectedText; }
-			set { ProgramTextBox.SelectedText = value; }
-		}
+		private Font font { get; set; }
 
 		private int LastLength { get; set; }
 
+		private int NumberOfLines { get; set; }
 		private bool StringFlag { get; set; }
 
-		public byte[] ByteData { get { return GenerateByteData(false, true); } }
+		public Prog8xEditWindow(TokenData td, string fileName) {
+			InitializeComponent();
+			FirstFileFlag = false;
+			TokenData = td;
+			Dock = DockStyle.Fill;
+			FileName = fileName;
+			//ProgramName = new FileInfo(fileName).Name;
+			LiveUpdate = true;
+			//readOnlyPanel.Height = splitContainer1.Panel1.Height - BytesBox.Height;
+			StringFlag = false;
+			New = true;
+
+			ProgramTextBox.HotkeysMapping[Keys.Control | Keys.Y] = FCTBAction.Redo;
+		}
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError) {
 			List<List<TokenData.TokenDictionaryEntry>> toss;
@@ -197,7 +212,13 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens, out int lengthWithoutComments) {
+			List<List<Replacement>> replacements;
+			return GenerateByteData(newLinesForComments, breakOnError, out tokens, out lengthWithoutComments, out replacements);
+		}
+
+		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens, out int lengthWithoutComments, out List<List<Replacement>> replacements) {
 			StringBuilder sb = new StringBuilder();
+			replacements = new List<List<Replacement>>();
 			int lineNumber = 0;
 			Dictionary<string, string> directives = new Dictionary<string, string>();
 			Dictionary<string, string> backward = new Dictionary<string, string>();
@@ -209,7 +230,7 @@ namespace Merthsoft.TokenIDE {
 				for (int i = 0; i < ProgramTextBox.Lines.Count; i++) {
 					string line = ProgramTextBox.Lines[i];
 					lineNumber++;
-
+					replacements.Add(new List<Replacement>());
 					if (line.StartsWith(CommentString.ToString())) {
 						if (newLinesForComments) {
 							sb.AppendLine();
@@ -227,11 +248,15 @@ namespace Merthsoft.TokenIDE {
 						continue;
 					}
 
+					List<Replacement> lineReplacements = new List<Replacement>();
 					foreach (string key in directives.Keys) {
 						if (directives[key] != null) {
-							line = line.Replace(key, directives[key]);
+							List<int> reps = line.Replace(key, directives[key], out line);
+							lineReplacements.AddRange(reps.ConvertAll<Replacement>(replacement => new Replacement(replacement, key, directives[key])));
 						}
 					}
+					replacements[lineNumber - 1] = lineReplacements;
+
 					if (ifFlag.Count == 0 || ifFlag.Peek()) {
 						if (i == ProgramTextBox.Lines.Count - 1) {
 							sb.Append(line);
@@ -274,18 +299,58 @@ namespace Merthsoft.TokenIDE {
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {
 			int toss;
+			
 			return GenerateByteData(newLinesForComments, breakOnError, out tokens, out toss);
 		}
-        private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
+
+		public void HideLocked() {
+			lockedBox.Visible = false;
+		}
+
+		public void RefreshBytes(bool setProgramText = true, byte[] data = null) {
+			List<List<TokenData.TokenDictionaryEntry>> tokens;
+			if (data == null) {
+				int length;
+				data = GenerateByteData(true, false, out tokens, out length);
+				UpdateBytesLabel(length);
+			}
+			if (setProgramText) {
+				ProgramText = TokenData.Detokenize(data, out tokens);
+			} else {
+				TokenData.Detokenize(data, out tokens);
+			}
+			//UpdateTokensBox(tokens);
+		}
+
+		public void Save() {
+			string fileName = FileName;
+			if (!FileName.EndsWith(".txt")) {
+				int extensionLocation = fileName.LastIndexOf('.');
+				if (extensionLocation != -1) {
+					fileName = fileName.Remove(extensionLocation);
+				}
+				fileName = fileName + ".txt";
+			}
+			using (StreamWriter sw = new StreamWriter(fileName, false)) {
+				sw.Write(ProgramText.Replace("\r", "").Replace("\n", Environment.NewLine));
+			}
+			Dirty = false;
+		}
+
+		private void archivedCheckBox_CheckedChanged(object sender, EventArgs e) {
+			_program.Archived = archivedCheckBox.Checked;
+		}
+
+		private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
 			if (string.IsNullOrWhiteSpace(line)) {
 				return;
 			}
 
 			Dictionary<string, string> reverseLookup = null;
-			string[] directive = line.Split(new[] {' '});
+			string[] directive = line.Split(new[] { ' ' });
 			string replaceString = null;
 			if (directive.Length >= 3) {
-				replaceString = string.Join(" ", directive.SubArray(2, directive.Length - 2));
+				replaceString = string.Join(" ", directive.SubArray(2, directive.Length - 2)).Trim();
 			} else if (directive.Length == 1 && directive[0] == DirectiveString + "define") {
 				return;
 			}
@@ -299,26 +364,31 @@ namespace Merthsoft.TokenIDE {
 					}
 					if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Add(replaceString, directive[1]); }
 					break;
+
 				case "undefine":
 					directives.Remove(directive[1]);
 					if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Remove(replaceString); }
 					break;
+
 				case "ifdef":
 					if (directive.Length < 2) { return; }
 					ifCount++;
 					ifFlag.Push(directives.Keys.Contains(directive[1]));
 					break;
+
 				case "ifndef":
 					if (directive.Length < 2) { return; }
 					ifCount++;
 					ifFlag.Push(!directives.Keys.Contains(directive[1]));
 					break;
+
 				case "else":
 					if (ifCount == 0 && breakOnError) {
 						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
 					}
 					ifFlag.Push(!ifFlag.Pop());
 					break;
+
 				case "elseifdef":
 					if (ifCount == 0 && breakOnError) {
 						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
@@ -326,6 +396,7 @@ namespace Merthsoft.TokenIDE {
 					if (directive.Length < 2) { return; }
 					ifFlag.Push(directives.Keys.Contains(directive[1]));
 					break;
+
 				case "elseifndef":
 					if (ifCount == 0 && breakOnError) {
 						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
@@ -333,6 +404,7 @@ namespace Merthsoft.TokenIDE {
 					if (directive.Length < 2) { return; }
 					ifFlag.Push(!directives.Keys.Contains(directive[1]));
 					break;
+
 				case "endif":
 					if (ifCount == 0 && breakOnError) {
 						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}end directives.", DirectiveString));
@@ -344,53 +416,91 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public Prog8xEditWindow(TokenData td, string fileName) {
-			InitializeComponent();
-			FirstFileFlag = false;
-			TokenData = td;
-			Dock = DockStyle.Fill;
-			FileName = fileName;
-			//ProgramName = new FileInfo(fileName).Name;
-			LiveUpdate = true;
-			//readOnlyPanel.Height = splitContainer1.Panel1.Height - BytesBox.Height;
-			StringFlag = false;
-			New = true;
+		private void liveUpdateCheckBox_CheckedChanged(object sender, EventArgs e) {
+			LiveUpdate = liveUpdateCheckBox.Checked;
+			if (LiveUpdate) {
+				RefreshBytes(false);
+				FullHighlightRefresh();
+			}
+		}
 
-			ProgramTextBox.HotkeysMapping[Keys.Control | Keys.Y] = FCTBAction.Redo;
+		private void lockedBox_CheckedChanged(object sender, EventArgs e) {
+			((Prog8x)_program).Locked = lockedBox.Checked;
+		}
+
+		private void Prog8xEditWindow_MouseHover(object sender, EventArgs e) {
+		}
+
+		public void FullHighlightRefresh() {
+			UpdateHighlight(ProgramTextBox.Range);
 		}
 
 		private void ProgramText_TextChanged(object sender, TextChangedEventArgs e) {
 			if (LiveUpdate) {
-				List<List<TokenData.TokenDictionaryEntry>> tokens;
-				int length;
-				byte[] byteData = GenerateByteData(true, false, out tokens, out length);
-				//TokenData.Detokenize(byteData, out tokens);
-				UpdateHighlight(tokens, e.ChangedRange);
-				UpdateBytesLabel(length);
-				RefreshBytes(false, byteData);
+				RefreshBytes(false, UpdateHighlight(e.ChangedRange));
 			}
 			Dirty = true;
 		}
 
-		public void FullHighlightRefresh() {
+		private byte[] UpdateHighlight(Range range) {
 			List<List<TokenData.TokenDictionaryEntry>> tokens;
-			byte[] byteData = GenerateByteData(true, false, out tokens);
-			//TokenData.Detokenize(byteData, out tokens);
-			UpdateHighlight(tokens, ProgramTextBox.Range);
-			//ProgramTextBox.Invalidate();
+			int length;
+			var replacements = new List<List<Replacement>>();
+			byte[] byteData = GenerateByteData(true, false, out tokens, out length, out replacements);
+			UpdateHighlight(tokens, range, replacements);
+			UpdateBytesLabel(length);
+			return byteData;
 		}
 
-		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range) {
+		private void ProgramTextBox_DragEnter(object sender, DragEventArgs e) {
+		}
+
+		private void ProgramTextBox_Scroll(object sender, ScrollEventArgs e) {
+		}
+
+		private void ProgramTextBox_SelectionChangedDelayed(object sender, EventArgs e) {
+			if (ProgramTextBox.SelectionLength == 0) {
+				selectionLabel.Visible = false;
+				bytesLabels.Visible = true;
+				return;
+			}
+
+			selectionLabel.Visible = true;
+			bytesLabels.Visible = false;
+
+			int length;
+			int numTokens;
+			int bytes;
+
+			string selectedText = ProgramTextBox.Selection.Text;
+			bytes = TokenData.Tokenize(selectedText, out numTokens).Length;
+			length = selectedText.Length;
+
+			UpdateSelectionLabel(length, numTokens, bytes);
+		}
+
+		private void readOnlyCheckBox_CheckedChanged(object sender, EventArgs e) {
+			ProgramTextBox.ReadOnly = readOnlyCheckBox.Checked;
+			ProgramTextBox.BackColor = ProgramTextBox.ReadOnly ? SystemColors.Control : SystemColors.Window;
+			ProgramTextBox.Update();
+		}
+
+		private void UpdateBytesLabel(int length) {
+			int nameLength = OnCalcName.StartsWith("new file") ? 0 : OnCalcName.Length;
+			bytesLabels.Text = string.Format("Bytes: {0}", length + 9 + nameLength);
+		}
+
+		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range, List<List<Replacement>> replacements) {
 			Dictionary<string, string> PreProcForward = new Dictionary<string, string>();
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
 
 			// Do all the preproc up to this point?
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
-			    HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, ref ifCount, ifFlag, false);
+				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, ref ifCount, ifFlag, false);
 				PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
 			}
-			
+
 			Place place = new Place(0, range.Start.iLine);
 			for (int i = range.Start.iLine; i <= range.End.iLine; i++) {
 				if (i < 0 || i > ProgramTextBox.Lines.Count - 1) { continue; }
@@ -409,23 +519,19 @@ namespace Merthsoft.TokenIDE {
 				} else {
 					StringFlag = false;
 					foreach (var entry in line) {
-						if (entry.StringTerminator && StringFlag) { StringFlag = false; }
-						else if (entry.StringStarter) { StringFlag = true; }
+						if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
 						string token = entry.Name;
 						if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
 							if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
 						}
 						string lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, token.Length);
 
-						if (PreProcForward.ContainsValue(token) && token != lineText) {
-							var replacedToken = PreProcForward.FirstOrDefault(v => {
-								var key = v.Key;
-								return v.Value == token && key == ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, key.Length);
-							}).Key;
-							if (replacedToken == null) {
-								replacedToken = PreProcForward.FirstOrDefault(v => v.Value == token).Key;
-							}
-							token = replacedToken;
+						Replacement replacement = null;
+						if (i < replacements.Count) {
+							replacement = replacements[i].FirstOrDefault(r => r.Location == place.iChar);
+						}
+						if (replacement != null) {
+							token = replacement.OldValue;
 						} else if (lineText != token) {
 							foreach (string alt in entry.Alts) {
 								lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
@@ -472,94 +578,8 @@ namespace Merthsoft.TokenIDE {
 			//ProgramTextBox.Invalidate();
 		}
 
-		public void RefreshBytes(bool setProgramText = true, byte[] data = null) {
-			List<List<TokenData.TokenDictionaryEntry>> tokens;
-			if (data == null) {
-				int length;
-				data = GenerateByteData(true, false, out tokens, out length);
-				UpdateBytesLabel(length);
-			}
-			if (setProgramText) {
-				ProgramText = TokenData.Detokenize(data, out tokens);
-			} else {
-				TokenData.Detokenize(data, out tokens);
-			}
-			//UpdateTokensBox(tokens);
+		private void UpdateSelectionLabel(int selectionLength, int selectionTokens, int selectionBytes) {
+			selectionLabel.Text = string.Format("Selection: {0} characters, {1} tokens, {2} bytes", selectionLength, selectionTokens, selectionBytes);
 		}
-
-		private void readOnlyCheckBox_CheckedChanged(object sender, EventArgs e) {
-			ProgramTextBox.ReadOnly = readOnlyCheckBox.Checked;
-			ProgramTextBox.BackColor = ProgramTextBox.ReadOnly ? SystemColors.Control : SystemColors.Window;
-			ProgramTextBox.Update();
-		}
-
-		private void lockedBox_CheckedChanged(object sender, EventArgs e) {
-			((Prog8x)_program).Locked = lockedBox.Checked;
-		}
-
-		private void archivedCheckBox_CheckedChanged(object sender, EventArgs e) {
-			_program.Archived = archivedCheckBox.Checked;
-		}
-
-		public void HideLocked() {
-			lockedBox.Visible = false;
-		}
-
-		private void liveUpdateCheckBox_CheckedChanged(object sender, EventArgs e) {
-			LiveUpdate = liveUpdateCheckBox.Checked;
-			if (LiveUpdate) {
-				RefreshBytes(false);
-				FullHighlightRefresh();
-			}
-		}
-
-		public void Save() {
-			string fileName = FileName;
-			if (!FileName.EndsWith(".txt")) {
-				int extensionLocation = fileName.LastIndexOf('.');
-				if (extensionLocation != -1) {
-					fileName = fileName.Remove(extensionLocation);
-				}
-				fileName = fileName + ".txt"; 
-			}
-			using (StreamWriter sw = new StreamWriter(fileName, false)) {
-				sw.Write(ProgramText.Replace("\r", "").Replace("\n", Environment.NewLine));
-			}
-			Dirty = false;
-		}
-
-		private void ProgramTextBox_Scroll(object sender, ScrollEventArgs e) {
-		}
-
-		private void ProgramTextBox_SelectionChangedDelayed(object sender, EventArgs e) {
-			if (ProgramTextBox.SelectionLength == 0) {
-				selectionLabel.Visible = false;
-				bytesLabels.Visible = true;
-				return;
-			}
-
-
-			selectionLabel.Visible = true;
-			bytesLabels.Visible = false;
-
-			int length;
-			int numTokens;
-			int bytes;
-
-			string selectedText = ProgramTextBox.Selection.Text;
-			bytes = TokenData.Tokenize(selectedText, out numTokens).Length;
-			length = selectedText.Length;
-
-			UpdateSelectionLabel(length, numTokens, bytes);
-		}
-
-		private void ProgramTextBox_DragEnter(object sender, DragEventArgs e) {
-		}
-
-		private void Prog8xEditWindow_MouseHover(object sender, EventArgs e) {
-
-		}
-
-		public bool Locked { get { return ((Prog8x)_program).Locked; } }
 	}
 }
