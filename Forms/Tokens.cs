@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Schema;
+using System.Linq;
 using Merthsoft.CalcData;
 using Merthsoft.DynamicConfig;
 using Merthsoft.TokenIDE.Forms;
@@ -20,6 +21,7 @@ namespace Merthsoft.TokenIDE {
 		private dynamic config;
 		private IEditWindow currWindow;
 		//UserControl currWindow;
+		private Dictionary<ToolStripMenuItem, Process> externalTools = new Dictionary<ToolStripMenuItem, Process>();
 
 		private Font editorFont;
 		private List<TokensProject> projects;
@@ -98,7 +100,7 @@ namespace Merthsoft.TokenIDE {
 				t.ShortcutKeys = Keys.Control | key;
 				t.ShowShortcutKeys = true;
 				t.Tag = vals;
-				t.Click += new EventHandler(t_Click);
+				t.Click += new EventHandler(launchExternalTool);
 
 				externalToolsToolStripMenuItem.DropDownItems.Add(t);
 			}
@@ -949,23 +951,41 @@ namespace Merthsoft.TokenIDE {
 			statusLabel.Text = "";
 		}
 
-		private void t_Click(object sender, EventArgs e) {
+		private void launchExternalTool(object sender, EventArgs e) {
 			if (currWindow.SaveDirectory == null) {
 				return;
 			}
 
 			ToolStripMenuItem t = (ToolStripMenuItem)sender;
+
 			string[] vals = (string[])t.Tag;
 			string program = replaceTokens(vals[1]);
 			string args = replaceTokens(vals[2]);
+			string buildOrSave = vals.ElementAtOrDefault(3, s => s.ToLowerInvariant());
+			string kill = vals.ElementAtOrDefault(4, s => s.ToLowerInvariant());
 
-			if (program == null || args == null) {
+			if (program == null) {
+				//MessageBox.Show("Could not run program \"{0}\". Check that it exists.", "Error external tool", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			//MessageBox.Show(args, program);
+			
+			if (kill == "kill" && externalTools.ContainsKey(t)) {
+				try {
+					externalTools[t].Kill();
+				} catch { }
+			}
+
+			switch (buildOrSave) {
+				case "build":
+					buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc8x);
+					break;
+				case "save":
+					SaveTextFile(false);
+					break;
+			}
 
 			try {
-				Process.Start(program, args);
+				externalTools[t] = Process.Start(program, args);
 			} catch (Exception ex) {
 				MessageBox.Show(string.Format("Error running program {0}:{1}{2}", program, Environment.NewLine, ex.Message), program, MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
@@ -1066,27 +1086,6 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		//private bool SaveProgram(string dir, string programName, bool checkExists) {
-		//    programName = programName + ".txt";
-		//    if (checkExists && File.Exists(programName)) {
-		//        var res = MessageBox.Show("Are you sure you want to overwrite " + programName, "File Already Exists", MessageBoxButtons.YesNo);
-		//        if (res != System.Windows.Forms.DialogResult.Yes) {
-		//            statusLabel.Text = "Save failed";
-		//            return false;
-		//        }
-		//    }
-		//    try {
-		//        using (StreamWriter sw = new StreamWriter(programName, false)) {
-		//            sw.Write(currWindow.ProgramText.Replace("\n", Environment.NewLine));
-		//        }
-		//        statusLabel.Text = "Save succeeded";
-		//    } catch (Exception ex) {
-		//        statusLabel.Text = string.Concat("Save failed: ", ex.ToString());
-		//        return false;
-		//    }
-		//    currWindow.Dirty = false;
-		//    return true;
-		//}
 		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			TokensTree.SelectedNode = e.Node;
 			if (TokenData.Comments.ContainsKey(e.Node.Text)) {

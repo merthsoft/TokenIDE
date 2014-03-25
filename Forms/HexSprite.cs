@@ -287,7 +287,7 @@ namespace Merthsoft.TokenIDE {
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 				e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
-
+	
 				if (drawGrid && pixelSize > 1) {
 					using (Pen smallGridPen = new Pen(Color.DarkGray)) {
 						smallGridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
