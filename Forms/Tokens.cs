@@ -1040,20 +1040,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void tokenize8xvToolStripMenuItem_Click(object sender, EventArgs e) {
-			//string dir;
-			//byte[] data = setUpSave(out dir);
-			//if (data == null)
-			//    return;
-			//try {
-			//    currWindow.CalcVar.ID = Var8x.VarType.AppVar;
-			//    currWindow.CalcVar.SetData(new object[2] { currWindow.NumTokens.ToString(), data });
-			//    using (StreamWriter s = new StreamWriter(Path.Combine(dir, currWindow.OnCalcName + ".8xv"))) {
-			//        currWindow.CalcVar.Save(new BinaryWriter(s.BaseStream));
-			//    }
-			//    statusLabel.Text = "Build succeeded";
-			//} catch (Exception ex) {
-			//    statusLabel.Text = string.Concat("Build failed: ", ex.ToString());
-			//}
 			buildFile(Var8x.VarType.AppVar, Var8x.CalcType.Calc8x);
 		}
 

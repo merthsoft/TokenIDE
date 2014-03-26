@@ -205,7 +205,7 @@ namespace Merthsoft.TokenIDE {
 		/// <summary>
 		/// Draws a filled ellipse to the sprite.
 		/// </summary>
-		/// <remarks>Taken from http://enchantia.com/graphapp/doc/tech/ellipses.html.</remarks>
+		/// <remarks>Taken from http://enchantia.com/graphapp/doc/tech/ellipses.html. </remarks>
 		/// <param name="x">The center point X coordinate.</param>
 		/// <param name="y">The center point Y coordinate.</param>
 		/// <param name="xRadius">The x radius.</param>

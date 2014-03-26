@@ -249,12 +249,16 @@ namespace Merthsoft.TokenIDE {
 					}
 
 					List<Replacement> lineReplacements = new List<Replacement>();
-					foreach (string key in directives.Keys) {
-						if (directives[key] != null) {
-							List<int> reps = line.Replace(key, directives[key], out line);
-							lineReplacements.AddRange(reps.ConvertAll<Replacement>(replacement => new Replacement(replacement, key, directives[key])));
-						}
-					}
+					//foreach (string key in directives.Keys) {
+					//    if (directives[key] != null) {
+					//        List<int> reps = line.Replace(key, directives[key], out line);
+					//        lineReplacements.AddRange(reps.ConvertAll<Replacement>(replacement => new Replacement(replacement, key, directives[key])));
+					//    }
+					//}
+
+					var reps = line.Replace(directives, out line);					
+					lineReplacements.AddRange(reps.ConvertAll<Replacement>(replacement => new Replacement(replacement.Item1, replacement.Item2, directives[replacement.Item2])));
+					
 					replacements[lineNumber - 1] = lineReplacements;
 
 					if (ifFlag.Count == 0 || ifFlag.Peek()) {
@@ -518,7 +522,12 @@ namespace Merthsoft.TokenIDE {
 					curRange.SetStyle(styles["Comment"] ?? styles["Default"]);
 				} else {
 					StringFlag = false;
+					int lastPrepocCount = 0;
 					foreach (var entry in line) {
+						if (lastPrepocCount > 0) {
+							lastPrepocCount--;
+							continue;
+						}
 						if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
 						string token = entry.Name;
 						if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
@@ -528,10 +537,13 @@ namespace Merthsoft.TokenIDE {
 
 						Replacement replacement = null;
 						if (i < replacements.Count) {
-							replacement = replacements[i].FirstOrDefault(r => r.Location == place.iChar);
+							List<Replacement> lineReplacements = replacements[i];
+							replacement = lineReplacements.FirstOrDefault(r => r.Location == place.iChar);
 						}
 						if (replacement != null) {
 							token = replacement.OldValue;
+							TokenData.Tokenize(replacement.NewValue, out lastPrepocCount);
+							lastPrepocCount--;
 						} else if (lineText != token) {
 							foreach (string alt in entry.Alts) {
 								lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
