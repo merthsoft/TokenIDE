@@ -131,32 +131,32 @@ to include changes if they're better!
 	<Token byte="$3E" string=":" />
 	<Token byte="$3F" string="\n" stringTerminator="true" />
 	<Token byte="$40" string=" and " style="Command" />
-	<Token byte="$41" string="A" />
-	<Token byte="$42" string="B" />
-	<Token byte="$43" string="C" />
-	<Token byte="$44" string="D" />
-	<Token byte="$45" string="E" />
-	<Token byte="$46" string="F" />
-	<Token byte="$47" string="G" />
-	<Token byte="$48" string="H" />
-	<Token byte="$49" string="I" />
-	<Token byte="$4A" string="J" />
-	<Token byte="$4B" string="K" />
-	<Token byte="$4C" string="L" />
-	<Token byte="$4D" string="M" />
-	<Token byte="$4E" string="N" />
-	<Token byte="$4F" string="O" />
-	<Token byte="$50" string="P" />
-	<Token byte="$51" string="Q" />
-	<Token byte="$52" string="R" />
-	<Token byte="$53" string="S" />
-	<Token byte="$54" string="T" />
-	<Token byte="$55" string="U" />
-	<Token byte="$56" string="V" />
-	<Token byte="$57" string="W" />
-	<Token byte="$58" string="X" />
-	<Token byte="$59" string="Y" />
-	<Token byte="$5A" string="Z" />
+	<Token byte="$41" string="A" style="Var" />
+	<Token byte="$42" string="B" style="Var" />
+	<Token byte="$43" string="C" style="Var" />
+	<Token byte="$44" string="D" style="Var" />
+	<Token byte="$45" string="E" style="Var" />
+	<Token byte="$46" string="F" style="Var" />
+	<Token byte="$47" string="G" style="Var" />
+	<Token byte="$48" string="H" style="Var" />
+	<Token byte="$49" string="I" style="Var" />
+	<Token byte="$4A" string="J" style="Var" />
+	<Token byte="$4B" string="K" style="Var" />
+	<Token byte="$4C" string="L" style="Var" />
+	<Token byte="$4D" string="M" style="Var" />
+	<Token byte="$4E" string="N" style="Var" />
+	<Token byte="$4F" string="O" style="Var" />
+	<Token byte="$50" string="P" style="Var" />
+	<Token byte="$51" string="Q" style="Var" />
+	<Token byte="$52" string="R" style="Var" />
+	<Token byte="$53" string="S" style="Var" />
+	<Token byte="$54" string="T" style="Var" />
+	<Token byte="$55" string="U" style="Var" />
+	<Token byte="$56" string="V" style="Var" />
+	<Token byte="$57" string="W" style="Var" />
+	<Token byte="$58" string="X" style="Var" />
+	<Token byte="$59" string="Y" style="Var" />
+	<Token byte="$5A" string="Z" style="Var" />
 	<Token byte="$5B" string="theta" style="Var">
 		<Alt string="θ" />
 	</Token>

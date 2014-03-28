@@ -23,6 +23,7 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.ProgramTextBox = new FastColoredTextBoxNS.FastColoredTextBox();
 			this.readOnlyPanel = new System.Windows.Forms.Panel();
 			this.selectionLabel = new System.Windows.Forms.Label();
@@ -32,27 +33,33 @@
 			this.lockedBox = new System.Windows.Forms.CheckBox();
 			this.readOnlyCheckBox = new System.Windows.Forms.CheckBox();
 			this.liveUpdateCheckBox = new System.Windows.Forms.CheckBox();
+			((System.ComponentModel.ISupportInitialize)(this.ProgramTextBox)).BeginInit();
 			this.readOnlyPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// ProgramTextBox
 			// 
-			this.ProgramTextBox.AllowDrop = true;
 			this.ProgramTextBox.AutoIndent = false;
-			this.ProgramTextBox.AutoScrollMinSize = new System.Drawing.Size(27, 15);
+			this.ProgramTextBox.AutoScrollMinSize = new System.Drawing.Size(33, 23);
 			this.ProgramTextBox.BackBrush = null;
 			this.ProgramTextBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.ProgramTextBox.CharHeight = 23;
+			this.ProgramTextBox.CharWidth = 11;
 			this.ProgramTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.ProgramTextBox.CursorOn = false;
 			this.ProgramTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.ProgramTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.ProgramTextBox.Font = new System.Drawing.Font("Consolas", 10F);
+			this.ProgramTextBox.IsReplaceMode = false;
 			this.ProgramTextBox.Location = new System.Drawing.Point(0, 0);
+			this.ProgramTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.ProgramTextBox.Name = "ProgramTextBox";
 			this.ProgramTextBox.Paddings = new System.Windows.Forms.Padding(0);
 			this.ProgramTextBox.SelectionColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
-			this.ProgramTextBox.Size = new System.Drawing.Size(614, 430);
+			this.ProgramTextBox.Size = new System.Drawing.Size(921, 662);
 			this.ProgramTextBox.TabIndex = 0;
+			this.ProgramTextBox.TabLength = 2;
+			this.ProgramTextBox.Zoom = 100;
 			this.ProgramTextBox.TextChangedDelayed += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.ProgramText_TextChanged);
 			this.ProgramTextBox.SelectionChangedDelayed += new System.EventHandler(this.ProgramTextBox_SelectionChangedDelayed);
 			this.ProgramTextBox.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ProgramTextBox_Scroll);
@@ -68,26 +75,29 @@
 			this.readOnlyPanel.Controls.Add(this.readOnlyCheckBox);
 			this.readOnlyPanel.Controls.Add(this.liveUpdateCheckBox);
 			this.readOnlyPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.readOnlyPanel.Location = new System.Drawing.Point(0, 430);
+			this.readOnlyPanel.Location = new System.Drawing.Point(0, 662);
+			this.readOnlyPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.readOnlyPanel.Name = "readOnlyPanel";
-			this.readOnlyPanel.Size = new System.Drawing.Size(614, 21);
+			this.readOnlyPanel.Size = new System.Drawing.Size(921, 32);
 			this.readOnlyPanel.TabIndex = 1;
 			// 
 			// selectionLabel
 			// 
 			this.selectionLabel.AutoSize = true;
-			this.selectionLabel.Location = new System.Drawing.Point(381, 4);
+			this.selectionLabel.Location = new System.Drawing.Point(572, 6);
+			this.selectionLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.selectionLabel.Name = "selectionLabel";
-			this.selectionLabel.Size = new System.Drawing.Size(0, 13);
+			this.selectionLabel.Size = new System.Drawing.Size(0, 20);
 			this.selectionLabel.TabIndex = 4;
 			this.selectionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// bytesLabels
 			// 
 			this.bytesLabels.AutoSize = true;
-			this.bytesLabels.Location = new System.Drawing.Point(381, 4);
+			this.bytesLabels.Location = new System.Drawing.Point(572, 6);
+			this.bytesLabels.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.bytesLabels.Name = "bytesLabels";
-			this.bytesLabels.Size = new System.Drawing.Size(45, 13);
+			this.bytesLabels.Size = new System.Drawing.Size(66, 20);
 			this.bytesLabels.TabIndex = 1;
 			this.bytesLabels.Text = "Bytes: 0";
 			this.bytesLabels.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -95,9 +105,10 @@
 			// IndentCheckBox
 			// 
 			this.IndentCheckBox.AutoSize = true;
-			this.IndentCheckBox.Location = new System.Drawing.Point(229, 3);
+			this.IndentCheckBox.Location = new System.Drawing.Point(344, 5);
+			this.IndentCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.IndentCheckBox.Name = "IndentCheckBox";
-			this.IndentCheckBox.Size = new System.Drawing.Size(56, 17);
+			this.IndentCheckBox.Size = new System.Drawing.Size(81, 24);
 			this.IndentCheckBox.TabIndex = 3;
 			this.IndentCheckBox.Text = "Indent";
 			this.IndentCheckBox.UseVisualStyleBackColor = true;
@@ -106,9 +117,10 @@
 			// archivedCheckBox
 			// 
 			this.archivedCheckBox.AutoSize = true;
-			this.archivedCheckBox.Location = new System.Drawing.Point(86, 3);
+			this.archivedCheckBox.Location = new System.Drawing.Point(129, 5);
+			this.archivedCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.archivedCheckBox.Name = "archivedCheckBox";
-			this.archivedCheckBox.Size = new System.Drawing.Size(68, 17);
+			this.archivedCheckBox.Size = new System.Drawing.Size(96, 24);
 			this.archivedCheckBox.TabIndex = 2;
 			this.archivedCheckBox.Text = "Archived";
 			this.archivedCheckBox.UseVisualStyleBackColor = true;
@@ -117,9 +129,10 @@
 			// lockedBox
 			// 
 			this.lockedBox.AutoSize = true;
-			this.lockedBox.Location = new System.Drawing.Point(160, 3);
+			this.lockedBox.Location = new System.Drawing.Point(240, 5);
+			this.lockedBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.lockedBox.Name = "lockedBox";
-			this.lockedBox.Size = new System.Drawing.Size(62, 17);
+			this.lockedBox.Size = new System.Drawing.Size(87, 24);
 			this.lockedBox.TabIndex = 1;
 			this.lockedBox.Text = "Locked";
 			this.lockedBox.UseVisualStyleBackColor = true;
@@ -128,9 +141,10 @@
 			// readOnlyCheckBox
 			// 
 			this.readOnlyCheckBox.AutoSize = true;
-			this.readOnlyCheckBox.Location = new System.Drawing.Point(4, 3);
+			this.readOnlyCheckBox.Location = new System.Drawing.Point(6, 5);
+			this.readOnlyCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.readOnlyCheckBox.Name = "readOnlyCheckBox";
-			this.readOnlyCheckBox.Size = new System.Drawing.Size(76, 17);
+			this.readOnlyCheckBox.Size = new System.Drawing.Size(109, 24);
 			this.readOnlyCheckBox.TabIndex = 0;
 			this.readOnlyCheckBox.Text = "Read Only";
 			this.readOnlyCheckBox.UseVisualStyleBackColor = true;
@@ -141,9 +155,10 @@
 			this.liveUpdateCheckBox.AutoSize = true;
 			this.liveUpdateCheckBox.Checked = true;
 			this.liveUpdateCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.liveUpdateCheckBox.Location = new System.Drawing.Point(291, 3);
+			this.liveUpdateCheckBox.Location = new System.Drawing.Point(436, 5);
+			this.liveUpdateCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.liveUpdateCheckBox.Name = "liveUpdateCheckBox";
-			this.liveUpdateCheckBox.Size = new System.Drawing.Size(84, 17);
+			this.liveUpdateCheckBox.Size = new System.Drawing.Size(120, 24);
 			this.liveUpdateCheckBox.TabIndex = 0;
 			this.liveUpdateCheckBox.Text = "Live Update";
 			this.liveUpdateCheckBox.UseVisualStyleBackColor = true;
@@ -151,13 +166,15 @@
 			// 
 			// Prog8xEditWindow
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.Controls.Add(this.ProgramTextBox);
 			this.Controls.Add(this.readOnlyPanel);
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "Prog8xEditWindow";
-			this.Size = new System.Drawing.Size(614, 451);
+			this.Size = new System.Drawing.Size(921, 694);
 			this.MouseHover += new System.EventHandler(this.Prog8xEditWindow_MouseHover);
+			((System.ComponentModel.ISupportInitialize)(this.ProgramTextBox)).EndInit();
 			this.readOnlyPanel.ResumeLayout(false);
 			this.readOnlyPanel.PerformLayout();
 			this.ResumeLayout(false);

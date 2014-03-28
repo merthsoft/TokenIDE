@@ -231,7 +231,7 @@ namespace Merthsoft.TokenIDE {
 					string line = ProgramTextBox.Lines[i];
 					lineNumber++;
 					replacements.Add(new List<Replacement>());
-					if (line.StartsWith(CommentString.ToString())) {
+					if (line.TrimStart().StartsWith(CommentString.ToString())) {
 						if (newLinesForComments) {
 							sb.AppendLine();
 							numCommentLines++;
@@ -239,7 +239,7 @@ namespace Merthsoft.TokenIDE {
 						continue;
 					}
 
-					if (line.StartsWith(DirectiveString.ToString())) {
+					if (line.TrimStart().StartsWith(DirectiveString.ToString())) {
 						HandlePreproc(line, directives, ref ifCount, ifFlag, breakOnError);
 						if (newLinesForComments) {
 							sb.AppendLine();
@@ -256,9 +256,9 @@ namespace Merthsoft.TokenIDE {
 					//    }
 					//}
 
-					var reps = line.Replace(directives, out line);					
+					var reps = line.Replace(directives, out line);
 					lineReplacements.AddRange(reps.ConvertAll<Replacement>(replacement => new Replacement(replacement.Item1, replacement.Item2, directives[replacement.Item2])));
-					
+
 					replacements[lineNumber - 1] = lineReplacements;
 
 					if (ifFlag.Count == 0 || ifFlag.Peek()) {
@@ -303,7 +303,7 @@ namespace Merthsoft.TokenIDE {
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {
 			int toss;
-			
+
 			return GenerateByteData(newLinesForComments, breakOnError, out tokens, out toss);
 		}
 
@@ -495,21 +495,22 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range, List<List<Replacement>> replacements) {
-			Dictionary<string, string> PreProcForward = new Dictionary<string, string>();
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
 
-			// Do all the preproc up to this point?
+			//// Do all the preproc up to this point?
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
-				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), PreProcForward, ref ifCount, ifFlag, false);
-				PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
+				Dictionary<string, string> toss = new Dictionary<string, string>();
+				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), toss, ref ifCount, ifFlag, false);
+				//PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
 			}
 
 			Place place = new Place(0, range.Start.iLine);
 			for (int i = range.Start.iLine; i <= range.End.iLine; i++) {
 				if (i < 0 || i > ProgramTextBox.Lines.Count - 1) { continue; }
 				var line = tokens[i];
-				string programTextBoxLine = ProgramTextBox.Lines[place.iLine];
+				string programTextBoxLine = TokenData.TrimStart ? ProgramTextBox.Lines[i].TrimStart() : ProgramTextBox.Lines[i];
+				int trimmedOffset = ProgramTextBox.Lines[i].Length - programTextBoxLine.Length;
 				//string tokenizedLine = string.Join("", tokens[i].Select(t => t.Name));
 
 				if (ifFlag.Count > 0 && !ifFlag.Peek()) {
@@ -533,12 +534,12 @@ namespace Merthsoft.TokenIDE {
 						if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
 							if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
 						}
-						string lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, token.Length);
+						string lineText = programTextBoxLine.ClippedSubstring(place.iChar, token.Length);
 
 						Replacement replacement = null;
 						if (i < replacements.Count) {
 							List<Replacement> lineReplacements = replacements[i];
-							replacement = lineReplacements.FirstOrDefault(r => r.Location == place.iChar);
+							replacement = lineReplacements.FirstOrDefault(r => r.Location - trimmedOffset == place.iChar);
 						}
 						if (replacement != null) {
 							token = replacement.OldValue;
@@ -553,6 +554,7 @@ namespace Merthsoft.TokenIDE {
 								}
 							}
 						}
+
 						int offset;
 						if (place.iChar != 0 && place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar - 1] == '\\') {
 							offset = -1;
@@ -560,7 +562,9 @@ namespace Merthsoft.TokenIDE {
 							offset = 0;
 						}
 
-						Range curRange = ProgramTextBox.GetRange(place + offset, place + token.Length);
+
+						Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
+
 						//if (entry.Name == "For(" || entry.Name == "End") {
 						//    curRange.ClearFoldingMarkers();
 						//    curRange.SetFoldingMarkers("For", "End");
@@ -592,6 +596,48 @@ namespace Merthsoft.TokenIDE {
 
 		private void UpdateSelectionLabel(int selectionLength, int selectionTokens, int selectionBytes) {
 			selectionLabel.Text = string.Format("Selection: {0} characters, {1} tokens, {2} bytes", selectionLength, selectionTokens, selectionBytes);
+		}
+
+		private void IndentCheckBox_CheckedChanged(object sender, EventArgs e) {
+
+		}
+		
+		public Dictionary<string, Dictionary<string, int>> GetGroupCounts(ref string indentedText) {
+			List<List<TokenData.TokenDictionaryEntry>> tokens;
+			GenerateByteData(false, false, out tokens);
+			var groupCounts = new Dictionary<string, Dictionary<string, int>>();
+			int indentationLevel = 0;
+			StringBuilder sb = new StringBuilder(ProgramText.Length * 2);
+
+			foreach (var line in tokens) {
+				sb.Append(new string('\t', Math.Max(0, indentationLevel)));
+				foreach (var token in line) {
+					if (token.IndentGroup != null) {
+						int delta;
+						if (token.IndentGroupTerminator) {
+							delta = -1;
+							if (sb[sb.Length - 1] == '\t') { sb.Length--; }
+						} else {
+							delta = 1;
+						}
+						indentationLevel += delta;
+						if (!groupCounts.ContainsKey(token.IndentGroup)) {
+							groupCounts[token.IndentGroup] = new Dictionary<string, int>() { { token.Name, 0 } };
+						}
+						if (!groupCounts[token.IndentGroup].ContainsKey(token.Name)) {
+							groupCounts[token.IndentGroup][token.Name] = 0;
+						}
+
+						groupCounts[token.IndentGroup][token.Name] += delta;
+					}
+
+					sb.Append(token.Name);
+				}
+				sb.AppendLine();
+			}
+
+			indentedText = sb.ToString();
+			return groupCounts;
 		}
 	}
 }

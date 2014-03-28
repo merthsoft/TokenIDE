@@ -109,6 +109,7 @@ namespace Merthsoft.Tokens {
 
 		public string CommentString { get; private set; }
 		public string DirectiveString { get; private set; }
+		public bool TrimStart { get; private set; }
 
 		public Dictionary<byte, TokenDictionaryEntry> Tokens { get { return tokens; } private set { tokens = value; } }
 		public Trie<string> Trie { get { return trie; } private set { trie = value; } }
@@ -181,15 +182,17 @@ namespace Merthsoft.Tokens {
 				Styles = parentData.Styles;
 				FlatTokens = parentData.FlatTokens;
 				CommentString = parentData.CommentString;
-				DirectiveString = DirectiveString = parentData.DirectiveString;
+				DirectiveString = parentData.DirectiveString;
 			}
 
 			if (styleNodes.Count != 0) {
 				CommentString = styleNodes[0].ParentNode.GetAttributeOrDefault("commentString", CommentString ?? "//");
 				DirectiveString = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", DirectiveString ?? "#");
+				TrimStart = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", true);
 			} else {
 				CommentString = "//";
 				DirectiveString = "#";
+				TrimStart = true;
 			}
 
 			foreach (XmlNode node in styleNodes) {
@@ -408,6 +411,9 @@ namespace Merthsoft.Tokens {
 			Trie<string> trie = this.Trie;
 			string s = string.Empty;
 			int i = 0;
+			while (TrimStart && i < data.Length && (data[i] == ' ' || data[i] == '\t')) {
+				i++;
+			}
 			numTokens = 0;
 			int lineNumber = 0;
 			tokens = new List<List<TokenDictionaryEntry>>();
@@ -453,6 +459,9 @@ namespace Merthsoft.Tokens {
 				} else if (sub == "\n") {
 					lineNumber++;
 					tokens.Add(new List<TokenDictionaryEntry>());
+					while (TrimStart && i < data.Length && (data[i] == ' ' || data[i] == '\t')) {
+					    i++;
+					}
 				} else if (sub != "\r") {
 					if (sub.StartsWith("\\")) {
 						tokens[lineNumber].Add(FlatTokens[sub.Substring(1, sub.Length - back - 1)]);

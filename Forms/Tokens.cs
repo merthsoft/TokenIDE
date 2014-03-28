@@ -223,6 +223,7 @@ namespace Merthsoft.TokenIDE {
 
 		private void AddNewTab() {
 			TabPage tp = new TabPage("new file");
+			tp.AllowDrop = true;
 			Prog8xEditWindow ew = new Prog8xEditWindow(TokenData, "new file");
 			ew.FirstFileFlag = true;
 			ew.Program = new Prog8x("");
@@ -572,6 +573,7 @@ namespace Merthsoft.TokenIDE {
 
 			FileInfo fi = new FileInfo(fileName);
 			TabPage tp = new TabPage();
+			tp.AllowDrop = true;
 			Prog8xEditWindow ewProg;
 			List8xEditWindow ewList;
 			tp.Text = fi.Name;
@@ -828,7 +830,7 @@ namespace Merthsoft.TokenIDE {
 				StringBuilder sb = new StringBuilder();
 				foreach (TabPage page in EditWindows.TabPages) {
 					IEditWindow window = (IEditWindow)(page.Controls[0]);
-					if (window.SaveDirectory == null) { return null; }
+					if (window.SaveDirectory == null) { continue; }
 					sb.AppendFormat("\"{0}\" ", Path.Combine(window.SaveDirectory, window.FileName));
 				}
 				val = val.Replace("%files%", sb.ToString());

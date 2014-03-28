@@ -18,41 +18,7 @@ namespace Merthsoft.TokenIDE {
 		public GroupStats(Prog8xEditWindow parentWindow) {
 			InitializeComponent();
 
-			List<List<TokenData.TokenDictionaryEntry>> tokens;
-			parentWindow.GenerateByteData(false, false, out tokens);
-
-			var groupCounts = new Dictionary<string, Dictionary<string, int>>();
-			int indentationLevel = 0;
-			StringBuilder sb = new StringBuilder(parentWindow.ProgramText.Length * 2);
-
-			foreach (var line in tokens) {
-				sb.Append(new string('\t', Math.Max(0, indentationLevel)));
-				foreach (var token in line) {
-					if (token.IndentGroup != null) {
-						int delta;
-						if (token.IndentGroupTerminator) {
-							delta = -1;
-							if (sb[sb.Length - 1] == '\t') { sb.Length--; }
-						} else {
-							delta = 1;
-						}
-						indentationLevel += delta;
-						if (!groupCounts.ContainsKey(token.IndentGroup)) {
-							groupCounts[token.IndentGroup] = new Dictionary<string, int>() { { token.Name, 0 } };
-						}
-						if (!groupCounts[token.IndentGroup].ContainsKey(token.Name)) {
-							groupCounts[token.IndentGroup][token.Name] = 0;
-						}
-
-						groupCounts[token.IndentGroup][token.Name] += delta;
-					}
-
-					sb.Append(token.Name);
-				}
-				sb.AppendLine();
-			}
-
-			indentedText = sb.ToString();
+			Dictionary<string, Dictionary<string, int>> groupCounts = parentWindow.GetGroupCounts(ref indentedText);
 			unindentedText = parentWindow.ProgramText;
 
 			foreach (var group in groupCounts) {
