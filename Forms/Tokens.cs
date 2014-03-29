@@ -59,6 +59,7 @@ namespace Merthsoft.TokenIDE {
 
 		public Tokens(string[] files) {
 			InitializeComponent();
+			statusLabel.Text = "";
 			//TokenData = new TokenData("Tokens.xml");
 			//Environment.CurrentDirectory = Application.StartupPath;
 			config = Config.ReadIni("TokenIDE.ini");
@@ -1124,6 +1125,15 @@ namespace Merthsoft.TokenIDE {
 			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 
 			ew.SelectedText = e.TextToPaste;
+		}
+
+		private void collapsePaneButton_ButtonClick(object sender, EventArgs e) {
+			if (mainContainer.Panel1Collapsed) {
+				collapsePaneButton.Text = "<";
+			} else {
+				collapsePaneButton.Text = ">";
+			}
+			mainContainer.Panel1Collapsed = !mainContainer.Panel1Collapsed;
 		}
 	}
 }

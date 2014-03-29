@@ -39,12 +39,13 @@
 			// 
 			// ProgramTextBox
 			// 
-			this.ProgramTextBox.AutoIndent = false;
 			this.ProgramTextBox.AutoScrollMinSize = new System.Drawing.Size(33, 23);
 			this.ProgramTextBox.BackBrush = null;
 			this.ProgramTextBox.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.ProgramTextBox.CharHeight = 23;
 			this.ProgramTextBox.CharWidth = 11;
+			this.ProgramTextBox.CommentPrefix = "";
+			this.ProgramTextBox.CurrentLineColor = System.Drawing.Color.LightBlue;
 			this.ProgramTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.ProgramTextBox.CursorOn = false;
 			this.ProgramTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
@@ -62,7 +63,7 @@
 			this.ProgramTextBox.Zoom = 100;
 			this.ProgramTextBox.TextChangedDelayed += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.ProgramText_TextChanged);
 			this.ProgramTextBox.SelectionChangedDelayed += new System.EventHandler(this.ProgramTextBox_SelectionChangedDelayed);
-			this.ProgramTextBox.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ProgramTextBox_Scroll);
+			this.ProgramTextBox.VisibleRangeChangedDelayed += new System.EventHandler(this.ProgramTextBox_VisibleRangeChangedDelayed);
 			this.ProgramTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.ProgramTextBox_DragEnter);
 			// 
 			// readOnlyPanel

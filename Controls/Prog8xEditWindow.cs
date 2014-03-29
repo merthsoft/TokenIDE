@@ -23,6 +23,9 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		private List<string> preprocStrings = new List<string> { "define", "ifdef", "ifndef", "undefine", "else", "elseifdef", "elseifndef", "endif" };
+		private List<AutocompleteItem> autoCompleteItems;
+		private AutocompleteMenu autoCompleteMenu;
 		private int _numTokens;
 		private TokenizeableVar8x _program;
 		private string _programName;
@@ -45,11 +48,14 @@ namespace Merthsoft.TokenIDE {
 
 		public Var8x CalcVar { get { return Program; } set { Program = (TokenizeableVar8x)value; } }
 
+		// Ugh, hack... Fix this.
+		private bool firstDirty = true;
 		public bool Dirty {
 			get {
 				return dirty;
 			}
 			set {
+				if (firstDirty) { firstDirty = false; return; }
 				if (ParentTabPage == null) return;
 				dirty = value;
 				ParentTabPage.Text = string.Format("{0}{1}", OnCalcName, dirty ? "*" : "");
@@ -177,6 +183,24 @@ namespace Merthsoft.TokenIDE {
 
 				styles.Add("Error", ErrorStyle.Default);
 				styles.Add("ErrorString", new ErrorStyle(styles["String"] ?? ErrorStyle.Default));
+
+				autoCompleteMenu = new AutocompleteMenu(ProgramTextBox);
+				autoCompleteItems = new List<AutocompleteItem>();
+				foreach (var token in TokenData.FlatTokens) {
+					autoCompleteItems.Add(new AutocompleteItem() {
+						Text = token.Key, Tag = token.Value,
+						ToolTipText = token.Value.Comment
+					});
+				}
+
+				foreach (var directive in preprocStrings) {
+					autoCompleteItems.Add(new AutocompleteItem(TokenData.DirectiveString + directive));
+				}
+
+				autoCompleteMenu.Items.SetAutocompleteItems(autoCompleteItems);
+				autoCompleteMenu.AllowTabKey = true;
+				autoCompleteMenu.MinFragmentLength = 1;
+				autoCompleteMenu.SearchPattern = @"[\S\.]";
 			}
 		}
 
@@ -436,12 +460,12 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		public void FullHighlightRefresh() {
-			UpdateHighlight(ProgramTextBox.Range);
+			UpdateHighlight(ProgramTextBox.VisibleRange);
 		}
 
 		private void ProgramText_TextChanged(object sender, TextChangedEventArgs e) {
 			if (LiveUpdate) {
-				RefreshBytes(false, UpdateHighlight(e.ChangedRange));
+				RefreshBytes(false, UpdateHighlight(ProgramTextBox.VisibleRange));
 			}
 			Dirty = true;
 		}
@@ -460,6 +484,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void ProgramTextBox_Scroll(object sender, ScrollEventArgs e) {
+			UpdateHighlight(ProgramTextBox.VisibleRange);
 		}
 
 		private void ProgramTextBox_SelectionChangedDelayed(object sender, EventArgs e) {
@@ -497,22 +522,35 @@ namespace Merthsoft.TokenIDE {
 		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range, List<List<Replacement>> replacements) {
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
+			Stack<string> indents = new Stack<string>();
+
+			//range.ClearFoldingMarkers();
+			//range.SetFoldingMarkers("For", "End");
+			//range.SetFoldingMarkers("Then", "End");
+			//range.SetFoldingMarkers("While ", "End");
+			//range.SetFoldingMarkers("Repeat", "End");
 
 			//// Do all the preproc up to this point?
+			Dictionary<string, string> directives = new Dictionary<string, string>();
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
-				Dictionary<string, string> toss = new Dictionary<string, string>();
-				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), toss, ref ifCount, ifFlag, false);
+				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), directives, ref ifCount, ifFlag, false);
 				//PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
 			}
+			List<AutocompleteItem> items = new List<AutocompleteItem>();
+			items.AddRange(autoCompleteItems);
+			foreach (var d in directives) {
+				items.Add(new AutocompleteItem() { Text = d.Key, ToolTipText = d.Value });
+			}
+			autoCompleteMenu.Items.SetAutocompleteItems(items);
 
 			Place place = new Place(0, range.Start.iLine);
 			for (int i = range.Start.iLine; i <= range.End.iLine; i++) {
 				if (i < 0 || i > ProgramTextBox.Lines.Count - 1) { continue; }
 				var line = tokens[i];
-				string programTextBoxLine = TokenData.TrimStart ? ProgramTextBox.Lines[i].TrimStart() : ProgramTextBox.Lines[i];
+				string programTextBoxLine = ProgramTextBox.Lines[i].TrimStart(); //TokenData.TrimStart ? ProgramTextBox.Lines[i].TrimStart() : ProgramTextBox.Lines[i];
 				int trimmedOffset = ProgramTextBox.Lines[i].Length - programTextBoxLine.Length;
 				//string tokenizedLine = string.Join("", tokens[i].Select(t => t.Name));
-
+				
 				if (ifFlag.Count > 0 && !ifFlag.Peek()) {
 					Range curRange = ProgramTextBox.GetRange(place, place + ProgramTextBox.Lines[i].Length);
 					curRange.ClearStyle(styles.Values.ToArray());
@@ -547,7 +585,7 @@ namespace Merthsoft.TokenIDE {
 							lastPrepocCount--;
 						} else if (lineText != token) {
 							foreach (string alt in entry.Alts) {
-								lineText = ProgramTextBox.Lines[i].ClippedSubstring(place.iChar, alt.Length);
+								lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
 								if (lineText == alt) {
 									token = alt;
 									break;
@@ -561,8 +599,7 @@ namespace Merthsoft.TokenIDE {
 						} else {
 							offset = 0;
 						}
-
-
+						
 						Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
 
 						//if (entry.Name == "For(" || entry.Name == "End") {
@@ -585,6 +622,17 @@ namespace Merthsoft.TokenIDE {
 						TokenStyle style = styles[styleKey];
 						curRange.SetStyle(style ?? styles["Default"]);
 						place += token.Length;
+
+						//if (!StringFlag) {
+						//    if (!string.IsNullOrWhiteSpace(entry.IndentGroup)) {
+						//        if (!entry.IndentGroupTerminator) {
+						//            ProgramTextBox[i].FoldingStartMarker = entry.IndentGroup;
+						//            //indents.Push(entry.IndentGroup);
+						//        } else {
+						//            ProgramTextBox[i].FoldingEndMarker = entry.IndentGroup;
+						//        }
+						//    }
+						//}
 					}
 				}
 				place.iLine++;
@@ -638,6 +686,10 @@ namespace Merthsoft.TokenIDE {
 
 			indentedText = sb.ToString();
 			return groupCounts;
+		}
+
+		private void ProgramTextBox_VisibleRangeChangedDelayed(object sender, EventArgs e) {
+			UpdateHighlight(ProgramTextBox.VisibleRange);
 		}
 	}
 }

@@ -500,6 +500,7 @@ namespace FastColoredTextBoxNS
                     OnSelecting();
                     return true;
                 case Keys.Tab:
+				case Keys.Space:
                     if (!AllowTabKey)
                         break;
                     OnSelecting();

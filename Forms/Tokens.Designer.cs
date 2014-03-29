@@ -79,7 +79,7 @@
 			this.bottomStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.EditWindows = new System.Windows.Forms.TabControl();
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.mainContainer = new System.Windows.Forms.SplitContainer();
 			this.leftTabControl = new System.Windows.Forms.TabControl();
 			this.ReferenceTab = new System.Windows.Forms.TabPage();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -103,11 +103,12 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.collapsePaneButton = new System.Windows.Forms.ToolStripSplitButton();
 			this.bottomStatusStrip.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
+			this.mainContainer.Panel1.SuspendLayout();
+			this.mainContainer.Panel2.SuspendLayout();
+			this.mainContainer.SuspendLayout();
 			this.leftTabControl.SuspendLayout();
 			this.ReferenceTab.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
@@ -553,18 +554,20 @@
 			// bottomStatusStrip
 			// 
 			this.bottomStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.collapsePaneButton,
             this.statusLabel});
-			this.bottomStatusStrip.Location = new System.Drawing.Point(0, 827);
+			this.bottomStatusStrip.Location = new System.Drawing.Point(0, 818);
 			this.bottomStatusStrip.Name = "bottomStatusStrip";
 			this.bottomStatusStrip.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-			this.bottomStatusStrip.Size = new System.Drawing.Size(1258, 22);
+			this.bottomStatusStrip.Size = new System.Drawing.Size(1258, 31);
 			this.bottomStatusStrip.TabIndex = 4;
 			this.bottomStatusStrip.Text = "statusStrip1";
 			// 
 			// statusLabel
 			// 
 			this.statusLabel.Name = "statusLabel";
-			this.statusLabel.Size = new System.Drawing.Size(0, 17);
+			this.statusLabel.Size = new System.Drawing.Size(103, 26);
+			this.statusLabel.Text = "Build status";
 			this.statusLabel.TextChanged += new System.EventHandler(this.statusLabel_TextChanged);
 			// 
 			// EditWindows
@@ -577,31 +580,31 @@
 			this.EditWindows.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.EditWindows.Name = "EditWindows";
 			this.EditWindows.SelectedIndex = 0;
-			this.EditWindows.Size = new System.Drawing.Size(986, 792);
+			this.EditWindows.Size = new System.Drawing.Size(986, 783);
 			this.EditWindows.TabIndex = 5;
 			this.EditWindows.SelectedIndexChanged += new System.EventHandler(this.EditWindows_SelectedIndexChanged);
 			this.EditWindows.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
 			this.EditWindows.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
 			this.EditWindows.MouseClick += new System.Windows.Forms.MouseEventHandler(this.EditWindows_MouseClick);
 			// 
-			// splitContainer1
+			// mainContainer
 			// 
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 35);
-			this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.splitContainer1.Name = "splitContainer1";
+			this.mainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainContainer.Location = new System.Drawing.Point(0, 35);
+			this.mainContainer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.mainContainer.Name = "mainContainer";
 			// 
-			// splitContainer1.Panel1
+			// mainContainer.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.leftTabControl);
+			this.mainContainer.Panel1.Controls.Add(this.leftTabControl);
 			// 
-			// splitContainer1.Panel2
+			// mainContainer.Panel2
 			// 
-			this.splitContainer1.Panel2.Controls.Add(this.EditWindows);
-			this.splitContainer1.Size = new System.Drawing.Size(1258, 792);
-			this.splitContainer1.SplitterDistance = 266;
-			this.splitContainer1.SplitterWidth = 6;
-			this.splitContainer1.TabIndex = 6;
+			this.mainContainer.Panel2.Controls.Add(this.EditWindows);
+			this.mainContainer.Size = new System.Drawing.Size(1258, 783);
+			this.mainContainer.SplitterDistance = 266;
+			this.mainContainer.SplitterWidth = 6;
+			this.mainContainer.TabIndex = 6;
 			// 
 			// leftTabControl
 			// 
@@ -612,7 +615,7 @@
 			this.leftTabControl.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.leftTabControl.Name = "leftTabControl";
 			this.leftTabControl.SelectedIndex = 0;
-			this.leftTabControl.Size = new System.Drawing.Size(266, 792);
+			this.leftTabControl.Size = new System.Drawing.Size(266, 783);
 			this.leftTabControl.TabIndex = 3;
 			// 
 			// ReferenceTab
@@ -622,7 +625,7 @@
 			this.ReferenceTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.ReferenceTab.Name = "ReferenceTab";
 			this.ReferenceTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.ReferenceTab.Size = new System.Drawing.Size(258, 759);
+			this.ReferenceTab.Size = new System.Drawing.Size(258, 750);
 			this.ReferenceTab.TabIndex = 1;
 			this.ReferenceTab.Text = "Reference";
 			this.ReferenceTab.UseVisualStyleBackColor = true;
@@ -643,8 +646,8 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.commentBox);
 			this.splitContainer2.Panel2.Controls.Add(this.panel1);
-			this.splitContainer2.Size = new System.Drawing.Size(250, 749);
-			this.splitContainer2.SplitterDistance = 526;
+			this.splitContainer2.Size = new System.Drawing.Size(250, 740);
+			this.splitContainer2.SplitterDistance = 520;
 			this.splitContainer2.SplitterWidth = 6;
 			this.splitContainer2.TabIndex = 0;
 			// 
@@ -657,7 +660,7 @@
 			this.TokensTree.Location = new System.Drawing.Point(0, 0);
 			this.TokensTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.TokensTree.Name = "TokensTree";
-			this.TokensTree.Size = new System.Drawing.Size(250, 526);
+			this.TokensTree.Size = new System.Drawing.Size(250, 520);
 			this.TokensTree.TabIndex = 2;
 			this.TokensTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TokensTree_AfterSelect);
 			this.TokensTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TokensTree_NodeMouseClick);
@@ -685,7 +688,7 @@
 			this.commentBox.Multiline = true;
 			this.commentBox.Name = "commentBox";
 			this.commentBox.ReadOnly = true;
-			this.commentBox.Size = new System.Drawing.Size(250, 191);
+			this.commentBox.Size = new System.Drawing.Size(250, 188);
 			this.commentBox.TabIndex = 0;
 			// 
 			// panel1
@@ -693,7 +696,7 @@
 			this.panel1.BackColor = System.Drawing.SystemColors.Control;
 			this.panel1.Controls.Add(this.docLinkLabel);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel1.Location = new System.Drawing.Point(0, 191);
+			this.panel1.Location = new System.Drawing.Point(0, 188);
 			this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(250, 26);
@@ -718,7 +721,7 @@
 			this.ProjectTab.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.ProjectTab.Name = "ProjectTab";
 			this.ProjectTab.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.ProjectTab.Size = new System.Drawing.Size(259, 745);
+			this.ProjectTab.Size = new System.Drawing.Size(258, 759);
 			this.ProjectTab.TabIndex = 2;
 			this.ProjectTab.Text = "Project";
 			this.ProjectTab.UseVisualStyleBackColor = true;
@@ -732,7 +735,7 @@
 			this.projectTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.projectTree.Name = "projectTree";
 			this.projectTree.SelectedImageIndex = 0;
-			this.projectTree.Size = new System.Drawing.Size(251, 735);
+			this.projectTree.Size = new System.Drawing.Size(250, 749);
 			this.projectTree.TabIndex = 0;
 			this.projectTree.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterExpand);
 			this.projectTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterSelect);
@@ -838,13 +841,24 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
+			// collapsePaneButton
+			// 
+			this.collapsePaneButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.collapsePaneButton.DropDownButtonWidth = 0;
+			this.collapsePaneButton.Image = ((System.Drawing.Image)(resources.GetObject("collapsePaneButton.Image")));
+			this.collapsePaneButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.collapsePaneButton.Name = "collapsePaneButton";
+			this.collapsePaneButton.Size = new System.Drawing.Size(29, 29);
+			this.collapsePaneButton.Text = "<";
+			this.collapsePaneButton.ButtonClick += new System.EventHandler(this.collapsePaneButton_ButtonClick);
+			// 
 			// Tokens
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1258, 849);
-			this.Controls.Add(this.splitContainer1);
+			this.Controls.Add(this.mainContainer);
 			this.Controls.Add(this.mainMenuStrip);
 			this.Controls.Add(this.bottomStatusStrip);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -858,10 +872,10 @@
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
 			this.bottomStatusStrip.ResumeLayout(false);
 			this.bottomStatusStrip.PerformLayout();
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-			this.splitContainer1.ResumeLayout(false);
+			this.mainContainer.Panel1.ResumeLayout(false);
+			this.mainContainer.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).EndInit();
+			this.mainContainer.ResumeLayout(false);
 			this.leftTabControl.ResumeLayout(false);
 			this.ReferenceTab.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
@@ -895,7 +909,7 @@
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem changeTokenFileToolStripMenuItem;
 		private System.Windows.Forms.TabControl EditWindows;
-		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.SplitContainer mainContainer;
 		private System.Windows.Forms.ToolStripMenuItem openFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem newFileToolStripMenuItem;
@@ -961,6 +975,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem xLIBCColorPicerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripSplitButton collapsePaneButton;
 	}
 }
 
