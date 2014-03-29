@@ -44,8 +44,8 @@ to include changes if they're better!
 	<Token byte="$03" string=">Frac" style="Command">
 		<Alt string="►Frac" />
 	</Token>
-	<Token byte="$04" string="->" stringTerminator="true" style="Command">
-		<Alt string="→" />
+	<Token byte="$04" string="→" stringTerminator="true" style="Command">
+		<Alt string="->" />
 	</Token>
 	<Token byte="$05" string="Boxplot" />
 	<Token byte="$06" string="[" />
@@ -569,9 +569,9 @@ to include changes if they're better!
 		<Token byte="$11" string="vwAxes" />
 		<Token byte="$12" string="uwAxes" />
 	</Token>
-	<Token byte="$7F" string="plotsquare">
+	<Token byte="$7F" string="□">
 		<Alt string="squareplot" />
-		<Alt string="□" />
+		<Alt string="plotsquare" />
 	</Token>
 	<Token byte="$80" string="plotcross">
 		<Alt string="crossplot" />

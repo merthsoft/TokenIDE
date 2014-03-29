@@ -40,7 +40,8 @@ namespace FastColoredTextBoxNS
             }
             set
             {
-                throw new NotImplementedException();
+               // throw new NotImplementedException();
+				ts[index].Text = value;
             }
         }
 

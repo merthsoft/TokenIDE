@@ -201,6 +201,13 @@ namespace Merthsoft.TokenIDE {
 				autoCompleteMenu.AllowTabKey = true;
 				autoCompleteMenu.MinFragmentLength = 1;
 				autoCompleteMenu.SearchPattern = @"[\S\.]";
+
+				//Range range = ProgramTextBox.Range;
+				//range.ClearFoldingMarkers();
+				//range.SetFoldingMarkers("For", "End");
+				//range.SetFoldingMarkers("Then", "End");
+				//range.SetFoldingMarkers("While ", "End");
+				//range.SetFoldingMarkers("Repeat", "End");
 			}
 		}
 
@@ -467,6 +474,7 @@ namespace Merthsoft.TokenIDE {
 			if (LiveUpdate) {
 				RefreshBytes(false, UpdateHighlight(ProgramTextBox.VisibleRange));
 			}
+			
 			Dirty = true;
 		}
 
@@ -518,7 +526,7 @@ namespace Merthsoft.TokenIDE {
 			int nameLength = OnCalcName.StartsWith("new file") ? 0 : OnCalcName.Length;
 			bytesLabels.Text = string.Format("Bytes: {0}", length + 9 + nameLength);
 		}
-
+		
 		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range, List<List<Replacement>> replacements) {
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
@@ -587,7 +595,19 @@ namespace Merthsoft.TokenIDE {
 							foreach (string alt in entry.Alts) {
 								lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
 								if (lineText == alt) {
-									token = alt;
+									//token = alt;
+									ProgramTextBox.Lines[i] = new string(' ', trimmedOffset) + programTextBoxLine.Substring(0, place.iChar) + token + programTextBoxLine.Substring(place.iChar + alt.Length);
+									Dirty = true;
+									if (ProgramTextBox.Selection.Start.iLine == i && ProgramTextBox.Selection.Start == ProgramTextBox.Selection.End && ProgramTextBox.Selection.Start.iChar >= place.iChar + trimmedOffset) {
+										if (token.Length > alt.Length && ProgramTextBox.Selection.Start.iChar <= place.iChar + trimmedOffset + token.Length) {
+											int newCharLocation = ProgramTextBox.Selection.End.iChar + (token.Length - alt.Length);
+											ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
+										} else if (alt.Length > token.Length && ProgramTextBox.Selection.Start.iChar <= place.iChar + trimmedOffset + alt.Length) {
+											int newCharLocation = ProgramTextBox.Selection.End.iChar - (alt.Length - token.Length);
+											ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
+										}
+									}
+									//return;
 									break;
 								}
 							}

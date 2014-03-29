@@ -48,8 +48,11 @@
 			this.ProgramTextBox.CurrentLineColor = System.Drawing.Color.LightBlue;
 			this.ProgramTextBox.Cursor = System.Windows.Forms.Cursors.IBeam;
 			this.ProgramTextBox.CursorOn = false;
+			this.ProgramTextBox.DelayedEventsInterval = 25;
+			this.ProgramTextBox.DelayedTextChangedInterval = 50;
 			this.ProgramTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
 			this.ProgramTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.ProgramTextBox.FindEndOfFoldingBlockStrategy = FastColoredTextBoxNS.FindEndOfFoldingBlockStrategy.Strategy2;
 			this.ProgramTextBox.Font = new System.Drawing.Font("Consolas", 10F);
 			this.ProgramTextBox.IsReplaceMode = false;
 			this.ProgramTextBox.Location = new System.Drawing.Point(0, 0);
