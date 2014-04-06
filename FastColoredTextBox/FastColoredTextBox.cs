@@ -85,7 +85,7 @@ namespace FastColoredTextBoxNS
         private uint lineNumberStartValue;
         private int lineSelectFrom;
         private TextSource lines;
-        private IntPtr m_hImc;
+        //private IntPtr m_hImc;
         private int maxLineLength;
         private bool mouseIsDrag;
         private bool mouseIsDragDrop;
@@ -119,17 +119,21 @@ namespace FastColoredTextBoxNS
 
 		public bool CursorOn { get; set; }
 
-        /// <summary>
+		public static bool IsRunningOnMono { get { return Type.GetType("Mono.Runtime") != null; } }
+		
+		/// <summary>
         /// Constructor
         /// </summary>
         public FastColoredTextBox()
         {
             //register type provider
-            TypeDescriptionProvider prov = TypeDescriptor.GetProvider(GetType());
-            object theProvider =
-                prov.GetType().GetField("Provider", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(prov);
-            if (theProvider.GetType() != typeof (FCTBDescriptionProvider))
-                TypeDescriptor.AddProvider(new FCTBDescriptionProvider(GetType()), GetType());
+			if (!IsRunningOnMono) {
+				TypeDescriptionProvider prov = TypeDescriptor.GetProvider(GetType());
+				object theProvider =
+					prov.GetType().GetField("Provider", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(prov);
+				if (theProvider.GetType() != typeof(FCTBDescriptionProvider))
+					TypeDescriptor.AddProvider(new FCTBDescriptionProvider(GetType()), GetType());
+			}
             //drawing optimization
             SetStyle(ControlStyles.AllPaintingInWmPaint, true);
             SetStyle(ControlStyles.UserPaint, true);
@@ -4278,7 +4282,7 @@ namespace FastColoredTextBoxNS
             Brush indentBrush = new SolidBrush(IndentBackColor);
             Brush paddingBrush = new SolidBrush(PaddingBackColor);
             Brush currentLineBrush =
-                new SolidBrush(Color.FromArgb(CurrentLineColor.A == 255 ? 50 : CurrentLineColor.A, CurrentLineColor));
+				new SolidBrush(Color.FromArgb(CurrentLineColor.A == 255 ? (byte)50 : CurrentLineColor.A, CurrentLineColor));
             //draw padding area
             var textAreaRect = TextAreaRect;
             //top
@@ -6861,7 +6865,7 @@ window.status = ""#print"";
                 // Refresh the control 
                 Refresh();
                 // Disable drawing
-                SendMessage(Handle, WM_SETREDRAW, 0, 0);
+				SendMessageWrapper(Handle, WM_SETREDRAW, 0, 0);
             }
         }
 
@@ -6877,7 +6881,7 @@ window.status = ""#print"";
                 Capture = false;
                 base.Cursor = defaultCursor;
                 // Enable drawing
-                SendMessage(Handle, WM_SETREDRAW, 1, 0);
+				SendMessageWrapper(Handle, WM_SETREDRAW, 1, 0);
                 Invalidate();
             }
         }
@@ -6900,9 +6904,15 @@ window.status = ""#print"";
             OnScroll(yea);
         }
 
-        [DllImport("user32.dll")]
-        private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
+		[DllImport("user32.dll")]
+		private static extern int SendMessage(IntPtr hwnd, int wMsg, int wParam, int lParam);
         private const int WM_SETREDRAW = 0xB;
+
+		private static int SendMessageWrapper(IntPtr hwnd, int wMsg, int wParam, int lParam) {
+			if (IsRunningOnMono) { return 0; }
+
+			return SendMessage(hwnd, wMsg, wParam, lParam);
+		}
 
         void middleClickScrollingTimer_Tick(object sender, EventArgs e)
         {
@@ -6986,11 +6996,11 @@ window.status = ""#print"";
                 OnScroll(xea);
 
             // Enable drawing
-            SendMessage(Handle, WM_SETREDRAW, 1, 0);
+			SendMessageWrapper(Handle, WM_SETREDRAW, 1, 0);
             // Refresh the control 
             Refresh();
             // Disable drawing
-            SendMessage(Handle, WM_SETREDRAW, 0, 0);
+			SendMessageWrapper(Handle, WM_SETREDRAW, 0, 0);
         }
 
         private void DrawMiddleClickScrolling(Graphics gr)
