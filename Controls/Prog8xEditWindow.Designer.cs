@@ -1,4 +1,6 @@
-﻿namespace Merthsoft.TokenIDE {
+﻿using FastColoredTextBoxNS;
+
+namespace Merthsoft.TokenIDE {
 	partial class Prog8xEditWindow {
 		/// <summary> 
 		/// Required designer variable.
@@ -24,7 +26,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			this.ProgramTextBox = new FastColoredTextBoxNS.FastColoredTextBox();
+			this.ProgramTextBox = new FastColoredTextBox();
 			this.readOnlyPanel = new System.Windows.Forms.Panel();
 			this.selectionLabel = new System.Windows.Forms.Label();
 			this.bytesLabels = new System.Windows.Forms.Label();
