@@ -62,8 +62,8 @@ to include changes if they're better!
 		<Alt string="⁻¹" />
 		<Alt string="ˉ¹" />
 	</Token>
-	<Token byte="$0D" string="^^2">
-		<Alt string="²" />
+	<Token byte="$0D" string="²">
+		<Alt string="^^2" />
 	</Token>
 	<Token byte="$0E" string="^^T">
 		<Alt string="ᵀ" />
@@ -157,8 +157,8 @@ to include changes if they're better!
 	<Token byte="$58" string="X" style="Var" />
 	<Token byte="$59" string="Y" style="Var" />
 	<Token byte="$5A" string="Z" style="Var" />
-	<Token byte="$5B" string="theta" style="Var">
-		<Alt string="θ" />
+	<Token byte="$5B" string="θ" style="Var">
+		<Alt string="theta" />
 	</Token>
 	<Token byte="$5C">
 		<Token byte="$00" string="[A]" style="Var" />

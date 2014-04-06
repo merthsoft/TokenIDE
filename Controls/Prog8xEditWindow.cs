@@ -34,6 +34,8 @@ namespace Merthsoft.TokenIDE {
 		private bool liveUpdate;
 		private Dictionary<string, TokenStyle> styles;
 
+		public bool PrettyPrint { get; set; }
+
 		public bool Archived {
 			get { return _program == null ? false : _program.Archived; }
 			set {
@@ -528,6 +530,7 @@ namespace Merthsoft.TokenIDE {
 		}
 		
 		private void UpdateHighlight(List<List<TokenData.TokenDictionaryEntry>> tokens, Range range, List<List<Replacement>> replacements) {
+			if (!LiveUpdate) { return; }
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
 			Stack<string> indents = new Stack<string>();
@@ -595,19 +598,11 @@ namespace Merthsoft.TokenIDE {
 							foreach (string alt in entry.Alts) {
 								lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
 								if (lineText == alt) {
-									//token = alt;
-									ProgramTextBox.Lines[i] = new string(' ', trimmedOffset) + programTextBoxLine.Substring(0, place.iChar) + token + programTextBoxLine.Substring(place.iChar + alt.Length);
-									Dirty = true;
-									if (ProgramTextBox.Selection.Start.iLine == i && ProgramTextBox.Selection.Start == ProgramTextBox.Selection.End && ProgramTextBox.Selection.Start.iChar >= place.iChar + trimmedOffset) {
-										if (token.Length > alt.Length && ProgramTextBox.Selection.Start.iChar <= place.iChar + trimmedOffset + token.Length) {
-											int newCharLocation = ProgramTextBox.Selection.End.iChar + (token.Length - alt.Length);
-											ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
-										} else if (alt.Length > token.Length && ProgramTextBox.Selection.Start.iChar <= place.iChar + trimmedOffset + alt.Length) {
-											int newCharLocation = ProgramTextBox.Selection.End.iChar - (alt.Length - token.Length);
-											ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
-										}
+									if (!PrettyPrint) {
+										token = alt;
+									} else {
+										handlePrettyPrint(place, i, programTextBoxLine, trimmedOffset, token, alt);
 									}
-									//return;
 									break;
 								}
 							}
@@ -662,6 +657,21 @@ namespace Merthsoft.TokenIDE {
 			//ProgramTextBox.Invalidate();
 		}
 
+		private void handlePrettyPrint(Place place, int i, string programTextBoxLine, int trimmedOffset, string token, string alt) {
+			ProgramTextBox.Lines[i] = new string(' ', trimmedOffset) + programTextBoxLine.Substring(0, place.iChar) + token + programTextBoxLine.Substring(place.iChar + alt.Length);
+			Dirty = true;
+			if (ProgramTextBox.Selection.Start.iLine == i && ProgramTextBox.Selection.Start == ProgramTextBox.Selection.End && ProgramTextBox.Selection.Start.iChar >= place.iChar + trimmedOffset) {
+				if (token.Length > alt.Length && ProgramTextBox.Selection.Start.iChar <= place.iChar + trimmedOffset + token.Length) {
+					int newCharLocation = ProgramTextBox.Selection.End.iChar + (token.Length - alt.Length);
+					ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
+				} else if (alt.Length > token.Length && ProgramTextBox.Selection.Start.iChar >= place.iChar) {
+					int newCharLocation = ProgramTextBox.Selection.End.iChar - (alt.Length - token.Length);
+					ProgramTextBox.Selection = new Range(ProgramTextBox, newCharLocation, ProgramTextBox.Selection.Start.iLine, newCharLocation, ProgramTextBox.Selection.Start.iLine);
+				}
+			}
+			return;
+		}
+
 		private void UpdateSelectionLabel(int selectionLength, int selectionTokens, int selectionBytes) {
 			selectionLabel.Text = string.Format("Selection: {0} characters, {1} tokens, {2} bytes", selectionLength, selectionTokens, selectionBytes);
 		}
@@ -709,7 +719,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void ProgramTextBox_VisibleRangeChangedDelayed(object sender, EventArgs e) {
-			UpdateHighlight(ProgramTextBox.VisibleRange);
+			if (LiveUpdate) {
+				UpdateHighlight(ProgramTextBox.VisibleRange);
+			}
 		}
 	}
 }

@@ -17,6 +17,7 @@ using Merthsoft.Tokens.DCSGUI;
 
 namespace Merthsoft.TokenIDE {
 	public partial class Tokens : Form {
+		private bool prettyPrint;
 		private TokenData _tokenData;
 		private dynamic config;
 		private IEditWindow currWindow;
@@ -69,6 +70,8 @@ namespace Merthsoft.TokenIDE {
 				return;
 			}
 			editorFont = new Font(config.Font.family, float.Parse(config.Font.size));
+
+			try { prettyPrint = bool.Parse(config.TokenIDE.prettyPrint); } catch { }
 
 			AddNewTab();
 
@@ -234,6 +237,7 @@ namespace Merthsoft.TokenIDE {
 			currWindow = ew;
 
 			ew.ProgramTextBox.Font = editorFont;
+			ew.PrettyPrint = prettyPrint;
 			ew.DragEnter += TokenIDE_DragEnter;
 			ew.DragDrop += TokenIDE_DragDrop;
 		}
@@ -611,6 +615,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.ParentTabPage = tp;
 					ewProg.ReadOnly = false;
 					ewProg.ProgramTextBox.Font = editorFont;
+					ewProg.PrettyPrint = prettyPrint;
 					break;
 
 				case ".txt":
@@ -626,6 +631,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
+					ewProg.PrettyPrint = prettyPrint;
 					ewProg.ProgramTextBox.Font = editorFont;
 					break;
 
@@ -646,6 +652,7 @@ namespace Merthsoft.TokenIDE {
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
 					ewProg.ProgramTextBox.Font = editorFont;
+					ewProg.PrettyPrint = prettyPrint;
 					break;
 
 				case ".8xv":
@@ -663,6 +670,7 @@ namespace Merthsoft.TokenIDE {
 					ewProg.ParentTabPage = tp;
 					ewProg.ReadOnly = false;
 					ewProg.ProgramTextBox.Font = editorFont;
+					ewProg.PrettyPrint = prettyPrint;
 					break;
 
 				case ".8xl":
@@ -740,17 +748,21 @@ namespace Merthsoft.TokenIDE {
 			o.SelectedFont = editorFont;
 			o.TokenFile = config.TokenIDE.file;
 			o.TokenData = TokenData;
+			o.PrettyPrint = prettyPrint;
 			DialogResult result = o.ShowDialog();
 			if (result == System.Windows.Forms.DialogResult.OK) {
 				config.TokenIDE.file = o.TokenFile;
 				editorFont = o.SelectedFont;
+				prettyPrint = o.PrettyPrint;
 				config.Font.family = editorFont.FontFamily.Name;
+				config.TokenIDE.prettyPrint = prettyPrint;
 				config.Font.size = editorFont.SizeInPoints;
 				Config.WriteIni(config, "TokenIDE.ini");
 				foreach (TabPage window in EditWindows.Controls) {
 					Prog8xEditWindow editWindow = window.Controls[0] as Prog8xEditWindow;
 					if (editWindow == null) { continue; }
 					editWindow.ProgramTextBox.Font = editorFont;
+					editWindow.PrettyPrint = prettyPrint;
 					editWindow.Invalidate();
 				}
 			}

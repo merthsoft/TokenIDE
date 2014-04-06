@@ -188,7 +188,7 @@ namespace Merthsoft.Tokens {
 			if (styleNodes.Count != 0) {
 				CommentString = styleNodes[0].ParentNode.GetAttributeOrDefault("commentString", CommentString ?? "//");
 				DirectiveString = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", DirectiveString ?? "#");
-				TrimStart = styleNodes[0].ParentNode.GetAttributeOrDefault("directiveString", true);
+				TrimStart = styleNodes[0].ParentNode.GetAttributeOrDefault("trimStart", true);
 			} else {
 				CommentString = "//";
 				DirectiveString = "#";

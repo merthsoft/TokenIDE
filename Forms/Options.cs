@@ -14,10 +14,10 @@ namespace Merthsoft.TokenIDE {
 		private Prog8xEditWindow window;
 
 		public string TokenFile { 
-			get { return label1.Text; }
+			get { return defaultTokenFileLabel.Text; }
 			set { 
-				label1.Text = value;
-				toolTip1.SetToolTip(label1, value);
+				defaultTokenFileLabel.Text = value;
+				toolTip1.SetToolTip(defaultTokenFileLabel, value);
 			}
 		}
 
@@ -26,7 +26,7 @@ namespace Merthsoft.TokenIDE {
 			get { return selectedFont; }
 			set {
 				selectedFont = value;
-				label2.Text = string.Format("{0}, {1}pt", value.Name, value.SizeInPoints);
+				fontLabel.Text = string.Format("{0}, {1}pt", value.Name, value.SizeInPoints);
 				if (window != null) {
 					window.ProgramTextBox.Font = value;
 					window.Invalidate();
@@ -48,6 +48,8 @@ namespace Merthsoft.TokenIDE {
 				window.FullHighlightRefresh();
 			}
 		}
+
+		public bool PrettyPrint { get { return prettyPrintBox.Checked; } set { prettyPrintBox.Checked = value; } }
 
 		public Options() {
 			InitializeComponent();

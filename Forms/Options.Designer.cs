@@ -26,12 +26,13 @@
 			this.components = new System.ComponentModel.Container();
 			this.linkLabel1 = new System.Windows.Forms.LinkLabel();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.defaultTokenFileLabel = new System.Windows.Forms.Label();
+			this.fontLabel = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.button1 = new System.Windows.Forms.Button();
 			this.button2 = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.prettyPrintBox = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// linkLabel1
@@ -58,21 +59,21 @@
 			// 
 			// label1
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 22);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(35, 13);
-			this.label1.TabIndex = 4;
-			this.label1.Text = "label1";
+			this.defaultTokenFileLabel.AutoSize = true;
+			this.defaultTokenFileLabel.Location = new System.Drawing.Point(12, 22);
+			this.defaultTokenFileLabel.Name = "label1";
+			this.defaultTokenFileLabel.Size = new System.Drawing.Size(35, 13);
+			this.defaultTokenFileLabel.TabIndex = 4;
+			this.defaultTokenFileLabel.Text = "label1";
 			// 
 			// label2
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(49, 35);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(35, 13);
-			this.label2.TabIndex = 5;
-			this.label2.Text = "label2";
+			this.fontLabel.AutoSize = true;
+			this.fontLabel.Location = new System.Drawing.Point(49, 35);
+			this.fontLabel.Name = "label2";
+			this.fontLabel.Size = new System.Drawing.Size(35, 13);
+			this.fontLabel.TabIndex = 5;
+			this.fontLabel.Text = "label2";
 			// 
 			// panel1
 			// 
@@ -102,6 +103,16 @@
 			this.button2.Text = "Cancel";
 			this.button2.UseVisualStyleBackColor = true;
 			// 
+			// prettyPrintBox
+			// 
+			this.prettyPrintBox.AutoSize = true;
+			this.prettyPrintBox.Location = new System.Drawing.Point(12, 258);
+			this.prettyPrintBox.Name = "prettyPrintBox";
+			this.prettyPrintBox.Size = new System.Drawing.Size(179, 17);
+			this.prettyPrintBox.TabIndex = 9;
+			this.prettyPrintBox.Text = "Auto-replace tokens while typing";
+			this.prettyPrintBox.UseVisualStyleBackColor = true;
+			// 
 			// Options
 			// 
 			this.AcceptButton = this.button1;
@@ -109,11 +120,12 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.button2;
 			this.ClientSize = new System.Drawing.Size(369, 281);
+			this.Controls.Add(this.prettyPrintBox);
 			this.Controls.Add(this.button2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.fontLabel);
+			this.Controls.Add(this.defaultTokenFileLabel);
 			this.Controls.Add(this.linkLabel2);
 			this.Controls.Add(this.linkLabel1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -131,11 +143,12 @@
 
 		private System.Windows.Forms.LinkLabel linkLabel1;
 		private System.Windows.Forms.LinkLabel linkLabel2;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label defaultTokenFileLabel;
+		private System.Windows.Forms.Label fontLabel;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.CheckBox prettyPrintBox;
 	}
 }
