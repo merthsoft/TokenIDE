@@ -4,12 +4,8 @@ using Merthsoft.Extensions;
 
 namespace Merthsoft.Tokens {
 	public class ErrorStyle : TokenStyle {
-		public static new TokenStyle Default;
-
-		static ErrorStyle() {
-			Default = new ErrorStyle((Brush)Brushes.Black.Clone(), null, FontStyle.Regular, Pens.Red);
-		}
-
+		public static new TokenStyle Default { get { return new ErrorStyle((Brush)Brushes.Black.Clone(), null, FontStyle.Regular, Pens.Red); } }
+		
 		public ErrorStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle, Pen errorUnderlinePen)
 			: base(foreBrush, backgroundBrush, fontStyle, errorUnderlinePen, -1) {
 		}
@@ -36,11 +32,7 @@ namespace Merthsoft.Tokens {
 		public int MinTokenLengthToUnderline { get; set; }
 		public Pen TokenUnderlinePen { get; set; }
 
-		public static TokenStyle Default;
-
-		static TokenStyle() {
-			Default = new TokenStyle((Brush)Brushes.Black.Clone(), null, FontStyle.Regular, null, 2);
-		}
+		public static TokenStyle Default { get { return new TokenStyle((Brush)Brushes.Black.Clone(), null, FontStyle.Regular, null, 2); } }
 
 		public TokenStyle(Brush foreBrush, Brush backgroundBrush, FontStyle fontStyle, Pen tokenUnderlinePen, int minTokenLengthToUnderline)
 			: base(foreBrush, backgroundBrush, fontStyle) {
