@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Merthsoft.TokenIDE {
+	// From http://stackoverflow.com/questions/4352781/is-it-possible-to-make-the-winforms-tab-control-be-able-to-do-tab-reordering-lik
 	public class DraggableTabControl : TabControl {
 		private TabPage m_DraggedTab;
 
