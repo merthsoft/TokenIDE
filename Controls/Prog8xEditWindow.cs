@@ -86,7 +86,12 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public bool Locked { get { return ((Prog8x)_program).Locked; } }
+		public bool Locked {
+			get {
+				Prog8x program = _program as Prog8x;
+				return program != null ? program.Locked : false;
+			}
+		}
 
 		public bool New { get; set; }
 
