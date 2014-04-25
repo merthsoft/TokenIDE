@@ -16,8 +16,25 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void OnMouseDown(object sender, MouseEventArgs e) {
-			if (MerthsoftExtensions.IsRunningOnMono()) { return; }
-			m_DraggedTab = TabAt(e.Location);
+			switch (e.Button) {
+				case MouseButtons.Left:
+					if (MerthsoftExtensions.IsRunningOnMono()) { return; }
+					m_DraggedTab = TabAt(e.Location);
+					break;
+				case MouseButtons.Middle:
+					TabPages.Remove(TabAt(e.Location));
+					break;
+				case MouseButtons.None:
+					break;
+				case MouseButtons.Right:
+					break;
+				case MouseButtons.XButton1:
+					break;
+				case MouseButtons.XButton2:
+					break;
+				default:
+					break;
+			}
 		}
 
 		private void OnMouseMove(object sender, MouseEventArgs e) {
