@@ -120,6 +120,8 @@ namespace Merthsoft.TokenIDE {
 
 			Icon = Icon.FromHandle(Properties.Resources.icon_hexsprite.GetHicon());
 			outputLabel.Text = "";
+			spriteIndexLabel.Visible = true;
+			spriteIndexLabel.Text = "";
 
 			sprite = new Sprite(8, 8);
 
@@ -524,12 +526,21 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void spriteBox_MouseMove(object sender, MouseEventArgs e) {
-			if (e.Button != MouseButtons.None)
+			if (e.Button != MouseButtons.None) {
 				handleMouse(e);
+			}
+
+			setSpriteIndexText(e.X, e.Y);
+		}
+
+		private void setSpriteIndexText(int x, int y) {
+			spriteIndexLabel.Visible = true;
+			spriteIndexLabel.Text = string.Format("({0}, {1}) - 0x{2:X2}", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
 		}
 
 		private void spriteBox_MouseLeave(object sender, EventArgs e) {
 			spriteBox.Invalidate();
+			spriteIndexLabel.Visible = false;
 		}
 
 		private void spriteBox_MouseDown(object sender, MouseEventArgs e) {
@@ -1157,6 +1168,10 @@ namespace Merthsoft.TokenIDE {
 					clearTextTimer.Stop();
 				});
 			} catch { }
+		}
+
+		private void spriteBox_MouseEnter(object sender, EventArgs e) {
+			spriteIndexLabel.Visible = true;
 		}
 	}
 }
