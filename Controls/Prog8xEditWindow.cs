@@ -538,15 +538,8 @@ namespace Merthsoft.TokenIDE {
 			if (!LiveUpdate) { return; }
 			int ifCount = 0;
 			var ifFlag = new Stack<bool>();
-			Stack<string> indents = new Stack<string>();
-
-			//range.ClearFoldingMarkers();
-			//range.SetFoldingMarkers("For", "End");
-			//range.SetFoldingMarkers("Then", "End");
-			//range.SetFoldingMarkers("While ", "End");
-			//range.SetFoldingMarkers("Repeat", "End");
-
-			//// Do all the preproc up to this point?
+			
+			// Do all the preproc up to this point?
 			Dictionary<string, string> directives = new Dictionary<string, string>();
 			for (int i = 0; i < ProgramTextBox.LinesCount; i++) {
 				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), directives, ref ifCount, ifFlag, false);
@@ -576,90 +569,79 @@ namespace Merthsoft.TokenIDE {
 					curRange.ClearStyle(styles.Values.ToArray());
 					curRange.SetStyle(styles["Comment"] ?? styles["Default"]);
 				} else {
-					StringFlag = false;
-					int lastPrepocCount = 0;
-					foreach (var entry in line) {
-						if (lastPrepocCount > 0) {
-							lastPrepocCount--;
-							continue;
-						}
-						if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
-						string token = entry.Name;
-						if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
-							if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
-						}
-						string lineText = programTextBoxLine.ClippedSubstring(place.iChar, token.Length);
-
-						Replacement replacement = null;
-						if (i < replacements.Count) {
-							List<Replacement> lineReplacements = replacements[i];
-							replacement = lineReplacements.FirstOrDefault(r => r.Location - trimmedOffset == place.iChar);
-						}
-						if (replacement != null) {
-							token = replacement.OldValue;
-							TokenData.Tokenize(replacement.NewValue, out lastPrepocCount);
-							lastPrepocCount--;
-						} else if (lineText != token) {
-							foreach (string alt in entry.Alts) {
-								lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
-								if (lineText == alt) {
-									if (!PrettyPrint) {
-										token = alt;
-									} else {
-										handlePrettyPrint(place, i, programTextBoxLine, trimmedOffset, token, alt);
-									}
-									break;
-								}
-							}
-						}
-
-						int offset;
-						if (place.iChar != 0 && place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar - 1] == '\\') {
-							offset = -1;
-						} else {
-							offset = 0;
-						}
-						
-						Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
-
-						//if (entry.Name == "For(" || entry.Name == "End") {
-						//    curRange.ClearFoldingMarkers();
-						//    curRange.SetFoldingMarkers("For", "End");
-						//    curRange.SetFoldingMarkers("Then", "End");
-						//    curRange.SetFoldingMarkers("While ", "End");
-						//    curRange.SetFoldingMarkers("Repeat", "End");
-						//}
-						curRange.ClearStyle(styles.Values.ToArray());
-						string styleKey;
-						if (StringFlag || entry.StringStarter) {
-							styleKey = "String";
-							if (entry.StyleType == "Error") {
-								styleKey = "Error" + styleKey;
-							}
-						} else {
-							styleKey = entry.StyleType ?? "Default";
-						}
-						TokenStyle style = styles[styleKey];
-						curRange.SetStyle(style ?? styles["Default"]);
-						place += token.Length;
-
-						//if (!StringFlag) {
-						//    if (!string.IsNullOrWhiteSpace(entry.IndentGroup)) {
-						//        if (!entry.IndentGroupTerminator) {
-						//            ProgramTextBox[i].FoldingStartMarker = entry.IndentGroup;
-						//            //indents.Push(entry.IndentGroup);
-						//        } else {
-						//            ProgramTextBox[i].FoldingEndMarker = entry.IndentGroup;
-						//        }
-						//    }
-						//}
-					}
+					hightlightLine(replacements, ref place, i, line, programTextBoxLine, trimmedOffset);
 				}
 				place.iLine++;
 				place.iChar = 0;
 			}
 
 			//ProgramTextBox.Invalidate();
+		}
+
+		private void hightlightLine(List<List<Replacement>> replacements, ref Place place, int lineNumber, List<Merthsoft.Tokens.TokenData.TokenDictionaryEntry> line, string programTextBoxLine, int trimmedOffset) {
+			StringFlag = false;
+			int lastPrepocCount = 0;
+			foreach (var entry in line) {
+				if (lastPrepocCount > 0) {
+					lastPrepocCount--;
+					continue;
+				}
+
+				if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
+
+				string token = entry.Name;
+				if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
+					if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
+				}
+				string lineText = programTextBoxLine.ClippedSubstring(place.iChar, token.Length);
+
+				Replacement replacement = null;
+				if (lineNumber < replacements.Count) {
+					List<Replacement> lineReplacements = replacements[lineNumber];
+					int charLocation = place.iChar;
+					replacement = lineReplacements.FirstOrDefault(r => r.Location - trimmedOffset == charLocation);
+				}
+				if (replacement != null) {
+					token = replacement.OldValue;
+					TokenData.Tokenize(replacement.NewValue, out lastPrepocCount);
+					lastPrepocCount--;
+				} else if (lineText != token) {
+					foreach (string alt in entry.Alts) {
+						lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
+						if (lineText == alt) {
+							if (!PrettyPrint) {
+								token = alt;
+							} else {
+								handlePrettyPrint(place, lineNumber, programTextBoxLine, trimmedOffset, token, alt);
+							}
+							break;
+						}
+					}
+				}
+
+				int offset;
+				if (place.iChar != 0 && place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar - 1] == '\\') {
+					offset = -1;
+				} else {
+					offset = 0;
+				}
+
+				Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
+
+				curRange.ClearStyle(styles.Values.ToArray());
+				string styleKey;
+				if (StringFlag || entry.StringStarter) {
+					styleKey = "String";
+					if (entry.StyleType == "Error") {
+						styleKey = "Error" + styleKey;
+					}
+				} else {
+					styleKey = entry.StyleType ?? "Default";
+				}
+				TokenStyle style = styles[styleKey];
+				curRange.SetStyle(style ?? styles["Default"]);
+				place += token.Length;
+			}
 		}
 
 		private void handlePrettyPrint(Place place, int i, string programTextBoxLine, int trimmedOffset, string token, string alt) {
