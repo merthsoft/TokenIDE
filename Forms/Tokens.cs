@@ -60,6 +60,9 @@ namespace Merthsoft.TokenIDE {
 
 		public Tokens(string[] files) {
 			InitializeComponent();
+
+			EditWindows.TabClose += EditWindows_TabClose;
+
 			statusLabel.Text = "";
 			//TokenData = new TokenData("Tokens.xml");
 			//Environment.CurrentDirectory = Application.StartupPath;
@@ -108,6 +111,18 @@ namespace Merthsoft.TokenIDE {
 
 				externalToolsToolStripMenuItem.DropDownItems.Add(t);
 			}
+		}
+
+		void EditWindows_TabClose(object sender, TabCloseEventArgs e) {
+			if (e.TabPage == null || e.TabPage.Controls.Count == 0) {
+				return;
+			}
+			IEditWindow editWindow = e.TabPage.Controls[0] as IEditWindow;
+			if (editWindow == null) {
+				e.Cancel = true;
+				return;
+			}
+			e.Cancel = !closeWindow(editWindow);
 		}
 
 		public void build(Var8x.VarType? varType, Var8x.CalcType? calcType, IEditWindow window, string dir, int numTokens, byte[] rawData, bool archived, bool locked = false) {
@@ -350,16 +365,18 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void CloseTab() {
-			if (currWindow.Dirty) {
+			closeWindow(currWindow);
+		}
+
+		private bool closeWindow(IEditWindow window) {
+			if (window.Dirty) {
 				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
 					MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
-					return;
+					return false;
 				}
 			}
-			EditWindows.TabPages.Remove(currWindow.ParentTabPage);
-			if (currWindow == null) {
-				AddNewTab();
-			}
+			EditWindows.TabPages.Remove(window.ParentTabPage);
+			return true;
 		}
 
 		private void closeToolStripMenuItem_Click(object sender, EventArgs e) {

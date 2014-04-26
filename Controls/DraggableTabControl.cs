@@ -6,8 +6,21 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Merthsoft.TokenIDE {
+	public class TabCloseEventArgs : EventArgs {
+		public TabPage TabPage { get; set; }
+		public bool Cancel { get; set; }
+
+		public TabCloseEventArgs(TabPage tabPage) {
+			TabPage = tabPage;
+			Cancel = false;
+		}
+	}
+
 	// From http://stackoverflow.com/questions/4352781/is-it-possible-to-make-the-winforms-tab-control-be-able-to-do-tab-reordering-lik
 	public class DraggableTabControl : TabControl {
+		public delegate void TabCloseEventHandler(object sender, TabCloseEventArgs e);
+		public event TabCloseEventHandler TabClose;
+
 		private TabPage m_DraggedTab;
 
 		public DraggableTabControl() {
@@ -16,13 +29,21 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void OnMouseDown(object sender, MouseEventArgs e) {
+			TabPage clickedTab = TabAt(e.Location);
 			switch (e.Button) {
 				case MouseButtons.Left:
 					if (MerthsoftExtensions.IsRunningOnMono()) { return; }
-					m_DraggedTab = TabAt(e.Location);
+					m_DraggedTab = clickedTab;
 					break;
 				case MouseButtons.Middle:
-					TabPages.Remove(TabAt(e.Location));
+					TabCloseEventHandler temp = TabClose;
+					if (temp != null) {
+						TabCloseEventArgs args = new TabCloseEventArgs(clickedTab);
+						temp(this, args);
+						if (!args.Cancel) {
+							TabPages.Remove(clickedTab);
+						}
+					}
 					break;
 				case MouseButtons.None:
 					break;
