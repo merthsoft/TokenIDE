@@ -29,7 +29,7 @@ namespace Merthsoft.CalcData {
 
 		// [TODO] figure this shit out.
 		public override ushort DataLength {
-			get { return 770; }
+			get { return (ushort)_data.Length; }
 		}
 
 		public Pic8x(byte picNumber = 0)

@@ -1116,15 +1116,16 @@ namespace Merthsoft.TokenIDE {
 
 			if (picNumber == -1 || saveAs) {
 				int seed = 0;
-				if (fileName != null && fileName.ToLower().StartsWith("pic")) {
+				FileInfo fi = new FileInfo(fileName);
+				if (fileName != null && fi.Name.ToLower().StartsWith("pic")) {
 					if (!int.TryParse(fileName.Substring(3), out seed)) {
 						seed = picNumber;
 					}
 				} else if (picNumber != -1) {
 					if (picNumber == 9) {
-						picNumber = 0;
+						seed = 0;
 					} else {
-						picNumber++;
+						seed = picNumber+1;
 					}
 				}
 				string outString = null;
@@ -1138,7 +1139,7 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 
-			Pic8x v = new Pic8x((byte)(picNumber - 1));
+			Pic8x v = new Pic8x((byte)(picNumber));
 			int dataSize = sprite.Width * sprite.Height / 8;
 			byte[] data = new byte[dataSize];
 			byte b = 0;
