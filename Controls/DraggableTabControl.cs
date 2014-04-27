@@ -6,16 +6,6 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Merthsoft.TokenIDE {
-	public class TabCloseEventArgs : EventArgs {
-		public TabPage TabPage { get; set; }
-		public bool Cancel { get; set; }
-
-		public TabCloseEventArgs(TabPage tabPage) {
-			TabPage = tabPage;
-			Cancel = false;
-		}
-	}
-
 	// From http://stackoverflow.com/questions/4352781/is-it-possible-to-make-the-winforms-tab-control-be-able-to-do-tab-reordering-lik
 	public class DraggableTabControl : TabControl {
 		public delegate void TabCloseEventHandler(object sender, TabCloseEventArgs e);
