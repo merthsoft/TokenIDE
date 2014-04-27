@@ -14,6 +14,10 @@ namespace Merthsoft.CalcData {
 			get { return _data; }
 		}
 
+		public byte PicNumber {
+			get { return (byte)Name[1]; }
+		}
+
 		public override byte[] FullData {
 			get {
 				List<byte> b = new List<byte>();
