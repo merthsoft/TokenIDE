@@ -23,7 +23,7 @@ namespace Merthsoft.TokenIDE {
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
 
-		private enum SaveType { Png, XLibTiles, XLibBGPicture }
+		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic }
 
 		private Tool currentTool = Tool.Pencil;
 		private ToolStripButton currentButton = null;
@@ -113,7 +113,11 @@ namespace Merthsoft.TokenIDE {
 		private List<SolidBrush> XLibBrushes = new List<SolidBrush>();
 
 		private string fileName = null;
+		private int picNumber = -1;
 		private SaveType saveType;
+
+		private bool isControlDown { get { return (ModifierKeys & Keys.Control) == Keys.Control; } }
+		private bool isShiftDown { get { return (ModifierKeys & Keys.Shift) == Keys.Shift; } }
 
 		public HexSprite() {
 			InitializeComponent();
@@ -289,7 +293,7 @@ namespace Merthsoft.TokenIDE {
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 				e.Graphics.DrawImage(drawCanvas, 0, 0, spriteBox.Width, spriteBox.Height);
-	
+
 				if (drawGrid && pixelSize > 1) {
 					using (Pen smallGridPen = new Pen(Color.DarkGray)) {
 						smallGridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
@@ -402,7 +406,11 @@ namespace Merthsoft.TokenIDE {
 
 				case Tool.Flood:
 					if (button != System.Windows.Forms.MouseButtons.None) {
-						sprite.FloodFill(mouseX, mouseY, pixelColor);
+						if (isControlDown) {
+							sprite.ReplaceAll(mouseX, mouseY, pixelColor);
+						} else {
+							sprite.FloodFill(mouseX, mouseY, pixelColor);
+						}
 					}
 					break;
 
@@ -418,6 +426,9 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
+						if (isShiftDown) {
+							mouseY = shapeY + mouseX - shapeX;
+						}
 						previewSprite.DrawLine(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
@@ -435,6 +446,9 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
+						if (isShiftDown) {
+							mouseY = shapeY + mouseX - shapeX;
+						}
 						previewSprite.DrawRectangle(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.RectangleFill);
 					}
 					break;
@@ -452,6 +466,9 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
+						if (isShiftDown) {
+							mouseY = shapeY + mouseX - shapeX;
+						}
 						previewSprite.DrawEllipse(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.EllipseFill);
 					}
 					break;
@@ -535,7 +552,7 @@ namespace Merthsoft.TokenIDE {
 
 		private void setSpriteIndexText(int x, int y) {
 			spriteIndexLabel.Visible = true;
-			spriteIndexLabel.Text = string.Format("({0}, {1}) - 0x{2:X2}", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
+			spriteIndexLabel.Text = string.Format("({0}, {1}) - {2} (0x{2:X2})", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
 		}
 
 		private void spriteBox_MouseLeave(object sender, EventArgs e) {
@@ -803,39 +820,56 @@ namespace Merthsoft.TokenIDE {
 
 		private void Open(string fileName) {
 			pushHistory();
-			if (fileName.EndsWith(".8xv")) {
-				openAppVar(fileName);
-			} else {
-				using (Bitmap image = new Bitmap(fileName)) {
-					spriteWidthBox.Value = image.Width;
-					spriteHeightBox.Value = image.Height;
-					switch (SelectedPalette) {
-						case Palette.BlackAndWhite:
-							image.PosterizeImage();
-							sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
-							break;
-
-						case Palette.CelticIICSE:
-							sprite = new Sprite(image, CelticPalette, 0);
-							break;
-
-						case Palette.xLIBC:
-							sprite = new Sprite(image, XLibPalette);
-							break;
-					}
-
-					saveType = SaveType.Png;
-				}
+			FileInfo f = new FileInfo(fileName);
+			string extension = f.Extension.ToLower();
+			switch (extension) {
+				case ".8xv":
+					openAppVar(fileName);
+					break;
+				case ".8xi":
+					openMonochromePic(fileName);
+					break;
+				default:
+					openBitmap(fileName);
+					break;
 			}
 			spriteBox.Invalidate();
 		}
 
+		private void openBitmap(string fileName) {
+			using (Bitmap image = new Bitmap(fileName)) {
+				loadImage(image);
+			}
+		}
+
+		private void loadImage(Bitmap image) {
+			spriteWidthBox.Value = image.Width;
+			spriteHeightBox.Value = image.Height;
+			switch (SelectedPalette) {
+				case Palette.BlackAndWhite:
+					image.PosterizeImage();
+					sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
+					break;
+
+				case Palette.CelticIICSE:
+					sprite = new Sprite(image, CelticPalette, 0);
+					break;
+
+				case Palette.xLIBC:
+					sprite = new Sprite(image, XLibPalette);
+					break;
+			}
+
+			saveType = SaveType.Png;
+		}
+
 		private void openAppVar(string fileName) {
 			AppVar8x appVar = null;
-			using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
-				using (BinaryReader preader = new BinaryReader(pstream))
-					appVar = new AppVar8x(preader);
+			using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+			using (BinaryReader preader = new BinaryReader(pstream)) {
+				appVar = new AppVar8x(preader);
 			}
+
 			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
 			if (headerString == XLIBTILES_HEADER) {
 				saveType = SaveType.XLibTiles;
@@ -846,11 +880,26 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		private void openMonochromePic(string fileName) {
+			Pic8x pic = null;
+			using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+			using (BinaryReader preader = new BinaryReader(pstream)) {
+				pic = new Pic8x(preader);
+			}
+			picNumber = pic.PicNumber;
+
+			SelectedPalette = Palette.BlackAndWhite;
+			using (Bitmap b = pic.GetBitmap()) {
+				loadImage(b);
+			}
+			saveType = SaveType.MonochromePic;
+		}
+
 		private void openxLibBG(AppVar8x appVar) {
 			SpriteWidth = 80;
 			SpriteHeight = 60;
 
-			sprite = new Sprite(80, 60);
+			sprite = new Sprite(SpriteWidth, SpriteHeight);
 
 			SelectedPalette = Palette.xLIBC;
 
@@ -869,8 +918,14 @@ namespace Merthsoft.TokenIDE {
 		private void openxLibTiles(AppVar8x appVar) {
 			SpriteWidth = 128;
 			SpriteHeight = 64;
+			
+			int dataLength = appVar.Data.Length;
 
-			sprite = new Sprite(128, 64);
+			if (dataLength != SpriteWidth * SpriteHeight) {
+
+			}
+
+			sprite = new Sprite(SpriteWidth, SpriteHeight);
 
 			SelectedPalette = Palette.xLIBC;
 
@@ -878,7 +933,7 @@ namespace Merthsoft.TokenIDE {
 			int y = 0;
 			int spriteX = 0;
 			int spriteY = 0;
-			for (int i = 7; i < appVar.Data.Length; i++) {
+			for (int i = 7; i < dataLength; i++) {
 				sprite[x + spriteX, y + spriteY] = appVar.Data[i];
 				spriteY++;
 				if (spriteY == 8) {
@@ -899,7 +954,10 @@ namespace Merthsoft.TokenIDE {
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv");
+			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi");
+			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
+			f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
+			f.AddFilter("Monochrome Pic files", "*.8xi");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
 			fileName = f.FileName;
@@ -998,6 +1056,7 @@ namespace Merthsoft.TokenIDE {
 			sfd.AddFilter("PNG", "*.png");
 			sfd.AddFilter("xLIB Tiles", "*.8xv");
 			sfd.AddFilter("xLIB Picture", "*.8xv");
+			sfd.AddFilter("Monochrome Pic", "*.8xi");
 			if (fileName != null) {
 				sfd.FileName = new FileInfo(fileName).GetFileName();
 			}
@@ -1031,8 +1090,11 @@ namespace Merthsoft.TokenIDE {
 					success = saveXLibBGPic();
 					break;
 
+				case SaveType.MonochromePic:
+					success = saveMonochromePic(true);
+					break;
+
 				case SaveType.Png:
-				default:
 					success = savePng();
 					break;
 			}
@@ -1040,6 +1102,65 @@ namespace Merthsoft.TokenIDE {
 			if (success) {
 				outputLabel.Text = "File saved.";
 			}
+		}
+
+		private bool saveMonochromePic(bool saveAs = false) {
+			if (SelectedPalette != Palette.BlackAndWhite) {
+				var res = MessageBox.Show("You cannot save a pic file using a color palette.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if (sprite.Width != 96 || sprite.Height != 64) {
+				var res = MessageBox.Show("Pic files should be 96 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+
+			if (picNumber == -1 || saveAs) {
+				int seed = 0;
+				if (fileName != null && fileName.ToLower().StartsWith("pic")) {
+					if (!int.TryParse(fileName.Substring(3), out seed)) {
+						seed = picNumber;
+					}
+				} else if (picNumber != -1) {
+					if (picNumber == 9) {
+						picNumber = 0;
+					} else {
+						picNumber++;
+					}
+				}
+				string outString = null;
+				do {
+					outString = InputBox.Show("Pic number (0-255)", seed.ToString(), "Note: Use display number, e.g. Pic1 = 1, Pic0 = 0");
+				} while (!int.TryParse(outString, out picNumber));
+				if (picNumber == 0) {
+					picNumber = 9;
+				} else {
+					picNumber--;
+				}
+			}
+
+			Pic8x v = new Pic8x((byte)(picNumber - 1));
+			int dataSize = sprite.Width * sprite.Height / 8;
+			byte[] data = new byte[dataSize];
+			byte b = 0;
+			int index = 0;
+			int bit = 7;
+			for (int j = 0; j < sprite.Height; j++) {
+				for (int i = 0; i < sprite.Width; i++) {
+					int val = sprite[i, j];
+					b |= (byte)(val << bit--);
+					if (bit == -1) {
+						bit = 7;
+						data[index++] = b;
+						b = 0;
+					}
+				}
+			}
+			v.SetData(new object[] { dataSize.ToString(), data });
+			StreamWriter s = new StreamWriter(fileName);
+			v.Save(new BinaryWriter(s.BaseStream));
+			s.Close();
+
+			return false;
 		}
 
 		private bool savePng() {

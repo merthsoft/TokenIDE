@@ -550,7 +550,29 @@ namespace Merthsoft.TokenIDE {
 			f.Show();
 		}
 
-		private void imageEditosToolStripMenuItem_Click(object sender, EventArgs e) {
+		private void imageEditorToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!(currWindow is Prog8xEditWindow)) { return; }
+			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+
+#if !DEBUG
+			try {
+#endif
+			HexSprite s = new HexSprite();
+
+			s.SpriteHeight = 64;
+			s.SpriteWidth = 96;
+			s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
+
+			s.PasteTextEvent += handlePasteEvent;
+			s.Show();
+#if !DEBUG
+			} catch (Exception ex) {
+				MessageBox.Show(ex.ToString());
+			}
+#endif
+		}
+
+		private void oldImageEditorToolStripMenuItem_Click(object sender, EventArgs e) {
 			if (!(currWindow is Prog8xEditWindow)) { return; }
 			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 

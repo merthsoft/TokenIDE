@@ -237,7 +237,22 @@
         NK1uwusEm3lXP9r7EjYXZ/61XK6fMfnOjimBIyQAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="imageEditosToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="imageEditorToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DAAACwwBP0AiyAAAAAd0SU1FB9wEDQ80CWdoBIcAAAH+SURBVDhPY6ALYGTW1mJi1XnFyKTzn4EZhLWh
+        WOc/UA4LG4hxAWYOAz02bpP3Wnq+v7fv2Pb/wMG9BDEThyF2A1l5zAx5RGw+yCq7/9M3Dvy/dfuO/3v2
+        7fl/9NhhvJiFxwzTQEFpZ3M+CYcfBpZR/7UMg/+HxxT/37pt5//DRw7/P3v2NF7MLmCNxUA599+G1nH/
+        rV1T/0+ZsQTout3/Dxw6/P/S5UtQfBFMXwbji1AawuYUc8Q0kFvK/f+R48f/nzp75v/x4yf/nzxz+v/F
+        Kxf/X7txFTu+hmCD9EKNQQBeOZ//d+/e+X/nzh2QJBjfu38PjO9joWH43r17/3nlfTENFFAO+v/gwT24
+        YcRikB4BlSAQGxUIaUT8f/HiOYaGFy+egcVfPEfIgfjPoWpBbCGNcBAbFYjoxv1/8+YNXBMIv3n9GoX/
+        Go0PwiA9IrqxIDYqEDNK+n/rNiL8QPg2Ov8WKh+EQXpAeoFsVCBtW/j/1q1bKIpvE+DDxKRtC0BsVKDk
+        3fj/wqXzGBpAYjCMLgeTV/JpArFRgWbU5P+HDh3C0EAIg/RoAfUC2ahAK3/Z/4MH92HgA2hsGEZWo1Ww
+        FNNAhQk7/+/ZvZssrDBxJ6aBopvP/d+9axdZWGzTOUwDuW48+c95/cl/LmwYKMd1/TGmOAwD5aHGUBsw
+        MAAAgQaaxaIvVGsAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="oldImageEditorToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
         DAAACwwBP0AiyAAAAAd0SU1FB9wEDQ80CWdoBIcAAAH+SURBVDhPY6ALYGTW1mJi1XnFyKTzn4EZhLWh
@@ -281,7 +296,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADA
-        JgAAAk1TRnQBSQFMAgEBFQEAAUABAQFAAQEBFAEAARQBAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        JgAAAk1TRnQBSQFMAgEBFQEAAUgBAQFIAQEBFAEAARQBAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABUAMAAXgDAAEBAQABCAUAAYABJRgAAYACAAGAAwACgAEAAYADAAGAAQABgAEAAoACAAPAAQABwAHc
         AcABAAHwAcoBpgEAATMFAAEzAQABMwEAATMBAAIzAgADFgEAAxwBAAMiAQADKQEAA1UBAANNAQADQgEA
         AzkBAAGAAXwB/wEAAlAB/wEAAZMBAAHWAQAB/wHsAcwBAAHGAdYB7wEAAdYC5wEAAZABqQGtAgAB/wEz

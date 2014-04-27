@@ -67,7 +67,7 @@
 			this.colorSpritesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCColorPicerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dCSGuiDesignerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.imageEditosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.imageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.blockCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -79,7 +79,7 @@
 			this.bottomStatusStrip = new System.Windows.Forms.StatusStrip();
 			this.collapsePaneButton = new System.Windows.Forms.ToolStripSplitButton();
 			this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-			this.EditWindows = new DraggableTabControl();
+			this.EditWindows = new Merthsoft.TokenIDE.DraggableTabControl();
 			this.mainContainer = new System.Windows.Forms.SplitContainer();
 			this.leftTabControl = new System.Windows.Forms.TabControl();
 			this.ReferenceTab = new System.Windows.Forms.TabPage();
@@ -104,14 +104,15 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oldImageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
-			//((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
 			this.mainContainer.Panel1.SuspendLayout();
 			this.mainContainer.Panel2.SuspendLayout();
 			this.mainContainer.SuspendLayout();
 			this.leftTabControl.SuspendLayout();
 			this.ReferenceTab.SuspendLayout();
-			//((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
 			this.splitContainer2.Panel1.SuspendLayout();
 			this.splitContainer2.Panel2.SuspendLayout();
 			this.splitContainer2.SuspendLayout();
@@ -432,7 +433,8 @@
 			this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.hexSpriteEditorToolStripMenuItem,
             this.dCSGuiDesignerToolStripMenuItem,
-            this.imageEditosToolStripMenuItem,
+            this.imageEditorToolStripMenuItem,
+            this.oldImageEditorToolStripMenuItem,
             this.toolStripSeparator6,
             this.blockCountsToolStripMenuItem,
             this.toolStripSeparator7,
@@ -492,14 +494,14 @@
 			this.dCSGuiDesignerToolStripMenuItem.Text = "DCS Gui Designer";
 			this.dCSGuiDesignerToolStripMenuItem.Click += new System.EventHandler(this.dCSGuiDesignerToolStripMenuItem_Click);
 			// 
-			// imageEditosToolStripMenuItem
+			// imageEditorToolStripMenuItem
 			// 
-			this.imageEditosToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageEditosToolStripMenuItem.Image")));
-			this.imageEditosToolStripMenuItem.Name = "imageEditosToolStripMenuItem";
-			this.imageEditosToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-			this.imageEditosToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-			this.imageEditosToolStripMenuItem.Text = "Image Editor";
-			this.imageEditosToolStripMenuItem.Click += new System.EventHandler(this.imageEditosToolStripMenuItem_Click);
+			this.imageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("imageEditorToolStripMenuItem.Image")));
+			this.imageEditorToolStripMenuItem.Name = "imageEditorToolStripMenuItem";
+			this.imageEditorToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
+			this.imageEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+			this.imageEditorToolStripMenuItem.Text = "Image Editor";
+			this.imageEditorToolStripMenuItem.Click += new System.EventHandler(this.imageEditorToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
@@ -589,7 +591,7 @@
 			this.EditWindows.Location = new System.Drawing.Point(0, 0);
 			this.EditWindows.Name = "EditWindows";
 			this.EditWindows.SelectedIndex = 0;
-			this.EditWindows.Size = new System.Drawing.Size(658, 506);
+			this.EditWindows.Size = new System.Drawing.Size(659, 506);
 			this.EditWindows.TabIndex = 5;
 			this.EditWindows.SelectedIndexChanged += new System.EventHandler(this.EditWindows_SelectedIndexChanged);
 			this.EditWindows.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
@@ -610,7 +612,7 @@
 			// 
 			this.mainContainer.Panel2.Controls.Add(this.EditWindows);
 			this.mainContainer.Size = new System.Drawing.Size(839, 506);
-			this.mainContainer.SplitterDistance = 177;
+			this.mainContainer.SplitterDistance = 176;
 			this.mainContainer.TabIndex = 6;
 			// 
 			// leftTabControl
@@ -621,7 +623,7 @@
 			this.leftTabControl.Location = new System.Drawing.Point(0, 0);
 			this.leftTabControl.Name = "leftTabControl";
 			this.leftTabControl.SelectedIndex = 0;
-			this.leftTabControl.Size = new System.Drawing.Size(177, 506);
+			this.leftTabControl.Size = new System.Drawing.Size(176, 506);
 			this.leftTabControl.TabIndex = 3;
 			// 
 			// ReferenceTab
@@ -629,8 +631,8 @@
 			this.ReferenceTab.Controls.Add(this.splitContainer2);
 			this.ReferenceTab.Location = new System.Drawing.Point(4, 22);
 			this.ReferenceTab.Name = "ReferenceTab";
-			this.ReferenceTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-			this.ReferenceTab.Size = new System.Drawing.Size(169, 480);
+			this.ReferenceTab.Padding = new System.Windows.Forms.Padding(3);
+			this.ReferenceTab.Size = new System.Drawing.Size(168, 480);
 			this.ReferenceTab.TabIndex = 1;
 			this.ReferenceTab.Text = "Reference";
 			this.ReferenceTab.UseVisualStyleBackColor = true;
@@ -650,7 +652,7 @@
 			// 
 			this.splitContainer2.Panel2.Controls.Add(this.commentBox);
 			this.splitContainer2.Panel2.Controls.Add(this.panel1);
-			this.splitContainer2.Size = new System.Drawing.Size(163, 474);
+			this.splitContainer2.Size = new System.Drawing.Size(162, 474);
 			this.splitContainer2.SplitterDistance = 333;
 			this.splitContainer2.TabIndex = 0;
 			// 
@@ -662,7 +664,7 @@
 			this.TokensTree.HideSelection = false;
 			this.TokensTree.Location = new System.Drawing.Point(0, 0);
 			this.TokensTree.Name = "TokensTree";
-			this.TokensTree.Size = new System.Drawing.Size(163, 333);
+			this.TokensTree.Size = new System.Drawing.Size(162, 333);
 			this.TokensTree.TabIndex = 2;
 			this.TokensTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.TokensTree_AfterSelect);
 			this.TokensTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.TokensTree_NodeMouseClick);
@@ -689,7 +691,7 @@
 			this.commentBox.Multiline = true;
 			this.commentBox.Name = "commentBox";
 			this.commentBox.ReadOnly = true;
-			this.commentBox.Size = new System.Drawing.Size(163, 120);
+			this.commentBox.Size = new System.Drawing.Size(162, 120);
 			this.commentBox.TabIndex = 0;
 			// 
 			// panel1
@@ -699,7 +701,7 @@
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.panel1.Location = new System.Drawing.Point(0, 120);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(163, 17);
+			this.panel1.Size = new System.Drawing.Size(162, 17);
 			this.panel1.TabIndex = 1;
 			// 
 			// docLinkLabel
@@ -718,8 +720,8 @@
 			this.ProjectTab.Controls.Add(this.projectTree);
 			this.ProjectTab.Location = new System.Drawing.Point(4, 22);
 			this.ProjectTab.Name = "ProjectTab";
-			this.ProjectTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-			this.ProjectTab.Size = new System.Drawing.Size(169, 483);
+			this.ProjectTab.Padding = new System.Windows.Forms.Padding(3);
+			this.ProjectTab.Size = new System.Drawing.Size(168, 480);
 			this.ProjectTab.TabIndex = 2;
 			this.ProjectTab.Text = "Project";
 			this.ProjectTab.UseVisualStyleBackColor = true;
@@ -732,7 +734,7 @@
 			this.projectTree.Location = new System.Drawing.Point(3, 3);
 			this.projectTree.Name = "projectTree";
 			this.projectTree.SelectedImageIndex = 0;
-			this.projectTree.Size = new System.Drawing.Size(163, 477);
+			this.projectTree.Size = new System.Drawing.Size(162, 474);
 			this.projectTree.TabIndex = 0;
 			this.projectTree.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterExpand);
 			this.projectTree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.projectTree_AfterSelect);
@@ -837,6 +839,14 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
+			// oldImageEditorToolStripMenuItem
+			// 
+			this.oldImageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("oldImageEditorToolStripMenuItem.Image")));
+			this.oldImageEditorToolStripMenuItem.Name = "oldImageEditorToolStripMenuItem";
+			this.oldImageEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+			this.oldImageEditorToolStripMenuItem.Text = "Old Image Editor";
+			this.oldImageEditorToolStripMenuItem.Click += new System.EventHandler(this.oldImageEditorToolStripMenuItem_Click);
+			// 
 			// Tokens
 			// 
 			this.AllowDrop = true;
@@ -858,14 +868,14 @@
 			this.bottomStatusStrip.PerformLayout();
 			this.mainContainer.Panel1.ResumeLayout(false);
 			this.mainContainer.Panel2.ResumeLayout(false);
-			//((System.ComponentModel.ISupportInitialize)(this.mainContainer)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).EndInit();
 			this.mainContainer.ResumeLayout(false);
 			this.leftTabControl.ResumeLayout(false);
 			this.ReferenceTab.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
 			this.splitContainer2.Panel2.ResumeLayout(false);
 			this.splitContainer2.Panel2.PerformLayout();
-			//((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
 			this.tokensTreeMenuStrip.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
@@ -889,7 +899,7 @@
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem hexSpriteEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem dCSGuiDesignerToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem imageEditosToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem imageEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem changeTokenFileToolStripMenuItem;
 		private DraggableTabControl EditWindows;
@@ -960,6 +970,7 @@
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem xLIBCColorPicerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSplitButton collapsePaneButton;
+		private System.Windows.Forms.ToolStripMenuItem oldImageEditorToolStripMenuItem;
 	}
 }
 

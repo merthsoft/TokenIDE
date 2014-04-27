@@ -10,14 +10,16 @@ using System.Windows.Forms;
 namespace Merthsoft.TokenIDE {
 	public partial class InputBox:Form {
 		public string outString;
-		public InputBox(string title, string defaultText = "") {
+
+		public InputBox(string title, string defaultText = "", string extraText = "") {
 			InitializeComponent();
 			this.Text = title;
 			this.textBox1.Text = defaultText;
+			this.extraTextLabel.Text = extraText;
 		}
 
-		public static string Show(string title, string defaultText = "") {
-			InputBox i = new InputBox(title, defaultText);
+		public static string Show(string title, string defaultText = "", string extraText = "") {
+			InputBox i = new InputBox(title, defaultText, extraText);
 			i.ShowDialog();
 			return i.outString;
 		}
