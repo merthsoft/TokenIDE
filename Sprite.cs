@@ -293,5 +293,27 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 		}
+
+		/// <summary>
+		/// Replaces all pixels with color at x,y with color
+		/// </summary>
+		/// <param name="x">The starting X coordinate.</param>
+		/// <param name="y">The starting Y coordinate.</param>
+		/// <param name="color">The color to draw.</param>
+		public void ReplaceAll(int x, int y, int color) {
+			if (x < 0 || y < 0 || x >= sprite.GetLength(0) || y >= sprite.GetLength(1)) { return; }
+			if (sprite[x, y] == color) { return; }
+
+			int baseColor = sprite[x, y];
+			for (int i = 0; i < Width; i++) {
+				for (int j = 0; j < Height; j++) {
+					if (sprite[i, j] == baseColor) {
+						sprite[i, j] = color;
+					}
+				}
+			}
+
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
+		}
 	}
 }
