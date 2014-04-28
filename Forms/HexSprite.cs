@@ -1125,16 +1125,22 @@ namespace Merthsoft.TokenIDE {
 					if (picNumber == 9) {
 						seed = 0;
 					} else {
-						seed = picNumber+1;
+						seed = picNumber;
+						if (seed < 9) {
+							seed++;
+						}
 					}
 				}
 				string outString = null;
 				do {
 					outString = InputBox.Show("Pic number (0-255)", seed.ToString(), "Note: Use display number, e.g. Pic1 = 1, Pic0 = 0");
+					if (outString == null) {
+						return false ;
+					}
 				} while (!int.TryParse(outString, out picNumber));
 				if (picNumber == 0) {
 					picNumber = 9;
-				} else {
+				} else if (picNumber < 9) {
 					picNumber--;
 				}
 			}
@@ -1161,7 +1167,7 @@ namespace Merthsoft.TokenIDE {
 			v.Save(new BinaryWriter(s.BaseStream));
 			s.Close();
 
-			return false;
+			return true;
 		}
 
 		private bool savePng() {

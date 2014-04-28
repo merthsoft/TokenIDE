@@ -28,5 +28,10 @@ namespace Merthsoft.TokenIDE {
 			outString = textBox1.Text;
 			Close();
 		}
+
+		private void button2_Click(object sender, EventArgs e) {
+			textBox1.Text = null;
+			outString = null;
+		}
 	}
 }
