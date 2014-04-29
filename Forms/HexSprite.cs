@@ -115,10 +115,7 @@ namespace Merthsoft.TokenIDE {
 		private string fileName = null;
 		private int picNumber = -1;
 		private SaveType saveType;
-
-		private bool isControlDown { get { return (ModifierKeys & Keys.Control) == Keys.Control; } }
-		private bool isShiftDown { get { return (ModifierKeys & Keys.Shift) == Keys.Shift; } }
-
+		
 		public HexSprite() {
 			InitializeComponent();
 
@@ -406,7 +403,7 @@ namespace Merthsoft.TokenIDE {
 
 				case Tool.Flood:
 					if (button != System.Windows.Forms.MouseButtons.None) {
-						if (isControlDown) {
+						if (MerthsoftExtensions.IsShiftDown) {
 							sprite.ReplaceAll(mouseX, mouseY, pixelColor);
 						} else {
 							sprite.FloodFill(mouseX, mouseY, pixelColor);
@@ -426,9 +423,6 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
-						if (isShiftDown) {
-							mouseY = shapeY + mouseX - shapeX;
-						}
 						previewSprite.DrawLine(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
@@ -446,7 +440,7 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
-						if (isShiftDown) {
+						if (MerthsoftExtensions.IsShiftDown) {
 							mouseY = shapeY + mouseX - shapeX;
 						}
 						previewSprite.DrawRectangle(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.RectangleFill);
@@ -466,7 +460,7 @@ namespace Merthsoft.TokenIDE {
 						drawing = false;
 					} else {
 						createPreviewSprite();
-						if (isShiftDown) {
+						if (MerthsoftExtensions.IsShiftDown) {
 							mouseY = shapeY + mouseX - shapeX;
 						}
 						previewSprite.DrawEllipse(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth, currentTool == Tool.EllipseFill);
