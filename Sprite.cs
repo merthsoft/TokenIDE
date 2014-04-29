@@ -52,6 +52,18 @@ namespace Merthsoft.TokenIDE {
 		public Sprite(Bitmap image, List<Color> colors, int transparent = -1) 
 			: this(image.PalettizeImage(colors, transparent)) { }
 
+		public Sprite(Bitmap image) {
+			Width = image.Width;
+			Height = image.Height;
+			sprite = new int[Width, Height];
+			for (int i = 0; i < Width; i++) {
+				for (int j = 0; j < Height; j++) {
+					sprite[i, j] = image.GetPixel(i, j).ToArgb();
+				}
+			}
+			DirtyRectangle = new Rectangle(0, 0, Width, Height);
+		}
+
 		public Sprite Copy() {
 			return new Sprite(this);
 		}

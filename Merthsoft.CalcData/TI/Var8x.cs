@@ -46,18 +46,20 @@ namespace Merthsoft.CalcData {
 			AppVar = 0x15,
 			GroupVar = 0x17,
 			Directory = 0x19,
+			Image = 0x1A,
 			FashOS = 0x23,
 			FlashAPP = 0x24,
 			IDList = 0x26,
 			GetCertificate = 0x27,
-			Clock = 0x29
+			Clock = 0x29,
 		}
 
 		protected enum VarPrefix : byte {
+			Image = 0x3C,
 			Matrix = 0x5C,
 			List = 0x5D,
 			Picture = 0x60,
-			String = 0xAA
+			String = 0xAA,
 		}
 
 		protected byte FlagUnArchived = 0x00;
@@ -73,7 +75,7 @@ namespace Merthsoft.CalcData {
 		protected byte[] flag1;
 		protected byte[] varIDArray;
 		protected byte[] varNameArray;
-		protected byte[] version;
+		protected byte version;
 		protected byte archFlag;
 		//protected IData8x _data;
 		// Checksum
@@ -157,7 +159,7 @@ namespace Merthsoft.CalcData {
 			}
 			name = ASCIIEncoding.ASCII.GetString(varNameArray);
 			if (Calc == CalcType.Calc8x) {
-				version = b.ReadBytes(1);
+				version = b.ReadByte();
 				archFlag = b.ReadByte();
 			}
 			// Skip next two bytes, they are a repeat of dataLength

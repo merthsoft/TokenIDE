@@ -21,7 +21,7 @@ namespace Merthsoft.TokenIDE {
 
 		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
 
-		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, _max };
+		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, Full565, _max };
 
 		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic }
 
@@ -98,14 +98,7 @@ namespace Merthsoft.TokenIDE {
 		private int leftPixel = 1;
 		private int rightPixel = 0;
 
-		private List<Color> CelticPalette = new List<Color>() {
-			Color.Cyan,
-			MerthsoftExtensions.ColorFrom565(0,0,31), MerthsoftExtensions.ColorFrom565(31,0,0), MerthsoftExtensions.ColorFrom565(0,0,0),
-			MerthsoftExtensions.ColorFrom565(31,0,31), MerthsoftExtensions.ColorFrom565(0,39,0), MerthsoftExtensions.ColorFrom565(31,35,4),
-			MerthsoftExtensions.ColorFrom565(22,8,0), MerthsoftExtensions.ColorFrom565(0,0,15), MerthsoftExtensions.ColorFrom565(0,36,31),
-			MerthsoftExtensions.ColorFrom565(31,63,0), MerthsoftExtensions.ColorFrom565(31,63,31), MerthsoftExtensions.ColorFrom565(28,56,28),
-			MerthsoftExtensions.ColorFrom565(24,48,24), MerthsoftExtensions.ColorFrom565(17,34,17), MerthsoftExtensions.ColorFrom565(10,21,10),
-		};
+		private List<Color> CelticPalette = Pic8xC.Palette;
 
 		private List<Color> XLibPalette = new List<Color>();
 
@@ -347,6 +340,10 @@ namespace Merthsoft.TokenIDE {
 
 							case Palette.xLIBC:
 								drawColor = XLibPalette[paletteIndex];
+								break;
+
+							case Palette.Full565:
+								drawColor = Color.FromArgb(paletteIndex);
 								break;
 
 							default:
@@ -726,6 +723,11 @@ namespace Merthsoft.TokenIDE {
 					togglePalette(true);
 					toggleHexOutput(false);
 					break;
+
+				case Palette.Full565:
+					togglePalette(false);
+					toggleHexOutput(false);
+					break;
 			}
 
 			// If you're changing palettes, just give up for now
@@ -813,6 +815,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void Open(string fileName) {
+			Cursor c = Cursor;
+			Cursor = Cursors.WaitCursor;
 			pushHistory();
 			FileInfo f = new FileInfo(fileName);
 			string extension = f.Extension.ToLower();
@@ -823,11 +827,18 @@ namespace Merthsoft.TokenIDE {
 				case ".8xi":
 					openMonochromePic(fileName);
 					break;
+				case ".8ci":
+					openColorPic(fileName);
+					break;
+				case ".8ca":
+					openColorImage(fileName);
+					break;
 				default:
 					openBitmap(fileName);
 					break;
 			}
 			spriteBox.Invalidate();
+			Cursor = c;
 		}
 
 		private void openBitmap(string fileName) {
@@ -851,6 +862,10 @@ namespace Merthsoft.TokenIDE {
 
 				case Palette.xLIBC:
 					sprite = new Sprite(image, XLibPalette);
+					break;
+
+				case Palette.Full565:
+					sprite = new Sprite(image);
 					break;
 			}
 
@@ -883,6 +898,36 @@ namespace Merthsoft.TokenIDE {
 			picNumber = pic.PicNumber;
 
 			SelectedPalette = Palette.BlackAndWhite;
+			using (Bitmap b = pic.GetBitmap()) {
+				loadImage(b);
+			}
+			saveType = SaveType.MonochromePic;
+		}
+
+		private void openColorPic(string fileName) {
+			Pic8xC pic = null;
+			using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+			using (BinaryReader preader = new BinaryReader(pstream)) {
+				pic = new Pic8xC(preader);
+			}
+			picNumber = pic.PicNumber;
+
+			SelectedPalette = Palette.CelticIICSE;
+			using (Bitmap b = pic.GetBitmap()) {
+				loadImage(b);
+			}
+			saveType = SaveType.MonochromePic;
+		}
+
+		private void openColorImage(string fileName) {
+			Image8xC pic = null;
+			using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+			using (BinaryReader preader = new BinaryReader(pstream)) {
+				pic = new Image8xC(preader);
+			}
+			picNumber = pic.PicNumber;
+
+			SelectedPalette = Palette.Full565;
 			using (Bitmap b = pic.GetBitmap()) {
 				loadImage(b);
 			}
@@ -948,10 +993,11 @@ namespace Merthsoft.TokenIDE {
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi");
+			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi", "*.8ci", "*.8ca");
 			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
 			f.AddFilter("Monochrome Pic files", "*.8xi");
+			f.AddFilter("Color Pic files", "*.8ci", "*.8ca");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
 			fileName = f.FileName;

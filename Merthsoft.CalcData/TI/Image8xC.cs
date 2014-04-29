@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.IO;
-using System.Drawing;
 
-namespace Merthsoft.CalcData {
-	public class Pic8x : Var8x {
-		short _size = 798;
+namespace Merthsoft.CalcData{
+	public class Image8xC: Var8x {
+		short _size = 21976;
 		byte[] _data;
 
 		public override byte[] Data {
@@ -31,14 +31,15 @@ namespace Merthsoft.CalcData {
 			get { return (ushort)_data.Length; }
 		}
 
-		public Pic8x(byte picNumber = 0)
-			: base(VarType.Picture, new string(new char[] {(char)VarPrefix.Picture, (char)picNumber})){
+		public Image8xC(byte picNumber = 0)
+			: base(VarType.Image, new string(new char[] {(char)VarPrefix.Image, (char)picNumber})){
+				Archived = true;
 		}
 
-		public Pic8x(BinaryReader b)
+		public Image8xC(BinaryReader b)
 			: base(b) {
-			if (ID != VarType.Picture) {
-				throw new Exception(string.Format("Type {0} ({1}) is not a valid picture.", (int)ID, ID.ToString()));
+			if (ID != VarType.Image) {
+				throw new Exception(string.Format("Type {0} ({1}) is not a valid image.", (int)ID, ID.ToString()));
 			}
 		}
 
@@ -54,21 +55,21 @@ namespace Merthsoft.CalcData {
 		}
 
 		public Bitmap GetBitmap() {
-			Bitmap bitmap = new Bitmap(96, 64);
-			int x = 0, y = 0;
-			for (int i = 0; i < _size; i++) {
-				byte b = _data[i];
-				for (int j = 7; j >= 0; j--) {
-					if (((b & (1 << j)) >> j) == 1) {
-						bitmap.SetPixel(x, y, Color.Black);
-					} else {
-						bitmap.SetPixel(x, y, Color.White);
-					}
-					x++;
-					if (x == 96) {
-						x = 0;
-						y++;
-					}
+			int width = 133;
+			int height = 82;
+			Bitmap bitmap = new Bitmap(width, height);
+			int x = 0, y = height-1;
+			for (int i = 0; i < (width +1)*height*2; i+=2) {
+				byte b1 = _data[i];
+				byte b2 = _data[i+1];
+
+				bitmap.SetPixel(x, y, MerthsoftExtensions.ColorFrom565(b1, b2));
+
+				x += 1;
+				if (x >= width) {
+					i += 2;
+					x = 0;
+					y--;
 				}
 			}
 

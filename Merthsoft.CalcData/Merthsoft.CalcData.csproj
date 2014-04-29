@@ -41,6 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TI\Image8xC.cs" />
+    <Compile Include="TI\Pic8xC.cs" />
     <Compile Include="TI\AppVar8x.cs" />
     <Compile Include="TI\List8x.cs" />
     <Compile Include="TI\Matrix8x.cs" />
