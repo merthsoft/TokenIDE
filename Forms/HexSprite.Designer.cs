@@ -46,7 +46,6 @@ namespace Merthsoft.TokenIDE {
 			this.paletteChoice = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
-			this.palettePanel = new System.Windows.Forms.Panel();
 			this.rightMousePictureBox = new System.Windows.Forms.PictureBox();
 			this.leftMousePictureBox = new System.Windows.Forms.PictureBox();
 			this.leftMouseLabel = new System.Windows.Forms.Label();
@@ -76,7 +75,6 @@ namespace Merthsoft.TokenIDE {
 			this.mainToolStrip.SuspendLayout();
 			this.topPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
-			this.palettePanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rightMousePictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.leftMousePictureBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
@@ -86,7 +84,7 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// paletteBox
 			// 
-			this.paletteBox.Location = new System.Drawing.Point(0, 0);
+			this.paletteBox.Location = new System.Drawing.Point(332, 3);
 			this.paletteBox.Name = "paletteBox";
 			this.paletteBox.Size = new System.Drawing.Size(352, 88);
 			this.paletteBox.TabIndex = 21;
@@ -262,9 +260,14 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// topPanel
 			// 
+			this.topPanel.Controls.Add(this.paletteBox);
 			this.topPanel.Controls.Add(this.useGBox);
+			this.topPanel.Controls.Add(this.rightMousePictureBox);
 			this.topPanel.Controls.Add(this.paletteChoice);
+			this.topPanel.Controls.Add(this.leftMousePictureBox);
+			this.topPanel.Controls.Add(this.rightMouseLabel);
 			this.topPanel.Controls.Add(this.label3);
+			this.topPanel.Controls.Add(this.leftMouseLabel);
 			this.topPanel.Controls.Add(this.penWidthBox);
 			this.topPanel.Controls.Add(this.spriteWidthBox);
 			this.topPanel.Controls.Add(this.spriteHeightBox);
@@ -273,7 +276,6 @@ namespace Merthsoft.TokenIDE {
 			this.topPanel.Controls.Add(this.pixelSizeBox);
 			this.topPanel.Controls.Add(this.drawGridBox);
 			this.topPanel.Controls.Add(this.MaintainDim);
-			this.topPanel.Controls.Add(this.palettePanel);
 			this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
 			this.topPanel.Location = new System.Drawing.Point(0, 51);
 			this.topPanel.Name = "topPanel";
@@ -330,22 +332,9 @@ namespace Merthsoft.TokenIDE {
             0,
             0});
 			// 
-			// palettePanel
-			// 
-			this.palettePanel.Controls.Add(this.paletteBox);
-			this.palettePanel.Controls.Add(this.rightMousePictureBox);
-			this.palettePanel.Controls.Add(this.leftMousePictureBox);
-			this.palettePanel.Controls.Add(this.leftMouseLabel);
-			this.palettePanel.Controls.Add(this.rightMouseLabel);
-			this.palettePanel.Location = new System.Drawing.Point(222, 3);
-			this.palettePanel.Name = "palettePanel";
-			this.palettePanel.Size = new System.Drawing.Size(481, 87);
-			this.palettePanel.TabIndex = 30;
-			this.palettePanel.Visible = false;
-			// 
 			// rightMousePictureBox
 			// 
-			this.rightMousePictureBox.Location = new System.Drawing.Point(413, 13);
+			this.rightMousePictureBox.Location = new System.Drawing.Point(277, 15);
 			this.rightMousePictureBox.Name = "rightMousePictureBox";
 			this.rightMousePictureBox.Size = new System.Drawing.Size(49, 74);
 			this.rightMousePictureBox.TabIndex = 27;
@@ -354,7 +343,7 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// leftMousePictureBox
 			// 
-			this.leftMousePictureBox.Location = new System.Drawing.Point(358, 13);
+			this.leftMousePictureBox.Location = new System.Drawing.Point(222, 15);
 			this.leftMousePictureBox.Name = "leftMousePictureBox";
 			this.leftMousePictureBox.Size = new System.Drawing.Size(49, 74);
 			this.leftMousePictureBox.TabIndex = 26;
@@ -364,7 +353,7 @@ namespace Merthsoft.TokenIDE {
 			// leftMouseLabel
 			// 
 			this.leftMouseLabel.AutoSize = true;
-			this.leftMouseLabel.Location = new System.Drawing.Point(358, 0);
+			this.leftMouseLabel.Location = new System.Drawing.Point(222, 2);
 			this.leftMouseLabel.Name = "leftMouseLabel";
 			this.leftMouseLabel.Size = new System.Drawing.Size(28, 13);
 			this.leftMouseLabel.TabIndex = 28;
@@ -373,7 +362,7 @@ namespace Merthsoft.TokenIDE {
 			// rightMouseLabel
 			// 
 			this.rightMouseLabel.AutoSize = true;
-			this.rightMouseLabel.Location = new System.Drawing.Point(413, 0);
+			this.rightMouseLabel.Location = new System.Drawing.Point(277, 2);
 			this.rightMouseLabel.Name = "rightMouseLabel";
 			this.rightMouseLabel.Size = new System.Drawing.Size(35, 13);
 			this.rightMouseLabel.TabIndex = 29;
@@ -548,8 +537,6 @@ namespace Merthsoft.TokenIDE {
 			this.topPanel.ResumeLayout(false);
 			this.topPanel.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).EndInit();
-			this.palettePanel.ResumeLayout(false);
-			this.palettePanel.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rightMousePictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.leftMousePictureBox)).EndInit();
 			this.menuStrip1.ResumeLayout(false);
@@ -593,7 +580,6 @@ namespace Merthsoft.TokenIDE {
 		private Label leftMouseLabel;
 		private PictureBox rightMousePictureBox;
 		private PictureBox leftMousePictureBox;
-		private Panel palettePanel;
 		private Panel spritePanel;
 		private ToolStripMenuItem saveToolStripMenuItem;
 		private ToolStripMenuItem saveAsToolStripMenuItem;

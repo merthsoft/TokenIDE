@@ -14,6 +14,7 @@ using Merthsoft.TokenIDE.Properties;
 namespace Merthsoft.TokenIDE {
 
 	public partial class HexSprite : Form {
+		private readonly int transparentColor = Color.Transparent.ToArgb();
 		private const string XLIBTILES_HEADER = "xLIBPIC";
 		private const string XLIBBGPIC_HEADER = "xLIBBG ";
 
@@ -108,7 +109,7 @@ namespace Merthsoft.TokenIDE {
 		private string fileName = null;
 		private int picNumber = -1;
 		private SaveType saveType;
-		
+				
 		public HexSprite() {
 			InitializeComponent();
 
@@ -319,6 +320,7 @@ namespace Merthsoft.TokenIDE {
 			int stride = data.Stride;
 			int[] dataToCopy = new int[data.Height * data.Stride / 4];
 			Marshal.Copy(data.Scan0, dataToCopy, 0, dataToCopy.Length);
+			int skippedColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			for (int j = 0; j < drawBounds.Height; j++) {
 				for (int i = 0; i < drawBounds.Width; i++) {
 					//if (!clearDirty) {
@@ -328,27 +330,22 @@ namespace Merthsoft.TokenIDE {
 					int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
 
 					Color drawColor = Color.White;
-					if (paletteIndex == -1) { continue; } else {
-						switch (SelectedPalette) {
-							case Palette.BlackAndWhite:
-								drawColor = paletteIndex == 0 ? Color.White : Color.Black;
-								break;
-
-							case Palette.CelticIICSE:
-								drawColor = CelticPalette[paletteIndex];
-								break;
-
-							case Palette.xLIBC:
-								drawColor = XLibPalette[paletteIndex];
-								break;
-
-							case Palette.Full565:
-								drawColor = Color.FromArgb(paletteIndex);
-								break;
-
-							default:
-								break;
-						}
+					if (paletteIndex == skippedColor) { continue; }
+					switch (SelectedPalette) {
+						case Palette.BlackAndWhite:
+							drawColor = paletteIndex == 0 ? Color.White : Color.Black;
+							break;
+						case Palette.CelticIICSE:
+							drawColor = CelticPalette[paletteIndex];
+							break;
+						case Palette.xLIBC:
+							drawColor = XLibPalette[paletteIndex];
+							break;
+						case Palette.Full565:
+							drawColor = Color.FromArgb(paletteIndex);
+							break;
+						default:
+							break;
 					}
 
 					dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
@@ -510,9 +507,10 @@ namespace Merthsoft.TokenIDE {
 
 			//previewSprite = new int[spriteWidth, spriteHeight];
 			previewSprite = new Sprite(SpriteWidth, SpriteHeight);
+			int defaultColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
 				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
-					previewSprite[i, j] = -1;
+					previewSprite[i, j] = defaultColor;
 				}
 			}
 
@@ -524,9 +522,10 @@ namespace Merthsoft.TokenIDE {
 
 		private void copyPreviewSprite() {
 			Rectangle drawRect = previewSprite.DirtyRectangle;
+			int skippedColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
 				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
-					if (previewSprite[i, j] != -1) {
+					if (previewSprite[i, j] != skippedColor) {
 						sprite[i, j] = previewSprite[i, j];
 					}
 				}
@@ -666,6 +665,8 @@ namespace Merthsoft.TokenIDE {
 			int colorCount;
 			int maxWidth;
 
+			if (SelectedPalette == Palette.Full565) { return; }
+
 			if (SelectedPalette == Palette.CelticIICSE) {
 				boxWidth = 44;
 				boxHeight = 44;
@@ -683,10 +684,8 @@ namespace Merthsoft.TokenIDE {
 
 			try {
 				for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
-					Color c;
-
 					if (SelectedPalette == Palette.CelticIICSE) {
-						c = CelticPalette[colorIndex];
+						Color c = CelticPalette[colorIndex];
 						g.FillRect(CelticBrushes[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 						g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 					} else {
@@ -712,21 +711,33 @@ namespace Merthsoft.TokenIDE {
 				case Palette.BlackAndWhite:
 					togglePalette(false);
 					toggleHexOutput(true);
+
+					setLeftMouseButton(1);
+					setRightMouseButton(0);
 					break;
 
 				case Palette.CelticIICSE:
 					togglePalette(true);
 					toggleHexOutput(true);
+
+					setLeftMouseButton(1);
+					setRightMouseButton(0);
 					break;
 
 				case Palette.xLIBC:
 					togglePalette(true);
 					toggleHexOutput(false);
+
+					setLeftMouseButton(0);
+					setRightMouseButton(0xFF);
 					break;
 
 				case Palette.Full565:
 					togglePalette(false);
 					toggleHexOutput(false);
+
+					setLeftMouseButton(-16777216);
+					setRightMouseButton(-1);
 					break;
 			}
 
@@ -735,17 +746,18 @@ namespace Merthsoft.TokenIDE {
 			if (sprite != null) {
 				for (int j = 0; j < SpriteHeight; j++) {
 					for (int i = 0; i < SpriteWidth; i++) {
-						if (sprite[i, j] == rightPixel) {
-							sprite[i, j] = 0;
+						if (SelectedPalette == Palette.Full565) {
+							sprite[i, j] = Color.White.ToArgb();
 						} else {
-							sprite[i, j] = 1;
+							if (sprite[i, j] == rightPixel) {
+								sprite[i, j] = 0;
+							} else {
+								sprite[i, j] = 1;
+							}
 						}
 					}
 				}
 			}
-
-			setLeftMouseButton(1);
-			setRightMouseButton(0);
 
 			sprite.Invalidate();
 			spriteBox.Invalidate();
@@ -758,7 +770,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void togglePalette(bool enabled) {
-			palettePanel.Visible = enabled;
+			paletteBox.Visible = enabled;
 			if (enabled) {
 				paletteBox.Invalidate();
 				leftMousePictureBox.Invalidate();
@@ -795,7 +807,7 @@ namespace Merthsoft.TokenIDE {
 
 			int paletteIndex = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
 
-			if (e.Button == System.Windows.Forms.MouseButtons.Left) {
+			if (e.Button == System.Windows.Forms.MouseButtons.Left || SelectedPalette == Palette.BlackAndWhite) {
 				setLeftMouseButton(paletteIndex);
 			} else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
 				setRightMouseButton(paletteIndex);
@@ -805,13 +817,21 @@ namespace Merthsoft.TokenIDE {
 		private void setRightMouseButton(int paletteIndex) {
 			rightPixel = paletteIndex;
 			rightMousePictureBox.Invalidate();
-			rightMouseLabel.Text = string.Format("Right: ({0:X2})", paletteIndex);
+			if (SelectedPalette == Palette.Full565 || SelectedPalette == Palette.BlackAndWhite) {
+				rightMouseLabel.Text = string.Format("Right");
+			} else {
+				rightMouseLabel.Text = string.Format("Right: ({0:X2})", paletteIndex);
+			}
 		}
 
 		private void setLeftMouseButton(int paletteIndex) {
 			leftPixel = paletteIndex;
 			leftMousePictureBox.Invalidate();
-			leftMouseLabel.Text = string.Format("Left: ({0:X2})", paletteIndex);
+			if (SelectedPalette == Palette.Full565 || SelectedPalette == Palette.BlackAndWhite) {
+				leftMouseLabel.Text = string.Format("Left");
+			} else {
+				leftMouseLabel.Text = string.Format("Left: ({0:X2})", paletteIndex);
+			}
 		}
 
 		private void Open(string fileName) {
@@ -1068,27 +1088,51 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void leftMousePictureBox_Paint(object sender, PaintEventArgs e) {
-			Brush brush;
+			Brush brush = null;
+			bool dispose = false;
 
-			if (SelectedPalette == Palette.CelticIICSE) {
-				brush = CelticBrushes[leftPixel];
-			} else {
-				brush = XLibBrushes[leftPixel];
+			switch (SelectedPalette) {
+				case Palette.BlackAndWhite:
+					brush = Brushes.Black;
+					break;
+				case Palette.CelticIICSE:
+					brush = CelticBrushes[leftPixel];
+					break;
+				case Palette.xLIBC:
+					brush = XLibBrushes[leftPixel];
+					break;
+				case Palette.Full565:
+					brush = new SolidBrush(Color.FromArgb(leftPixel | (0xFF << 24)));
+					dispose = true;
+					break;
 			}
 
 			e.Graphics.FillRectangle(brush, e.ClipRectangle);
+			if (dispose) { brush.Dispose(); }
 		}
 
 		private void rightMousePictureBox_Paint(object sender, PaintEventArgs e) {
-			Brush brush;
+			Brush brush = null;
+			bool dispose = false;
 
-			if (SelectedPalette == Palette.CelticIICSE) {
-				brush = CelticBrushes[rightPixel];
-			} else {
-				brush = XLibBrushes[rightPixel];
+			switch (SelectedPalette) {
+				case Palette.BlackAndWhite:
+					brush = Brushes.White;
+					break;
+				case Palette.CelticIICSE:
+					brush = CelticBrushes[rightPixel];
+					break;
+				case Palette.xLIBC:
+					brush = XLibBrushes[rightPixel];
+					break;
+				case Palette.Full565:
+					brush = new SolidBrush(Color.FromArgb(rightPixel | (0xFF << 24)));
+					dispose = true;
+					break;
 			}
 
 			e.Graphics.FillRectangle(brush, e.ClipRectangle);
+			if (dispose) { brush.Dispose(); }
 		}
 
 		private bool saveDialog() {
