@@ -63,6 +63,16 @@ namespace Merthsoft.TokenIDE.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _565palette {
+            get {
+                object obj = ResourceManager.GetObject("_565palette", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap icon_appvar {
             get {
                 object obj = ResourceManager.GetObject("icon_appvar", resourceCulture);
