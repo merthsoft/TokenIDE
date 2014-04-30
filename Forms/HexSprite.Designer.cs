@@ -67,6 +67,7 @@ namespace Merthsoft.TokenIDE {
 			this.spriteIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
+			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -514,6 +515,10 @@ namespace Merthsoft.TokenIDE {
 			this.clearTextTimer.Interval = 500;
 			this.clearTextTimer.Tick += new System.EventHandler(this.clearTextTimer_Tick);
 			// 
+			// colorDialog1
+			// 
+			this.colorDialog1.FullOpen = true;
+			// 
 			// HexSprite
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -591,6 +596,7 @@ namespace Merthsoft.TokenIDE {
 		private Timer clearTextTimer;
 		private CheckBox useGBox;
 		private ToolStripStatusLabel spriteIndexLabel;
+		private ColorDialog colorDialog1;
 
 	}
 }

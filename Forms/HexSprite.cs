@@ -47,7 +47,10 @@ namespace Merthsoft.TokenIDE {
 			set { paletteChoice.SelectedIndex = (int)value; }
 		}
 
-		private List<Sprite> history;
+		private Palette? previousPalette = null;
+
+		private List<Tuple<Sprite, Palette>> history;
+		private bool shouldPushHistory = false;
 		private int historyPosition;
 
 		private Sprite sprite;
@@ -120,7 +123,7 @@ namespace Merthsoft.TokenIDE {
 
 			sprite = new Sprite(8, 8);
 
-			history = new List<Sprite>();
+			history = new List<Tuple<Sprite, Palette>>();
 			historyPosition = 0;
 
 			IntPtr iconPtr = TokenIDE.Properties.Resources.icon_hexsprite.GetHicon();
@@ -263,7 +266,7 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Width = SpriteWidth * pixelSize;
 			spriteBox.Height = SpriteHeight * pixelSize;
 
-			try {
+			//try {
 				if (drawCanvas == null || drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
 					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
 					sprite.Invalidate();
@@ -306,21 +309,23 @@ namespace Merthsoft.TokenIDE {
 						}
 					}
 				}
-			} catch {
-				throw;
-			}
+			//} catch {
+			//	throw;
+			//}
 		}
 
-		private void drawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true) {
+		private void drawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true, Palette? palette = null) {
 			Rectangle drawBounds = spriteToUse.DirtyRectangle;
 
 			if (drawBounds == Rectangle.Empty) { return; }
+
+			Palette realPalette = palette ?? SelectedPalette;
 
 			BitmapData data = b.LockBits(drawBounds, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
 			int stride = data.Stride;
 			int[] dataToCopy = new int[data.Height * data.Stride / 4];
 			Marshal.Copy(data.Scan0, dataToCopy, 0, dataToCopy.Length);
-			int skippedColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
+			int skippedColor = realPalette == Palette.Full565 ? transparentColor : -1;
 			for (int j = 0; j < drawBounds.Height; j++) {
 				for (int i = 0; i < drawBounds.Width; i++) {
 					//if (!clearDirty) {
@@ -331,7 +336,7 @@ namespace Merthsoft.TokenIDE {
 
 					Color drawColor = Color.White;
 					if (paletteIndex == skippedColor) { continue; }
-					switch (SelectedPalette) {
+					switch (realPalette) {
 						case Palette.BlackAndWhite:
 							drawColor = paletteIndex == 0 ? Color.White : Color.Black;
 							break;
@@ -563,12 +568,13 @@ namespace Merthsoft.TokenIDE {
 			historyPosition = 0;
 		}
 
-		private void pushHistory() {
-			if (sprite == null) { return; }
+		private void pushHistory(Palette? palette = null) {
+			if (shouldPushHistory == false) { return; }
+			if (sprite == null || previousPalette == null) { return; }
 			if (historyPosition != history.Count) {
 				history.RemoveRange(historyPosition, history.Count - historyPosition);
 			}
-			history.Add(sprite.Copy());
+			history.Add(Tuple.Create(sprite.Copy(), palette ?? SelectedPalette));
 			historyPosition = history.Count;
 			toggleRedo(false);
 			toggleUndo(true);
@@ -665,7 +671,10 @@ namespace Merthsoft.TokenIDE {
 			int colorCount;
 			int maxWidth;
 
-			if (SelectedPalette == Palette.Full565) { return; }
+			if (SelectedPalette == Palette.Full565) {
+				g.DrawImage(Resources._565palette, 0, 0);
+				return;
+			}
 
 			if (SelectedPalette == Palette.CelticIICSE) {
 				boxWidth = 44;
@@ -705,8 +714,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void paletteChoice_SelectedIndexChanged(object sender, EventArgs e) {
-			pushHistory();
-
+			pushHistory(previousPalette);
+			
 			switch (SelectedPalette) {
 				case Palette.BlackAndWhite:
 					togglePalette(false);
@@ -733,7 +742,7 @@ namespace Merthsoft.TokenIDE {
 					break;
 
 				case Palette.Full565:
-					togglePalette(false);
+					togglePalette(true);
 					toggleHexOutput(false);
 
 					setLeftMouseButton(-16777216);
@@ -744,21 +753,16 @@ namespace Merthsoft.TokenIDE {
 			// If you're changing palettes, just give up for now
 			// [TODO] Make this smarter?
 			if (sprite != null) {
-				for (int j = 0; j < SpriteHeight; j++) {
-					for (int i = 0; i < SpriteWidth; i++) {
-						if (SelectedPalette == Palette.Full565) {
-							sprite[i, j] = Color.White.ToArgb();
-						} else {
-							if (sprite[i, j] == rightPixel) {
-								sprite[i, j] = 0;
-							} else {
-								sprite[i, j] = 1;
-							}
-						}
-					}
+				using (Bitmap b = new Bitmap(SpriteWidth, SpriteHeight)) {
+					shouldPushHistory = false;
+					sprite.DirtyRectangle = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
+					drawSprite(b, sprite, palette: previousPalette);
+					loadImage(b);
+					shouldPushHistory = true;
 				}
 			}
 
+			previousPalette = SelectedPalette;
 			sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
@@ -789,8 +793,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void selectPalette(MouseEventArgs e) {
-			if (!paletteBox.Bounds.Contains(e.Location)) { return; }
-
+			if (e.X < 0 || e.Y < 0 || e.X >= paletteBox.Width || e.Y >= paletteBox.Height) {
+				return;
+			}
 			int boxWidth;
 			int boxHeight;
 			int maxWidth;
@@ -805,7 +810,13 @@ namespace Merthsoft.TokenIDE {
 				maxWidth = 352;
 			}
 
-			int paletteIndex = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
+
+			int paletteIndex;
+			if (SelectedPalette == Palette.Full565) {
+				paletteIndex = Resources._565palette.GetPixel(e.X, e.Y).ToArgb();
+			} else {
+				paletteIndex = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
+			}
 
 			if (e.Button == System.Windows.Forms.MouseButtons.Left || SelectedPalette == Palette.BlackAndWhite) {
 				setLeftMouseButton(paletteIndex);
@@ -1034,7 +1045,7 @@ namespace Merthsoft.TokenIDE {
 		private void undo() {
 			if (historyPosition == history.Count) {
 				//history.Add(copySpriteArray());
-				history.Add(sprite.Copy());
+				history.Add(Tuple.Create(sprite.Copy(), SelectedPalette));
 			}
 
 			copySpriteFromHistory(--historyPosition);
@@ -1044,11 +1055,13 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleRedo(true);
 
+			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
 			spriteBox.Invalidate();
 		}
 
 		private void copySpriteFromHistory(int position) {
-			sprite = history[position];
+			var historyItem = history[position];
+			sprite = historyItem.Item1;
 			// If we're not in color, reduce it to ones and zeros
 			// [TODO] Do somethign with this?
 			//if (!IsColor) {
@@ -1064,6 +1077,9 @@ namespace Merthsoft.TokenIDE {
 			performResizeFlag = false;
 			SpriteHeight = sprite.Height;
 			SpriteWidth = sprite.Width;
+			shouldPushHistory = false;
+			SelectedPalette = historyItem.Item2;
+			shouldPushHistory = true;
 			performResizeFlag = true;
 		}
 
@@ -1074,6 +1090,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleUndo(true);
 
+			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
 			spriteBox.Invalidate();
 		}
 
