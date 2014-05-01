@@ -1060,25 +1060,15 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void copySpriteFromHistory(int position) {
-			var historyItem = history[position];
-			sprite = historyItem.Item1;
-			// If we're not in color, reduce it to ones and zeros
-			// [TODO] Do somethign with this?
-			//if (!IsColor) {
-			//    for (int i = 0; i < sprite.Width; i++) {
-			//        for (int j = 0; j < sprite.Height; j++) {
-			//            if (sprite[i, j] > 1) {
-			//                sprite[i, j] = 1;
-			//            }
-			//        }
-			//    }
-			//}
-
+			shouldPushHistory = false;
 			performResizeFlag = false;
+
+			var historyItem = history[position];
+			SelectedPalette = historyItem.Item2;
+			sprite = historyItem.Item1;
+
 			SpriteHeight = sprite.Height;
 			SpriteWidth = sprite.Width;
-			shouldPushHistory = false;
-			SelectedPalette = historyItem.Item2;
 			shouldPushHistory = true;
 			performResizeFlag = true;
 		}
