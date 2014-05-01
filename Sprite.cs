@@ -7,13 +7,13 @@ using Merthsoft.Extensions;
 
 namespace Merthsoft.TokenIDE {
 	public class Sprite {
-		private int[,] sprite;
+		private List<List<int>> sprite;
 
 		public int Height { get; private set; }
 		public int Width { get; private set; }
 
 		public int this[int i, int j] {
-			get { return sprite[i, j]; }
+			get { return sprite[i][j]; }
 			set { setPoint(i, j, value); }
 		}
 
@@ -21,7 +21,7 @@ namespace Merthsoft.TokenIDE {
 
 		public Sprite(string hexData, int width, out int height, int bitsPerPixel) {
 			Width = width;
-			sprite = HexHelper.HexToArr(hexData, Width, out height, bitsPerPixel);
+			sprite = HexHelper.HexTo2DList(hexData, Width, out height, bitsPerPixel);
 			Height = height;
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 		}
@@ -30,23 +30,45 @@ namespace Merthsoft.TokenIDE {
 			Width = sprite.GetLength(0);
 			Height = sprite.GetLength(1);
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
-			this.sprite = new int[Width, Height];
-			Array.Copy(sprite, this.sprite, this.sprite.Length);
+			this.sprite = new List<List<int>>();
+			for (int i = 0; i < Width; i++) {
+				List<int> row = new List<int>(Width);
+				for (int j = 0; j < Height; j++) {
+					row.Add(sprite[i, j]);
+				}
+				this.sprite.Add(row);
+				row = new List<int>(Width);
+			}
 		}
 
 		public Sprite(int width, int height) {
 			Height = height;
 			Width = width;
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
-			sprite = new int[Width, Height];
+			this.sprite = new List<List<int>>();
+			for (int i = 0; i < Width; i++) {
+				List<int> row = new List<int>(Width);
+				for (int j = 0; j < Height; j++) {
+					row.Add(0);
+				}
+				this.sprite.Add(row);
+				row = new List<int>(Width);
+			}
 		}
 
 		public Sprite(Sprite oldSprite) {
 			Height = oldSprite.Height;
 			Width = oldSprite.Width;
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
-			this.sprite = new int[Width, Height];
-			Array.Copy(oldSprite.sprite, this.sprite, this.sprite.Length);
+			this.sprite = new List<List<int>>();
+			for (int i = 0; i < Width; i++) {
+				List<int> row = new List<int>(Width);
+				for (int j = 0; j < Height; j++) {
+					row.Add(oldSprite[i, j]);
+				}
+				this.sprite.Add(row);
+				row = new List<int>(Width);
+			}
 		}
 
 		public Sprite(Bitmap image, List<Color> colors, int transparent = -1) 
@@ -55,17 +77,48 @@ namespace Merthsoft.TokenIDE {
 		public Sprite(Bitmap image) {
 			Width = image.Width;
 			Height = image.Height;
-			sprite = new int[Width, Height];
+			this.sprite = new List<List<int>>();
 			for (int i = 0; i < Width; i++) {
+				List<int> row = new List<int>(Width);
 				for (int j = 0; j < Height; j++) {
-					sprite[i, j] = image.GetPixel(i, j).ToArgb();
+					row.Add(image.GetPixel(i, j).ToArgb());
 				}
+				this.sprite.Add(row);
+				row = new List<int>(Width);
 			}
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
 		}
 
 		public Sprite Copy() {
 			return new Sprite(this);
+		}
+
+		public void Resize(int width, int height) {
+			int bigHeight = (int)Math.Max(height, Height);
+			int littleHeight = (int)Math.Min(height, Height);
+			int bigWidth = (int)Math.Max(width, Width);
+			int littleWidth = (int)Math.Min(width, Width);
+			
+			for (int i = littleWidth; i < bigWidth; i++) {
+				if (width < Width) {
+					sprite.RemoveAt(width);
+				} else if (width > Width) {
+					int[] newRow = new int[height];
+					sprite.Add(newRow.ToList());
+				}
+			}
+			Width = width;
+
+			for (int i = 0; i < Width; i++) {
+				for (int j = littleHeight; j < bigHeight; j++) {
+					if (height< Height) {
+						sprite[i].RemoveAt(height);
+					} else if (height > Height) {
+						sprite[i].Add(0);
+					}
+				}
+			}
+			Height = height; 
 		}
 
 		public void DrawSprite(int x, int y, Sprite otherSprite) {
@@ -121,7 +174,7 @@ namespace Merthsoft.TokenIDE {
 					DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
 				}
 			//}
-			sprite[x, y] = color;
+			sprite[x][y] = color;
 		}
 
 		/// <summary>
@@ -285,18 +338,18 @@ namespace Merthsoft.TokenIDE {
 		/// <param name="y">The starting Y coordinate.</param>
 		/// <param name="color">The color to draw.</param>
 		public void FloodFill(int x, int y, int color) {
-			if (x < 0 || y < 0 || x >= sprite.GetLength(0) || y >= sprite.GetLength(1)) { return; }
-			if (sprite[x, y] == color) { return; }
+			if (x < 0 || y < 0 || x >= Width || y >= Height) { return; }
+			if (sprite[x][y] == color) { return; }
 
-			int baseColor = sprite[x, y];
+			int baseColor = sprite[x][y];
 			Stack<Point> s = new Stack<Point>();
 			s.Push(new Point(x, y));
 			while (s.Count > 0) {
 				Point p = s.Pop();
-				if (p.X < 0 || p.Y < 0 || p.X >= sprite.GetLength(0) || p.Y >= sprite.GetLength(1)) {
+				if (p.X < 0 || p.Y < 0 || p.X >= Width || p.Y >= Height) {
 					continue;
 				}
-				if (sprite[p.X, p.Y] == baseColor) {
+				if (sprite[p.X][p.Y] == baseColor) {
 					Plot(p.X, p.Y, color, 1);
 					s.Push(new Point(p.X + 1, p.Y));
 					s.Push(new Point(p.X - 1, p.Y));
@@ -313,14 +366,14 @@ namespace Merthsoft.TokenIDE {
 		/// <param name="y">The starting Y coordinate.</param>
 		/// <param name="color">The color to draw.</param>
 		public void ReplaceAll(int x, int y, int color) {
-			if (x < 0 || y < 0 || x >= sprite.GetLength(0) || y >= sprite.GetLength(1)) { return; }
-			if (sprite[x, y] == color) { return; }
+			if (x < 0 || y < 0 || x >= Width || y >= Height) { return; }
+			if (sprite[x][y] == color) { return; }
 
-			int baseColor = sprite[x, y];
+			int baseColor = sprite[x][y];
 			for (int i = 0; i < Width; i++) {
 				for (int j = 0; j < Height; j++) {
-					if (sprite[i, j] == baseColor) {
-						sprite[i, j] = color;
+					if (sprite[i][j] == baseColor) {
+						sprite[i][j] = color;
 					}
 				}
 			}

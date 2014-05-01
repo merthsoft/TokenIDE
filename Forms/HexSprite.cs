@@ -56,18 +56,15 @@ namespace Merthsoft.TokenIDE {
 		private Sprite sprite;
 		private Sprite previewSprite = null;
 
-		private int spriteWidth = 8;
-		private int spriteHeight = 8;
-
 		public int SpriteWidth {
-			get { return spriteWidth; }
+			get { return (int)spriteWidthBox.Value; }
 			set {
 				spriteWidthBox.Value = value;
 			}
 		}
 
 		public int SpriteHeight {
-			get { return spriteHeight; }
+			get { return (int)spriteHeightBox.Value; }
 			set {
 				spriteHeightBox.Value = value;
 			}
@@ -248,17 +245,18 @@ namespace Merthsoft.TokenIDE {
 				pushHistory();
 			}
 
-			Sprite newSprite = new Sprite(newW, newH);
-			for (int i = 0; i < Math.Min(SpriteWidth, newW); i++) {
-				for (int j = 0; j < Math.Min(SpriteHeight, newH); j++) {
-					newSprite[i, j] = sprite[i, j];
-				}
-			}
+			//Sprite newSprite = new Sprite(newW, newH);
+			//for (int i = 0; i < Math.Min(SpriteWidth, newW); i++) {
+			//	for (int j = 0; j < Math.Min(SpriteHeight, newH); j++) {
+			//		newSprite[i, j] = sprite[i, j];
+			//	}
+			//}
 
-			spriteWidth = newW;
-			spriteHeight = newH;
+			SpriteWidth = newW;
+			SpriteHeight = newH;
 
-			sprite = newSprite;
+			//sprite = newSprite;
+			sprite.Resize(newW, newH);
 			spriteBox.Invalidate();
 		}
 
@@ -714,6 +712,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void paletteChoice_SelectedIndexChanged(object sender, EventArgs e) {
+			if (SelectedPalette == previousPalette) { return; }
+
 			pushHistory(previousPalette);
 			
 			switch (SelectedPalette) {
