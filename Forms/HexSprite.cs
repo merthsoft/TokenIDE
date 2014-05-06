@@ -19,7 +19,7 @@ namespace Merthsoft.TokenIDE {
 
 		public event PasteTextEventHandler PasteTextEvent;
 
-		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, }
+		private enum Tool { Pencil, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, }
 		
 		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic, ColorPic, ColorImage }
 
@@ -389,12 +389,6 @@ namespace Merthsoft.TokenIDE {
 
 			switch (currentTool) {
 				case Tool.Pencil:
-					if (button != System.Windows.Forms.MouseButtons.None) {
-						sprite.Plot(mouseX, mouseY, pixelColor, penWidth);
-					}
-					break;
-
-				case Tool.Pen:
 					if (button != System.Windows.Forms.MouseButtons.None) {
 						sprite.DrawLine(mouseXOld, mouseYOld, mouseX, mouseY, pixelColor, penWidth);
 					}
