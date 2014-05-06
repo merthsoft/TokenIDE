@@ -21,10 +21,10 @@ namespace Merthsoft.TokenIDE {
 		public event PasteTextEventHandler PasteTextEvent;
 
 		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
+		
+		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic, ColorPic, ColorImage }
 
 		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, Full565, _max };
-
-		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic }
 
 		private Tool currentTool = Tool.Pencil;
 		private ToolStripButton currentButton = null;
@@ -845,7 +845,7 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		private void Open(string fileName) {
+		public void Open(string fileName) {
 			Cursor c = Cursor;
 			Cursor = Cursors.WaitCursor;
 			pushHistory();
@@ -947,7 +947,7 @@ namespace Merthsoft.TokenIDE {
 			using (Bitmap b = pic.GetBitmap()) {
 				loadImage(b);
 			}
-			saveType = SaveType.MonochromePic;
+			saveType = SaveType.ColorPic;
 		}
 
 		private void openColorImage(string fileName) {
@@ -962,7 +962,7 @@ namespace Merthsoft.TokenIDE {
 			using (Bitmap b = pic.GetBitmap()) {
 				loadImage(b);
 			}
-			saveType = SaveType.MonochromePic;
+			saveType = SaveType.ColorImage;
 		}
 
 		private void openxLibBG(AppVar8x appVar) {
@@ -1148,6 +1148,8 @@ namespace Merthsoft.TokenIDE {
 			sfd.AddFilter("xLIB Tiles", "*.8xv");
 			sfd.AddFilter("xLIB Picture", "*.8xv");
 			sfd.AddFilter("Monochrome Pic", "*.8xi");
+			sfd.AddFilter("Color Pic", "*.8ci");
+			sfd.AddFilter("Color Image", "*.8ca");
 			if (fileName != null) {
 				sfd.FileName = new FileInfo(fileName).GetFileName();
 			}
@@ -1166,10 +1168,10 @@ namespace Merthsoft.TokenIDE {
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
 			if (!saveDialog()) { return; }
-			saveFile();
+			saveFile(true);
 		}
 
-		private void saveFile() {
+		private void saveFile(bool saveAs = false) {
 			bool success = false;
 
 			switch (saveType) {
@@ -1182,16 +1184,26 @@ namespace Merthsoft.TokenIDE {
 					break;
 
 				case SaveType.MonochromePic:
-					success = saveMonochromePic(true);
+					success = saveMonochromePic(saveAs);
 					break;
 
 				case SaveType.Png:
 					success = savePng();
 					break;
+
+				case SaveType.ColorPic:
+					success = saveColorPic(saveAs);
+					break;
+
+				case SaveType.ColorImage:
+					success = saveColorImage(saveAs);
+					break;
 			}
 
 			if (success) {
 				outputLabel.Text = "File saved.";
+			} else {
+				outputLabel.Text = "Failed to save image.";
 			}
 		}
 
@@ -1205,38 +1217,11 @@ namespace Merthsoft.TokenIDE {
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 
-			if (picNumber == -1 || saveAs) {
-				int seed = 0;
-				FileInfo fi = new FileInfo(fileName);
-				if (fileName != null && fi.Name.ToLower().StartsWith("pic")) {
-					if (!int.TryParse(fileName.Substring(3), out seed)) {
-						seed = picNumber;
-					}
-				} else if (picNumber != -1) {
-					if (picNumber == 9) {
-						seed = 0;
-					} else {
-						seed = picNumber;
-						if (seed < 9) {
-							seed++;
-						}
-					}
-				}
-				string outString = null;
-				do {
-					outString = InputBox.Show("Pic number (0-255)", seed.ToString(), "Note: Use display number, e.g. Pic1 = 1, Pic0 = 0");
-					if (outString == null) {
-						return false ;
-					}
-				} while (!int.TryParse(outString, out picNumber));
-				if (picNumber == 0) {
-					picNumber = 9;
-				} else if (picNumber < 9) {
-					picNumber--;
-				}
+			if (!getPicNumber(saveAs)) {
+				return false;
 			}
 
-			Pic8x v = new Pic8x((byte)(picNumber));
+			Pic8x picture = new Pic8x((byte)(picNumber));
 			int dataSize = sprite.Width * sprite.Height / 8;
 			byte[] data = new byte[dataSize];
 			byte b = 0;
@@ -1253,11 +1238,129 @@ namespace Merthsoft.TokenIDE {
 					}
 				}
 			}
-			v.SetData(new object[] { dataSize.ToString(), data });
+			picture.SetData(new object[] { dataSize.ToString(), data });
 			StreamWriter s = new StreamWriter(fileName);
-			v.Save(new BinaryWriter(s.BaseStream));
+			picture.Save(new BinaryWriter(s.BaseStream));
 			s.Close();
 
+			return true;
+		}
+
+		private bool saveColorPic(bool saveAs = false) {
+			if (SelectedPalette != Palette.CelticIICSE) {
+				var res = MessageBox.Show("You cannot save a color pic file using a palette other than CelticIICSE.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if (sprite.Width != 265 || sprite.Height != 165) {
+				var res = MessageBox.Show("Pic files should be 265 wide by 165 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+
+			if (!getPicNumber(saveAs)) {
+				return false;
+			}
+
+			Pic8xC picture = new Pic8xC((byte)(picNumber));
+			int dataSize = sprite.Width * sprite.Height / 2;
+			byte[] data = new byte[dataSize];
+
+			int i = 0; int j = 0;
+			for (int index = 0; index < dataSize; index++) {
+				byte b = (byte)(sprite[i, j] << 4);
+				if (i + 1 < sprite.Width) {
+					b |= (byte)sprite[i + 1, j];
+				}
+				data[index] = b;
+				i += 2;
+				if (i > sprite.Width) {
+					i = 0;
+					j++;
+				}
+			}
+
+			picture.SetData(new object[] { dataSize.ToString(), data });
+			StreamWriter s = new StreamWriter(fileName);
+			picture.Save(new BinaryWriter(s.BaseStream));
+			s.Close();
+
+			return true;
+		}
+
+		private bool saveColorImage(bool saveAs = false) {
+			if (SelectedPalette != Palette.Full565) {
+				var res = MessageBox.Show("You cannot save a color image file using a palette other than Full565.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if (sprite.Width != 133 || sprite.Height != 83) {
+				var res = MessageBox.Show("Pic files should be 133 wide by 83 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+
+			if (!getPicNumber(saveAs, "image")) {
+				return false;
+			}
+
+			Image8xC picture = new Image8xC((byte)(picNumber));
+			int dataSize = (sprite.Width+1) * sprite.Height * 2 + 2;
+			byte[] data = new byte[dataSize];
+			data[0] = 0x81;
+			data[1] = 0x80;
+
+			int i = 0; int j = sprite.Height - 1;
+			for (int index = 2; index < dataSize; index+=2) {
+				int val = sprite[i, j];
+				var color = MerthsoftExtensions.Color565FromRGB(val);
+				data[index] = color.Item1;
+				data[index + 1] = color.Item2;
+
+				i += 1;
+				if (i >= sprite.Width) {
+					index += 2;
+					i = 0;
+					j--;
+				}
+			}
+
+			picture.SetData(new object[] { dataSize.ToString(), data });
+			StreamWriter s = new StreamWriter(fileName);
+			picture.Save(new BinaryWriter(s.BaseStream));
+			s.Close();
+
+			return true;
+		}
+
+		private bool getPicNumber(bool saveAs, string prefix = "pic") {
+			if (picNumber == -1 || saveAs) {
+				int seed = 0;
+				FileInfo fi = new FileInfo(fileName);
+				string name = fi.GetFileName().ToLower();
+				if (fileName != null && name.StartsWith(prefix.ToLower())) {
+					if (!int.TryParse(name.Substring(prefix.Length), out seed)) {
+						seed = picNumber;
+					}
+				} else if (picNumber != -1) {
+					if (picNumber == 9) {
+						seed = 0;
+					} else {
+						seed = picNumber;
+						if (seed < 9) {
+							seed++;
+						}
+					}
+				}
+				string outString = null;
+				do {
+					outString = InputBox.Show("Pic number (0-255)", seed.ToString(), "Note: Use display number, e.g. Pic1 = 1, Pic0 = 0");
+					if (outString == null) {
+						return false;
+					}
+				} while (!int.TryParse(outString, out picNumber));
+				if (picNumber == 0) {
+					picNumber = 9;
+				} else if (picNumber < 9) {
+					picNumber--;
+				}
+			}
 			return true;
 		}
 
@@ -1391,6 +1494,14 @@ namespace Merthsoft.TokenIDE {
 
 		private void spriteBox_MouseEnter(object sender, EventArgs e) {
 			spriteIndexLabel.Visible = true;
+		}
+
+		private void monochromePicToolStripMenuItem_Click(object sender, EventArgs e) {
+
+		}
+
+		private void changeTemplate(SaveType saveType, int width, int height) {
+			
 		}
 	}
 }

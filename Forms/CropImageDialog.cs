@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace Merthsoft.TokenIDE {
-	public partial class CropImageDialog:Form {
+	public partial class CropImageDialog : Form {
 		Bitmap b;
 		Rectangle cropRect = new Rectangle(0, 0, 96, 64);
 		bool mouseDown;
