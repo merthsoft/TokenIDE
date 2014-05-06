@@ -42,6 +42,7 @@
 			this.paletteBox.TabStop = false;
 			this.paletteBox.Paint += new System.Windows.Forms.PaintEventHandler(this.paletteBox_Paint);
 			this.paletteBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.paletteBox_MouseClick);
+			this.paletteBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.paletteBox_MouseDoubleClick);
 			this.paletteBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.paletteBox_MouseMove);
 			// 
 			// pixelBox

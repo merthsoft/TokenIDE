@@ -52,33 +52,18 @@ namespace Merthsoft.TokenIDE.Forms {
 			int colorCount;
 			int maxWidth;
 
-			//if (SelectedPalette == Palette.CelticIICSE) {
-			//	boxWidth = 44;
-			//	boxHeight = 44;
-			//	colorCount = CelticPalette.Count;
-			//	maxWidth = 352;
-			//} else {
-				boxWidth = 22;
-				boxHeight = 22;
-				colorCount = 256;
-				maxWidth = 704;
-			//}
+			boxWidth = 22;
+			boxHeight = 22;
+			colorCount = 256;
+			maxWidth = 704;
 
 			int paletteX = 0;
 			int paletteY = 0;
 
 			try {
 				for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
-					//Color c;
-
-					//if (SelectedPalette == Palette.CelticIICSE) {
-					//	c = CelticPalette[colorIndex];
-					//	g.FillRect(CelticBrushes[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-					//	g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-					//} else {
-						SolidBrush brush = XLibBrushes[colorIndex];
-						g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
-					//}
+					SolidBrush brush = XLibBrushes[colorIndex];
+					g.FillRect(brush, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 
 					paletteX += boxWidth;
 					if (paletteX >= maxWidth) {
@@ -92,6 +77,10 @@ namespace Merthsoft.TokenIDE.Forms {
 		}
 
 		private void insertButton_Click(object sender, EventArgs e) {
+			insertColor();
+		}
+
+		private void insertColor() {
 			PasteTextEventHandler temp = PasteTextEvent;
 			if (temp != null) {
 				temp(this, new PasteTextEventArgs(SelectedColor.ToString()));
@@ -119,29 +108,19 @@ namespace Merthsoft.TokenIDE.Forms {
 		}
 
 		private void selectPalette(MouseEventArgs e) {
-
 			int boxWidth;
 			int boxHeight;
 			int maxWidth;
 
-			//if (SelectedPalette == Palette.CelticIICSE) {
-			//	boxWidth = 44;
-			//	boxHeight = 44;
-			//	maxWidth = 352;
-			//} else {
-				boxWidth = 22;
-				boxHeight = 22;
-				maxWidth = 704;
-			//}
-
-			//int paletteIndex = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
+			boxWidth = 22;
+			boxHeight = 22;
+			maxWidth = 704;
+			
 			SelectedColor = (e.X / boxWidth) + (maxWidth / boxWidth) * (e.Y / boxHeight);
+		}
 
-			//if (e.Button == System.Windows.Forms.MouseButtons.Left) {
-			//	setLeftMouseButton(paletteIndex);
-			//} else if (e.Button == System.Windows.Forms.MouseButtons.Right) {
-			//	setRightMouseButton(paletteIndex);
-			//}
+		private void paletteBox_MouseDoubleClick(object sender, MouseEventArgs e) {
+			insertColor();
 		}
 	}
 }

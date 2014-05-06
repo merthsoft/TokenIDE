@@ -504,7 +504,6 @@ namespace Merthsoft.TokenIDE {
 				drawRect = oldRectangle;
 			}
 
-			//previewSprite = new int[spriteWidth, spriteHeight];
 			previewSprite = new Sprite(SpriteWidth, SpriteHeight);
 			int defaultColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
