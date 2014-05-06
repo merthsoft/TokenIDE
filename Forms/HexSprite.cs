@@ -12,7 +12,6 @@ using Merthsoft.Extensions;
 using Merthsoft.TokenIDE.Properties;
 
 namespace Merthsoft.TokenIDE {
-
 	public partial class HexSprite : Form {
 		private readonly int transparentColor = Color.Transparent.ToArgb();
 		private const string XLIBTILES_HEADER = "xLIBPIC";
@@ -20,11 +19,11 @@ namespace Merthsoft.TokenIDE {
 
 		public event PasteTextEventHandler PasteTextEvent;
 
-		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, _max }
+		private enum Tool { Pencil, Pen, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, }
 		
 		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic, ColorPic, ColorImage }
 
-		public enum Palette { BlackAndWhite, CelticIICSE, xLIBC, Full565, _max };
+		public enum Palette { BlackAndWhite, BasicColors, xLIBC, Full565 };
 
 		private Tool currentTool = Tool.Pencil;
 		private ToolStripButton currentButton = null;
@@ -109,7 +108,7 @@ namespace Merthsoft.TokenIDE {
 		private string fileName = null;
 		private int picNumber = -1;
 		private SaveType saveType;
-				
+		
 		public HexSprite() {
 			InitializeComponent();
 
@@ -139,13 +138,13 @@ namespace Merthsoft.TokenIDE {
 				XLibBrushes.Add(new SolidBrush(color));
 			}
 
-			for (int i = 0; i < (int)Palette._max; i++) {
-				paletteChoice.Items.Add((Palette)i);
+			foreach (string palette in Enum.GetNames(typeof(Palette))) {
+				paletteChoice.Items.Add(palette);
 			}
 
-			for (int i = 0; i < (int)Tool._max; i++) {
+			foreach (Tool t in (Tool[])Enum.GetValues(typeof(Tool))) {
 				ToolStripButton toolButton = new ToolStripButton();
-				string toolName = ((Tool)i).ToString();
+				string toolName = t.ToString();
 				toolButton.Text = toolName;
 				toolButton.Image = (Image)Resources.ResourceManager.GetObject("icon_" + toolName.ToLower());
 				toolButton.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -156,11 +155,11 @@ namespace Merthsoft.TokenIDE {
 				toolButton.CheckOnClick = true;
 				toolButton.Click += new EventHandler(toolButton_Click);
 				toolButton.ImageScaling = ToolStripItemImageScaling.None;
-				toolButton.Tag = (Tool)i;
+				toolButton.Tag = t;
 
 				mainToolStrip.Items.Add(toolButton);
 
-				if ((Tool)i == Tool.Pencil) {
+				if (t == Tool.Pencil) {
 					toolButton.Checked = true;
 					currentButton = toolButton;
 				}
@@ -196,7 +195,7 @@ namespace Merthsoft.TokenIDE {
 					newSprite = new Sprite(hex, SpriteWidth, out height, 1);
 					break;
 
-				case Palette.CelticIICSE:
+				case Palette.BasicColors:
 					newSprite = new Sprite(hex, SpriteWidth, out height, CelticPalette.Count / 4);
 					break;
 
@@ -252,8 +251,11 @@ namespace Merthsoft.TokenIDE {
 			//	}
 			//}
 
+			var shouldPushBackup = shouldPushHistory;
+			shouldPushHistory = false;
 			SpriteWidth = newW;
 			SpriteHeight = newH;
+			shouldPushHistory = shouldPushBackup;
 
 			//sprite = newSprite;
 			sprite.Resize(newW, newH);
@@ -338,7 +340,7 @@ namespace Merthsoft.TokenIDE {
 						case Palette.BlackAndWhite:
 							drawColor = paletteIndex == 0 ? Color.White : Color.Black;
 							break;
-						case Palette.CelticIICSE:
+						case Palette.BasicColors:
 							drawColor = CelticPalette[paletteIndex];
 							break;
 						case Palette.xLIBC:
@@ -608,7 +610,7 @@ namespace Merthsoft.TokenIDE {
 							line.Append(sprite[i, j].ToString());
 							break;
 
-						case Palette.CelticIICSE:
+						case Palette.BasicColors:
 							line.Append(sprite[i, j].ToString("X1"));
 							break;
 
@@ -674,7 +676,7 @@ namespace Merthsoft.TokenIDE {
 				return;
 			}
 
-			if (SelectedPalette == Palette.CelticIICSE) {
+			if (SelectedPalette == Palette.BasicColors) {
 				boxWidth = 44;
 				boxHeight = 44;
 				colorCount = CelticPalette.Count;
@@ -691,7 +693,7 @@ namespace Merthsoft.TokenIDE {
 
 			try {
 				for (int colorIndex = 0; colorIndex < colorCount; colorIndex++) {
-					if (SelectedPalette == Palette.CelticIICSE) {
+					if (SelectedPalette == Palette.BasicColors) {
 						Color c = CelticPalette[colorIndex];
 						g.FillRect(CelticBrushes[colorIndex], paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
 						g.DrawRect(Pens.Black, paletteX, paletteY, paletteX + boxWidth, paletteY + boxHeight);
@@ -725,7 +727,7 @@ namespace Merthsoft.TokenIDE {
 					setRightMouseButton(0);
 					break;
 
-				case Palette.CelticIICSE:
+				case Palette.BasicColors:
 					togglePalette(true);
 					toggleHexOutput(true);
 
@@ -800,7 +802,7 @@ namespace Merthsoft.TokenIDE {
 			int boxHeight;
 			int maxWidth;
 
-			if (SelectedPalette == Palette.CelticIICSE) {
+			if (SelectedPalette == Palette.BasicColors) {
 				boxWidth = 44;
 				boxHeight = 44;
 				maxWidth = 352;
@@ -887,7 +889,7 @@ namespace Merthsoft.TokenIDE {
 					sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
 					break;
 
-				case Palette.CelticIICSE:
+				case Palette.BasicColors:
 					sprite = new Sprite(image, CelticPalette, 0);
 					break;
 
@@ -943,7 +945,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			picNumber = pic.PicNumber;
 
-			SelectedPalette = Palette.CelticIICSE;
+			SelectedPalette = Palette.BasicColors;
 			using (Bitmap b = pic.GetBitmap()) {
 				loadImage(b);
 			}
@@ -1102,7 +1104,7 @@ namespace Merthsoft.TokenIDE {
 				case Palette.BlackAndWhite:
 					brush = Brushes.Black;
 					break;
-				case Palette.CelticIICSE:
+				case Palette.BasicColors:
 					brush = CelticBrushes[leftPixel];
 					break;
 				case Palette.xLIBC:
@@ -1126,7 +1128,7 @@ namespace Merthsoft.TokenIDE {
 				case Palette.BlackAndWhite:
 					brush = Brushes.White;
 					break;
-				case Palette.CelticIICSE:
+				case Palette.BasicColors:
 					brush = CelticBrushes[rightPixel];
 					break;
 				case Palette.xLIBC:
@@ -1247,7 +1249,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private bool saveColorPic(bool saveAs = false) {
-			if (SelectedPalette != Palette.CelticIICSE) {
+			if (SelectedPalette != Palette.BasicColors) {
 				var res = MessageBox.Show("You cannot save a color pic file using a palette other than CelticIICSE.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
@@ -1496,12 +1498,55 @@ namespace Merthsoft.TokenIDE {
 			spriteIndexLabel.Visible = true;
 		}
 
-		private void monochromePicToolStripMenuItem_Click(object sender, EventArgs e) {
-
+		private void changeTemplate(SaveType saveType) {
+			if (MessageBox.Show("This will crop your image to size, are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == System.Windows.Forms.DialogResult.No) {
+				return;
+			}
+			pushHistory(SelectedPalette);
+			shouldPushHistory = false;
+			this.saveType = saveType;
+			switch (saveType) {
+				case SaveType.XLibTiles:
+					SelectedPalette = Palette.xLIBC;
+					resizeSprite(128, 64);
+					break;
+				case SaveType.XLibBGPicture:
+					SelectedPalette = Palette.xLIBC;
+					resizeSprite(80, 60);
+					break;
+				case SaveType.MonochromePic:
+					SelectedPalette = Palette.BlackAndWhite;
+					resizeSprite(96, 64);
+					break;
+				case SaveType.ColorPic:
+					SelectedPalette = Palette.BasicColors;
+					resizeSprite(265, 165);
+					break;
+				case SaveType.ColorImage:
+					SelectedPalette = Palette.Full565;
+					resizeSprite(133, 83);
+					break;
+			}
 		}
 
-		private void changeTemplate(SaveType saveType, int width, int height) {
-			
+		private void monochromePicToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.MonochromePic);
+		}
+
+		private void colorPicToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.ColorPic);
+		}
+
+		private void colorImageToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.ColorImage);
+		}
+
+		private void xLIBCToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.XLibTiles);
+		}
+
+		private void xLIBCBackgroundToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.XLibBGPicture);
 		}
 	}
 }

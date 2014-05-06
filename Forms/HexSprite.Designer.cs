@@ -498,7 +498,6 @@ namespace Merthsoft.TokenIDE {
             this.colorImageToolStripMenuItem,
             this.xLIBCToolStripMenuItem,
             this.xLIBCBackgroundToolStripMenuItem});
-			this.loadTemplateToolStripMenuItem.Enabled = false;
 			this.loadTemplateToolStripMenuItem.Name = "loadTemplateToolStripMenuItem";
 			this.loadTemplateToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.loadTemplateToolStripMenuItem.Text = "Load Template";
@@ -515,24 +514,28 @@ namespace Merthsoft.TokenIDE {
 			this.colorPicToolStripMenuItem.Name = "colorPicToolStripMenuItem";
 			this.colorPicToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.colorPicToolStripMenuItem.Text = "Color Pic";
+			this.colorPicToolStripMenuItem.Click += new System.EventHandler(this.colorPicToolStripMenuItem_Click);
 			// 
 			// colorImageToolStripMenuItem
 			// 
 			this.colorImageToolStripMenuItem.Name = "colorImageToolStripMenuItem";
 			this.colorImageToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.colorImageToolStripMenuItem.Text = "Color Image";
+			this.colorImageToolStripMenuItem.Click += new System.EventHandler(this.colorImageToolStripMenuItem_Click);
 			// 
 			// xLIBCToolStripMenuItem
 			// 
 			this.xLIBCToolStripMenuItem.Name = "xLIBCToolStripMenuItem";
 			this.xLIBCToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.xLIBCToolStripMenuItem.Text = "xLIBC Tiles";
+			this.xLIBCToolStripMenuItem.Click += new System.EventHandler(this.xLIBCToolStripMenuItem_Click);
 			// 
 			// xLIBCBackgroundToolStripMenuItem
 			// 
 			this.xLIBCBackgroundToolStripMenuItem.Name = "xLIBCBackgroundToolStripMenuItem";
 			this.xLIBCBackgroundToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
 			this.xLIBCBackgroundToolStripMenuItem.Text = "xLIBC Background";
+			this.xLIBCBackgroundToolStripMenuItem.Click += new System.EventHandler(this.xLIBCBackgroundToolStripMenuItem_Click);
 			// 
 			// spritePanel
 			// 

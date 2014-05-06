@@ -496,7 +496,7 @@ namespace Merthsoft.TokenIDE {
 
 			if (color) {
 				s.SpriteHeight = s.SpriteWidth = 32;
-				s.SelectedPalette = HexSprite.Palette.CelticIICSE;
+				s.SelectedPalette = HexSprite.Palette.BasicColors;
 			} else {
 				s.SpriteHeight = s.SpriteWidth = 8;
 				s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
