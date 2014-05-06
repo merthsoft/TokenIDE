@@ -70,11 +70,13 @@ namespace Merthsoft.TokenIDE {
 			this.xLIBCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.spriteIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -87,6 +89,10 @@ namespace Merthsoft.TokenIDE {
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.spritePanel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -212,7 +218,7 @@ namespace Merthsoft.TokenIDE {
 			// spriteBox
 			// 
 			this.spriteBox.BackColor = System.Drawing.Color.White;
-			this.spriteBox.Location = new System.Drawing.Point(4, 3);
+			this.spriteBox.Location = new System.Drawing.Point(0, 0);
 			this.spriteBox.Name = "spriteBox";
 			this.spriteBox.Size = new System.Drawing.Size(81, 81);
 			this.spriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -540,12 +546,30 @@ namespace Merthsoft.TokenIDE {
 			// spritePanel
 			// 
 			this.spritePanel.AutoScroll = true;
-			this.spritePanel.Controls.Add(this.spriteBox);
+			this.spritePanel.Controls.Add(this.splitContainer1);
 			this.spritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.spritePanel.Location = new System.Drawing.Point(0, 145);
 			this.spritePanel.Name = "spritePanel";
 			this.spritePanel.Size = new System.Drawing.Size(706, 423);
 			this.spritePanel.TabIndex = 25;
+			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.tilesFlow);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.AutoScroll = true;
+			this.splitContainer1.Panel2.Controls.Add(this.spriteBox);
+			this.splitContainer1.Size = new System.Drawing.Size(706, 423);
+			this.splitContainer1.SplitterDistance = 169;
+			this.splitContainer1.TabIndex = 1;
 			// 
 			// statusStrip1
 			// 
@@ -580,6 +604,17 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.colorDialog1.FullOpen = true;
 			// 
+			// tilesFlow
+			// 
+			this.tilesFlow.AutoScroll = true;
+			this.tilesFlow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.tilesFlow.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tilesFlow.Location = new System.Drawing.Point(0, 0);
+			this.tilesFlow.Name = "tilesFlow";
+			this.tilesFlow.Size = new System.Drawing.Size(169, 423);
+			this.tilesFlow.TabIndex = 2;
+			this.tilesFlow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tilesFlow_MouseClick);
+			// 
 			// HexSprite
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -608,7 +643,11 @@ namespace Merthsoft.TokenIDE {
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.spritePanel.ResumeLayout(false);
-			this.spritePanel.PerformLayout();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			this.splitContainer1.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -665,6 +704,8 @@ namespace Merthsoft.TokenIDE {
 		private ToolStripMenuItem colorImageToolStripMenuItem;
 		private ToolStripMenuItem xLIBCToolStripMenuItem;
 		private ToolStripMenuItem xLIBCBackgroundToolStripMenuItem;
+		private SplitContainer splitContainer1;
+		private FlowLayoutPanel tilesFlow;
 
 	}
 }

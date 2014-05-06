@@ -68,6 +68,7 @@
 			this.xLIBCColorPicerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.dCSGuiDesignerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.imageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.oldImageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.blockCountsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
@@ -104,7 +105,7 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.oldImageEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.xLIBCMapEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
 			this.mainContainer.Panel1.SuspendLayout();
@@ -435,6 +436,7 @@
             this.dCSGuiDesignerToolStripMenuItem,
             this.imageEditorToolStripMenuItem,
             this.oldImageEditorToolStripMenuItem,
+            this.xLIBCMapEditorToolStripMenuItem,
             this.toolStripSeparator6,
             this.blockCountsToolStripMenuItem,
             this.toolStripSeparator7,
@@ -502,6 +504,14 @@
 			this.imageEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.imageEditorToolStripMenuItem.Text = "Image Editor";
 			this.imageEditorToolStripMenuItem.Click += new System.EventHandler(this.imageEditorToolStripMenuItem_Click);
+			// 
+			// oldImageEditorToolStripMenuItem
+			// 
+			this.oldImageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("oldImageEditorToolStripMenuItem.Image")));
+			this.oldImageEditorToolStripMenuItem.Name = "oldImageEditorToolStripMenuItem";
+			this.oldImageEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+			this.oldImageEditorToolStripMenuItem.Text = "Old Image Editor";
+			this.oldImageEditorToolStripMenuItem.Click += new System.EventHandler(this.oldImageEditorToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator6
 			// 
@@ -839,13 +849,12 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
-			// oldImageEditorToolStripMenuItem
+			// xLIBCMapEditorToolStripMenuItem
 			// 
-			this.oldImageEditorToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("oldImageEditorToolStripMenuItem.Image")));
-			this.oldImageEditorToolStripMenuItem.Name = "oldImageEditorToolStripMenuItem";
-			this.oldImageEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-			this.oldImageEditorToolStripMenuItem.Text = "Old Image Editor";
-			this.oldImageEditorToolStripMenuItem.Click += new System.EventHandler(this.oldImageEditorToolStripMenuItem_Click);
+			this.xLIBCMapEditorToolStripMenuItem.Name = "xLIBCMapEditorToolStripMenuItem";
+			this.xLIBCMapEditorToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+			this.xLIBCMapEditorToolStripMenuItem.Text = "xLIBC Map Editor";
+			this.xLIBCMapEditorToolStripMenuItem.Click += new System.EventHandler(this.xLIBCMapEditorToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 
@@ -971,6 +980,7 @@
 		private System.Windows.Forms.ToolStripMenuItem xLIBCColorPicerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSplitButton collapsePaneButton;
 		private System.Windows.Forms.ToolStripMenuItem oldImageEditorToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem xLIBCMapEditorToolStripMenuItem;
 	}
 }
 

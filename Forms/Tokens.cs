@@ -1198,5 +1198,14 @@ namespace Merthsoft.TokenIDE {
 			}
 			mainContainer.Panel1Collapsed = !mainContainer.Panel1Collapsed;
 		}
+
+		private void xLIBCMapEditorToolStripMenuItem_Click(object sender, EventArgs e) {
+			HexSprite hs = new HexSprite(true);
+			hs.PasteTextEvent += handlePasteEvent;
+			hs.SpriteWidth = 20;
+			hs.SpriteHeight = 15;
+
+			hs.Show();
+		}
 	}
 }
