@@ -883,6 +883,10 @@ namespace Merthsoft.TokenIDE {
 		private void loadImage(Bitmap image) {
 			spriteWidthBox.Value = image.Width;
 			spriteHeightBox.Value = image.Height;
+			if ((int)SelectedPalette == -1) {
+				SelectedPalette = Palette.Full565;
+			}
+
 			switch (SelectedPalette) {
 				case Palette.BlackAndWhite:
 					image.PosterizeImage();

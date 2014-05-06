@@ -486,32 +486,31 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void hexSprite(bool color) {
-			if (!(currWindow is Prog8xEditWindow)) { return; }
-			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
+			Prog8xEditWindow ew = currWindow as Prog8xEditWindow;
 
 #if !DEBUG
 			try {
 #endif
-			HexSprite s = new HexSprite();
+			HexSprite hexSprite = new HexSprite();
 
 			if (color) {
-				s.SpriteHeight = s.SpriteWidth = 32;
-				s.SelectedPalette = HexSprite.Palette.BasicColors;
+				hexSprite.SpriteHeight = hexSprite.SpriteWidth = 32;
+				hexSprite.SelectedPalette = HexSprite.Palette.BasicColors;
 			} else {
-				s.SpriteHeight = s.SpriteWidth = 8;
-				s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
+				hexSprite.SpriteHeight = hexSprite.SpriteWidth = 8;
+				hexSprite.SelectedPalette = HexSprite.Palette.BlackAndWhite;
 			}
 
-			if (ew.SelectedText != "") {
+			if (ew != null && ew.SelectedText != "") {
 				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
-				try { s.Hex = hexString; } catch {
+				try { hexSprite.Hex = hexString; } catch {
 					MessageBox.Show(string.Format("Unable to create sprite from {0}.", hexString));
 					return;
 				}
 			}
 
-			s.PasteTextEvent += handlePasteEvent;
-			s.Show();
+			hexSprite.PasteTextEvent += handlePasteEvent;
+			hexSprite.Show();
 #if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
@@ -722,6 +721,19 @@ namespace Merthsoft.TokenIDE {
 					tp.Controls.Add(ewList);
 					ewList.ParentTabPage = tp;
 					break;
+
+				case ".png":
+				case ".bmp":
+				case ".jpg":
+				case ".jpeg":
+				case ".8xi":
+				case ".8ci":
+				case ".8ca":
+					HexSprite hs = new HexSprite();
+					hs.Open(fileName);
+					hs.PasteTextEvent += handlePasteEvent;
+					hs.Show();
+					return;
 
 				default:
 					throw new Exception(string.Format("File type not supported: {0}.", fi.Extension));
