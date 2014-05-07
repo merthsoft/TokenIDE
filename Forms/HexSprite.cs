@@ -136,7 +136,7 @@ namespace Merthsoft.TokenIDE {
 
 			generatePalettes();
 			if (!isMapMode) {
-				splitContainer1.Panel1Collapsed = true;
+				mainContainer.Panel1Collapsed = true;
 			} else {
 				SelectedPalette = Palette.xLIBC;
 				paletteChoice.Hide();
@@ -216,7 +216,7 @@ namespace Merthsoft.TokenIDE {
 			string widthString;
 			int width;
 			do {
-				widthString = InputBox.Show("Sprite width:", SpriteWidth.ToString());
+				widthString = InputBox.Show("Width:", SpriteWidth.ToString());
 				if (widthString == null) {
 					return;
 				}
@@ -231,6 +231,11 @@ namespace Merthsoft.TokenIDE {
 
 				case Palette.BasicColors:
 					newSprite = new Sprite(hex, SpriteWidth, out height, CelticPalette.Count / 4);
+					break;
+
+				case Palette.xLIBC:
+					if (!mapMode) { goto default; }
+					newSprite = new Sprite(hex, SpriteWidth, out height, 8);
 					break;
 
 				default:
@@ -1085,12 +1090,10 @@ namespace Merthsoft.TokenIDE {
 						b = ResizeBitmap(b, 32, 32);
 						Sprites.Add(subSprite);
 
-						//tilesList.LargeImageList.Images.Add(ResizeBitmap(b, 64, 64));
-						//ListViewItem lvi = new ListViewItem("", SpriteImages.Count-1);
-						//tilesList.Items.Add(lvi);
-
 						PictureBox tile = new PictureBox() { Image = b, Size = new Size(32, 32), Tag = Sprites.Count - 1, };
 						tile.MouseClick += tile_MouseClick;
+						tile.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+						tile.Margin = new System.Windows.Forms.Padding(0,0,0,0);
 						tilesFlow.Controls.Add(tile);
 						subSprite = new Sprite(8, 8);
 					}
@@ -1689,6 +1692,25 @@ namespace Merthsoft.TokenIDE {
 				case System.Windows.Forms.MouseButtons.Right:
 					setRightMouseButton(tileIndex);
 					break;
+			}
+		}
+
+		private void clearTilesToolStripMenuItem_Click(object sender, EventArgs e) {
+			Sprites.Clear();
+			SpriteImages.Clear();
+			tilesFlow.Controls.Clear();
+			leftMousePictureBox.Invalidate();
+			rightMousePictureBox.Invalidate();
+			spriteBox.Invalidate();
+		}
+
+		private void switchOrientationToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (mainContainer.Orientation == Orientation.Vertical) {
+				mainContainer.Orientation = Orientation.Horizontal;
+				//tilesFlow.FlowDirection = FlowDirection.LeftToRight;
+			} else {
+				mainContainer.Orientation = Orientation.Vertical;
+				//tilesFlow.FlowDirection = FlowDirection.TopDown;
 			}
 		}
 	}

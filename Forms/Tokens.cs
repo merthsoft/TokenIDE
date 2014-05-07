@@ -741,7 +741,7 @@ namespace Merthsoft.TokenIDE {
 			tp.Text = currWindow.OnCalcName;
 			EditWindows.TabPages.Add(tp);
 			EditWindows.SelectedTab = tp;
-			if (prevWindow.OnCalcName == "" && prevWindow.NumTokens == 0 &&
+			if (prevWindow != null && prevWindow.OnCalcName == "" && prevWindow.NumTokens == 0 &&
 				prevWindow.ParentTabPage.Text == "new file" && prevWindow.FirstFileFlag) {
 				EditWindows.TabPages.Remove(prevWindow.ParentTabPage);
 			}
@@ -1200,12 +1200,21 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void xLIBCMapEditorToolStripMenuItem_Click(object sender, EventArgs e) {
-			HexSprite hs = new HexSprite(true);
-			hs.PasteTextEvent += handlePasteEvent;
-			hs.SpriteWidth = 20;
-			hs.SpriteHeight = 15;
+			HexSprite hexSprite = new HexSprite(true);
+			hexSprite.PasteTextEvent += handlePasteEvent;
+			hexSprite.SpriteWidth = 20;
+			hexSprite.SpriteHeight = 15;
 
-			hs.Show();
+			Prog8xEditWindow ew = currWindow as Prog8xEditWindow;
+			if (ew != null && ew.SelectedText != "") {
+				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
+				try { hexSprite.Hex = hexString; } catch {
+					MessageBox.Show(string.Format("Unable to create map from string.", hexString));
+					return;
+				}
+			}
+
+			hexSprite.Show();
 		}
 	}
 }

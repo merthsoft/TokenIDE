@@ -70,13 +70,16 @@ namespace Merthsoft.TokenIDE {
 			this.xLIBCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
-			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.mainContainer = new System.Windows.Forms.SplitContainer();
+			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
+			this.tilesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.clearTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.switchOrientationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.spriteIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -89,10 +92,11 @@ namespace Merthsoft.TokenIDE {
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
 			this.menuStrip1.SuspendLayout();
 			this.spritePanel.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-			this.splitContainer1.Panel1.SuspendLayout();
-			this.splitContainer1.Panel2.SuspendLayout();
-			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
+			this.mainContainer.Panel1.SuspendLayout();
+			this.mainContainer.Panel2.SuspendLayout();
+			this.mainContainer.SuspendLayout();
+			this.tilesContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -218,7 +222,7 @@ namespace Merthsoft.TokenIDE {
 			// spriteBox
 			// 
 			this.spriteBox.BackColor = System.Drawing.Color.White;
-			this.spriteBox.Location = new System.Drawing.Point(0, 0);
+			this.spriteBox.Location = new System.Drawing.Point(3, 3);
 			this.spriteBox.Name = "spriteBox";
 			this.spriteBox.Size = new System.Drawing.Size(81, 81);
 			this.spriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -546,30 +550,66 @@ namespace Merthsoft.TokenIDE {
 			// spritePanel
 			// 
 			this.spritePanel.AutoScroll = true;
-			this.spritePanel.Controls.Add(this.splitContainer1);
+			this.spritePanel.Controls.Add(this.mainContainer);
 			this.spritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.spritePanel.Location = new System.Drawing.Point(0, 145);
 			this.spritePanel.Name = "spritePanel";
 			this.spritePanel.Size = new System.Drawing.Size(706, 423);
 			this.spritePanel.TabIndex = 25;
 			// 
-			// splitContainer1
+			// mainContainer
 			// 
-			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-			this.splitContainer1.Name = "splitContainer1";
+			this.mainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.mainContainer.Location = new System.Drawing.Point(0, 0);
+			this.mainContainer.Name = "mainContainer";
 			// 
-			// splitContainer1.Panel1
+			// mainContainer.Panel1
 			// 
-			this.splitContainer1.Panel1.Controls.Add(this.tilesFlow);
+			this.mainContainer.Panel1.Controls.Add(this.tilesFlow);
 			// 
-			// splitContainer1.Panel2
+			// mainContainer.Panel2
 			// 
-			this.splitContainer1.Panel2.AutoScroll = true;
-			this.splitContainer1.Panel2.Controls.Add(this.spriteBox);
-			this.splitContainer1.Size = new System.Drawing.Size(706, 423);
-			this.splitContainer1.SplitterDistance = 169;
-			this.splitContainer1.TabIndex = 1;
+			this.mainContainer.Panel2.AutoScroll = true;
+			this.mainContainer.Panel2.Controls.Add(this.spriteBox);
+			this.mainContainer.Size = new System.Drawing.Size(706, 423);
+			this.mainContainer.SplitterDistance = 169;
+			this.mainContainer.TabIndex = 1;
+			// 
+			// tilesFlow
+			// 
+			this.tilesFlow.AutoScroll = true;
+			this.tilesFlow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+			this.tilesFlow.ContextMenuStrip = this.tilesContextMenu;
+			this.tilesFlow.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tilesFlow.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+			this.tilesFlow.Location = new System.Drawing.Point(0, 0);
+			this.tilesFlow.Name = "tilesFlow";
+			this.tilesFlow.Size = new System.Drawing.Size(169, 423);
+			this.tilesFlow.TabIndex = 2;
+			this.tilesFlow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tilesFlow_MouseClick);
+			// 
+			// tilesContextMenu
+			// 
+			this.tilesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.clearTilesToolStripMenuItem,
+            this.switchOrientationToolStripMenuItem});
+			this.tilesContextMenu.Name = "tilesContextMenu";
+			this.tilesContextMenu.Size = new System.Drawing.Size(173, 48);
+			// 
+			// clearTilesToolStripMenuItem
+			// 
+			this.clearTilesToolStripMenuItem.Name = "clearTilesToolStripMenuItem";
+			this.clearTilesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.clearTilesToolStripMenuItem.Text = "Clear Tiles";
+			this.clearTilesToolStripMenuItem.Click += new System.EventHandler(this.clearTilesToolStripMenuItem_Click);
+			// 
+			// switchOrientationToolStripMenuItem
+			// 
+			this.switchOrientationToolStripMenuItem.Name = "switchOrientationToolStripMenuItem";
+			this.switchOrientationToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.switchOrientationToolStripMenuItem.Text = "Switch Orientation";
+			this.switchOrientationToolStripMenuItem.Click += new System.EventHandler(this.switchOrientationToolStripMenuItem_Click);
 			// 
 			// statusStrip1
 			// 
@@ -604,17 +644,6 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.colorDialog1.FullOpen = true;
 			// 
-			// tilesFlow
-			// 
-			this.tilesFlow.AutoScroll = true;
-			this.tilesFlow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.tilesFlow.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tilesFlow.Location = new System.Drawing.Point(0, 0);
-			this.tilesFlow.Name = "tilesFlow";
-			this.tilesFlow.Size = new System.Drawing.Size(169, 423);
-			this.tilesFlow.TabIndex = 2;
-			this.tilesFlow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tilesFlow_MouseClick);
-			// 
 			// HexSprite
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -643,11 +672,12 @@ namespace Merthsoft.TokenIDE {
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.spritePanel.ResumeLayout(false);
-			this.splitContainer1.Panel1.ResumeLayout(false);
-			this.splitContainer1.Panel2.ResumeLayout(false);
-			this.splitContainer1.Panel2.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-			this.splitContainer1.ResumeLayout(false);
+			this.mainContainer.Panel1.ResumeLayout(false);
+			this.mainContainer.Panel2.ResumeLayout(false);
+			this.mainContainer.Panel2.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).EndInit();
+			this.mainContainer.ResumeLayout(false);
+			this.tilesContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -704,8 +734,11 @@ namespace Merthsoft.TokenIDE {
 		private ToolStripMenuItem colorImageToolStripMenuItem;
 		private ToolStripMenuItem xLIBCToolStripMenuItem;
 		private ToolStripMenuItem xLIBCBackgroundToolStripMenuItem;
-		private SplitContainer splitContainer1;
+		private SplitContainer mainContainer;
 		private FlowLayoutPanel tilesFlow;
+		private ContextMenuStrip tilesContextMenu;
+		private ToolStripMenuItem clearTilesToolStripMenuItem;
+		private ToolStripMenuItem switchOrientationToolStripMenuItem;
 
 	}
 }
