@@ -41,7 +41,7 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public Sprite(int width, int height) {
+		public Sprite(int width, int height, int defaultTile = 0) {
 			Height = height;
 			Width = width;
 			DirtyRectangle = new Rectangle(0, 0, Width, Height);
@@ -49,7 +49,7 @@ namespace Merthsoft.TokenIDE {
 			for (int i = 0; i < Width; i++) {
 				List<int> row = new List<int>(Width);
 				for (int j = 0; j < Height; j++) {
-					row.Add(0);
+					row.Add(defaultTile);
 				}
 				this.sprite.Add(row);
 				row = new List<int>(Width);
@@ -166,14 +166,15 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void setPoint(int x, int y, int color) {
-			//if (sprite[x, y] != color) {
-				if (DirtyRectangle.IsEmpty) {
-					DirtyRectangle = new Rectangle(x, y, 1, 1);
-				} else if (!DirtyRectangle.Contains(x, y)) {
-					//DirtyRectangle = DirtyRectangle.ExpandToPoint(x, y);
-					DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
-				}
-			//}
+			if (x < 0 || x >= Width || y < 0 || y >= Height)
+				return;
+						
+			if (DirtyRectangle.IsEmpty) {
+				DirtyRectangle = new Rectangle(x, y, 1, 1);
+			} else if (!DirtyRectangle.Contains(x, y)) {
+				DirtyRectangle = Rectangle.Union(DirtyRectangle, new Rectangle(x, y, 1, 1));
+			}
+			
 			sprite[x][y] = color;
 		}
 

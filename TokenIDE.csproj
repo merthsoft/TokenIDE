@@ -288,6 +288,7 @@
     <None Include="Assets\Icons\icon_redo.png" />
     <None Include="Assets\Icons\icon_undo.png" />
     <Content Include="Assets\565palette.png" />
+    <Content Include="Assets\Icons\Tools\icon_pattern.png" />
     <Content Include="Assets\logo-curved.png" />
     <Content Include="Tokens\DCS8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -19,7 +19,7 @@ namespace Merthsoft.TokenIDE {
 
 		public event PasteTextEventHandler PasteTextEvent;
 
-		private enum Tool { Pencil, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, EyeDropper, }
+		private enum Tool { Pencil, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, Pattern, EyeDropper, }
 
 		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic, ColorPic, ColorImage }
 
@@ -32,6 +32,7 @@ namespace Merthsoft.TokenIDE {
 
 		private int mouseX, mouseY;
 		private int mouseXOld, mouseYOld;
+		private MouseButtons buttonOld;
 		private MouseButtons button;
 		private bool drawing;
 		private int shapeX, shapeY;
@@ -54,6 +55,7 @@ namespace Merthsoft.TokenIDE {
 
 		private Sprite sprite;
 		private Sprite previewSprite = null;
+		private Sprite pattern = null;
 
 		public int SpriteWidth {
 			get { return (int)spriteWidthBox.Value; }
@@ -147,6 +149,8 @@ namespace Merthsoft.TokenIDE {
 				this.Text = "xLIBC Map Editor";
 				openToolStripMenuItem.Text = "&Add Tiles";
 				paletteBox.Hide();
+				insertAndExitToolStripMenuItem.Enabled = true;
+				copyToolStripMenuItem.Enabled = true;
 
 				setLeftMouseButton(0);
 				setRightMouseButton(0);
@@ -206,9 +210,13 @@ namespace Merthsoft.TokenIDE {
 		private void toolButton_Click(object sender, EventArgs e) {
 			ToolStripButton button = (ToolStripButton)sender;
 			currentButton.Checked = false;
+			previewSprite = null;
+			pattern = null;		
 			button.Checked = true;
 			currentButton = button;
 			currentTool = (Tool)button.Tag;
+
+			mouseButtonsPanel.Visible = currentTool != Tool.Pattern;
 		}
 
 		private void createSpriteFromHex(string hex) {
@@ -347,6 +355,19 @@ namespace Merthsoft.TokenIDE {
 					}
 				}
 			}
+
+			if (currentTool == Tool.Pattern && drawing) {
+				int patternX = (int)Math.Min(shapeX, mouseX);
+				int patternY = (int)Math.Min(shapeY, mouseY);
+				int patternWidth = (int)Math.Max(shapeX, mouseX) - patternX + 1;
+				int patternHeight = (int)Math.Max(shapeY, mouseY) - patternY + 1;
+
+				Rectangle patternRect = new Rectangle(patternX * realPixelSize, patternY * realPixelSize, patternWidth * realPixelSize, patternHeight * realPixelSize);
+				using (Brush patternBrush = new SolidBrush(Color.FromArgb(128, Color.AliceBlue))) {
+					e.Graphics.FillRectangle(patternBrush, patternRect);
+				}
+				
+			}
 			//} catch {
 			//	throw;
 			//}
@@ -419,6 +440,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void handleMouse(MouseEventArgs e) {
+			if (mapMode && Sprites.Count == 0) { return; }
+
+			buttonOld = button;
 			button = e.Button;
 			mouseXOld = mouseX;
 			mouseYOld = mouseY;
@@ -476,6 +500,26 @@ namespace Merthsoft.TokenIDE {
 					} else {
 						createPreviewSprite();
 						previewSprite.DrawLine(shapeX, shapeY, mouseX, mouseY, pixelColor, penWidth);
+					}
+					break;
+
+				case Tool.Pattern:
+					if (!drawing && pattern == null && button != System.Windows.Forms.MouseButtons.Right && buttonOld != System.Windows.Forms.MouseButtons.Right) {
+						pattern = null;
+						previewSprite = null;
+						shapeX = mouseX;
+						shapeY = mouseY;
+						drawing = true;
+					}
+					if (pattern == null && button == System.Windows.Forms.MouseButtons.None && buttonOld != System.Windows.Forms.MouseButtons.Right) {
+						createPatternSprite();
+						drawing = false;
+					} else if (pattern != null && button == System.Windows.Forms.MouseButtons.Left) {
+						copyPatternSprite(sprite);
+					} else if (button == System.Windows.Forms.MouseButtons.Right) {
+						previewSprite = null;
+						pattern = null;
+						drawing = false;
 					}
 					break;
 
@@ -558,22 +602,39 @@ namespace Merthsoft.TokenIDE {
 			Rectangle drawRect = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
 			Rectangle oldRectangle = Rectangle.Empty;
 
-			if (previewSprite != null) {
-				oldRectangle = previewSprite.DirtyRectangle;
-				drawRect = oldRectangle;
-			}
-
-			previewSprite = new Sprite(SpriteWidth, SpriteHeight);
+			//if (previewSprite != null) {
+			//	oldRectangle = previewSprite.DirtyRectangle;
+			//	drawRect = oldRectangle;
+			//}
+						
 			int defaultColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
-			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
-				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
-					previewSprite[i, j] = defaultColor;
-				}
-			}
-
-			previewSprite.ClearDirtyRectangle();
+			previewSprite = new Sprite(SpriteWidth, SpriteHeight, defaultColor);
+			
+			//previewSprite.ClearDirtyRectangle();
 			if (oldRectangle != Rectangle.Empty) {
 				previewSprite.DirtyRectangle = oldRectangle;
+			}
+		}
+
+		private void createPatternSprite() {
+			int patternX = (int)Math.Min(shapeX, mouseX);
+			int patternY = (int)Math.Min(shapeY, mouseY);
+			int patternWidth = (int)Math.Max(shapeX, mouseX) - patternX + 1;
+			int patternHeight = (int)Math.Max(shapeY, mouseY) - patternY + 1;
+
+			pattern = new Sprite(patternWidth, patternHeight);
+			for (int i = 0; i < patternWidth; i++) {
+				for (int j = 0; j < patternHeight; j++) {
+					pattern[i, j] = sprite[i + patternX, j + patternY];
+				}
+			}
+		}
+
+		private void copyPatternSprite(Sprite newSprite) {
+			for (int i = 0; i < pattern.Width; i++) {
+				for (int j = 0; j < pattern.Height; j++) {
+					newSprite[i + mouseX, j + mouseY] = pattern[i, j];
+				}
 			}
 		}
 
@@ -592,6 +653,21 @@ namespace Merthsoft.TokenIDE {
 		private void spriteBox_MouseMove(object sender, MouseEventArgs e) {
 			if (e.Button != MouseButtons.None) {
 				handleMouse(e);
+			} else if (currentTool == Tool.Pattern && pattern != null) {
+				// Very special things for the pattern tool
+				mouseXOld = mouseX;
+				mouseYOld = mouseY;
+				mouseX = e.X / pixelSize;
+				mouseY = e.Y / pixelSize;
+
+				if (mapMode) {
+					mouseX /= 8;
+					mouseY /= 8;
+				}
+
+				createPreviewSprite();
+				copyPatternSprite(previewSprite); 
+				spriteBox.Invalidate();
 			}
 
 			setSpriteIndexText(e.X, e.Y);
@@ -1121,13 +1197,13 @@ namespace Merthsoft.TokenIDE {
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			if (!mapMode) {
 				f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi", "*.8ci", "*.8ca");
 				f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
 				f.AddFilter("Monochrome Pic files", "*.8xi");
 				f.AddFilter("Color Pic files", "*.8ci", "*.8ca");
 			}
+			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
 			fileName = f.FileName;
@@ -1712,6 +1788,11 @@ namespace Merthsoft.TokenIDE {
 				mainContainer.Orientation = Orientation.Vertical;
 				//tilesFlow.FlowDirection = FlowDirection.TopDown;
 			}
+		}
+
+		private void redrawToolStripMenuItem_Click(object sender, EventArgs e) {
+			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
+			spriteBox.Invalidate();
 		}
 	}
 }
