@@ -201,7 +201,7 @@ namespace Merthsoft.CalcData {
 				dataBuffer.AddRange(Name.ToByteArray());
 			}
 			if (Calc == CalcType.Calc8x) {
-				dataBuffer.Add(0);
+				dataBuffer.Add(version);
 				dataBuffer.Add(archFlag);
 			}
 			dataBuffer.AddRange(((short)(DataLength)).GetBytes());

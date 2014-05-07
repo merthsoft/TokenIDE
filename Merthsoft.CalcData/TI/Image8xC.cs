@@ -28,12 +28,13 @@ namespace Merthsoft.CalcData{
 		}
 
 		public override ushort DataLength {
-			get { return (ushort)_data.Length; }
+			get { return (ushort)(_data.Length+2); }
 		}
 
 		public Image8xC(byte picNumber = 0)
 			: base(VarType.Image, new string(new char[] {(char)VarPrefix.Image, (char)picNumber})){
 				Archived = true;
+				version = 0x0A;
 		}
 
 		public Image8xC(BinaryReader b)
@@ -55,18 +56,18 @@ namespace Merthsoft.CalcData{
 		}
 
 		public Bitmap GetBitmap() {
-			int width = 133;
+			int width = 134;
 			int height = 83;
 			Bitmap bitmap = new Bitmap(width, height);
 			int x = 0, y = height-1;
-			for (int i = 2; i < (width + 1)*height*2; i+=2) {
-				byte b1 = _data[i];
-				byte b2 = _data[i+1];
+			for (int i = 1; i < (width)*height*2; i+=2) {
+				byte b1 = _data[i+1];
+				byte b2 = _data[i];
 
 				bitmap.SetPixel(x, y, MerthsoftExtensions.ColorFrom565(b1, b2));
 
 				x += 1;
-				if (x >= width) {
+				if (x == width-1) {
 					i += 2;
 					x = 0;
 					y--;

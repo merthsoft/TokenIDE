@@ -363,7 +363,7 @@ namespace Merthsoft.TokenIDE {
 				int patternHeight = (int)Math.Max(shapeY, mouseY) - patternY + 1;
 
 				Rectangle patternRect = new Rectangle(patternX * realPixelSize, patternY * realPixelSize, patternWidth * realPixelSize, patternHeight * realPixelSize);
-				using (Brush patternBrush = new SolidBrush(Color.FromArgb(128, Color.AliceBlue))) {
+				using (Brush patternBrush = new SolidBrush(Color.FromArgb(128, Color.MediumPurple))) {
 					e.Graphics.FillRectangle(patternBrush, patternRect);
 				}
 				
@@ -1006,6 +1006,7 @@ namespace Merthsoft.TokenIDE {
 			leftMousePictureBox.Invalidate();
 			rightMousePictureBox.Invalidate();
 			Cursor = c;
+			this.fileName = fileName;
 		}
 
 		private void openBitmap(string fileName) {
@@ -1206,7 +1207,6 @@ namespace Merthsoft.TokenIDE {
 			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
-			fileName = f.FileName;
 		}
 
 		private void undoButton_Click(object sender, EventArgs e) {
@@ -1486,7 +1486,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You cannot save a color image file using a palette other than Full565.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 133 || sprite.Height != 83) {
+			if (sprite.Width != 134 || sprite.Height != 83) {
 				var res = MessageBox.Show("Pic files should be 133 wide by 83 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
@@ -1496,20 +1496,19 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			Image8xC picture = new Image8xC((byte)(picNumber));
-			int dataSize = (sprite.Width+1) * sprite.Height * 2 + 2;
+			int dataSize = sprite.Width * sprite.Height * 2 + 1;
 			byte[] data = new byte[dataSize];
 			data[0] = 0x81;
-			data[1] = 0x80;
 
 			int i = 0; int j = sprite.Height - 1;
-			for (int index = 2; index < dataSize; index+=2) {
+			for (int index = 1; index < dataSize; index+=2) {
 				int val = sprite[i, j];
 				var color = MerthsoftExtensions.Color565FromRGB(val);
-				data[index] = color.Item1;
-				data[index + 1] = color.Item2;
+				data[index + 1] = color.Item1;
+				data[index] = color.Item2;
 
 				i += 1;
-				if (i >= sprite.Width) {
+				if (i == sprite.Width-1) {
 					index += 2;
 					i = 0;
 					j--;

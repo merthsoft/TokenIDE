@@ -37,12 +37,13 @@ namespace Merthsoft.CalcData {
 		}
 
 		public override ushort DataLength {
-			get { return (ushort)_data.Length; }
+			get { return (ushort)(_data.Length+2); }
 		}
 
 		public Pic8xC(byte picNumber = 0)
 			: base(VarType.Picture, new string(new char[] {(char)VarPrefix.Picture, (char)picNumber})){
 				Archived = true;
+				version = 0x0A;
 		}
 
 		public Pic8xC(BinaryReader b)
