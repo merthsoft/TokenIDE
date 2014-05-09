@@ -42,13 +42,14 @@ namespace Merthsoft.TokenIDE {
 			this.redoButton = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.topPanel = new System.Windows.Forms.Panel();
-			this.useGBox = new System.Windows.Forms.CheckBox();
-			this.rightMousePictureBox = new System.Windows.Forms.PictureBox();
-			this.paletteChoice = new System.Windows.Forms.ComboBox();
-			this.leftMousePictureBox = new System.Windows.Forms.PictureBox();
+			this.mouseButtonsPanel = new System.Windows.Forms.Panel();
 			this.rightMouseLabel = new System.Windows.Forms.Label();
-			this.label3 = new System.Windows.Forms.Label();
 			this.leftMouseLabel = new System.Windows.Forms.Label();
+			this.rightMousePictureBox = new System.Windows.Forms.PictureBox();
+			this.leftMousePictureBox = new System.Windows.Forms.PictureBox();
+			this.useGBox = new System.Windows.Forms.CheckBox();
+			this.paletteChoice = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
 			this.penWidthBox = new System.Windows.Forms.NumericUpDown();
 			this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -69,6 +70,7 @@ namespace Merthsoft.TokenIDE {
 			this.colorImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
 			this.mainContainer = new System.Windows.Forms.SplitContainer();
 			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
@@ -80,8 +82,9 @@ namespace Merthsoft.TokenIDE {
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-			this.mouseButtonsPanel = new System.Windows.Forms.Panel();
-			this.redrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.addTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.importImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -89,6 +92,7 @@ namespace Merthsoft.TokenIDE {
 			((System.ComponentModel.ISupportInitialize)(this.spriteBox)).BeginInit();
 			this.mainToolStrip.SuspendLayout();
 			this.topPanel.SuspendLayout();
+			this.mouseButtonsPanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rightMousePictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.leftMousePictureBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).BeginInit();
@@ -100,14 +104,14 @@ namespace Merthsoft.TokenIDE {
 			this.mainContainer.SuspendLayout();
 			this.tilesContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
-			this.mouseButtonsPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// paletteBox
 			// 
-			this.paletteBox.Location = new System.Drawing.Point(332, 3);
+			this.paletteBox.Location = new System.Drawing.Point(498, 5);
+			this.paletteBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.paletteBox.Name = "paletteBox";
-			this.paletteBox.Size = new System.Drawing.Size(352, 88);
+			this.paletteBox.Size = new System.Drawing.Size(528, 135);
 			this.paletteBox.TabIndex = 21;
 			this.paletteBox.TabStop = false;
 			this.paletteBox.Paint += new System.Windows.Forms.PaintEventHandler(this.paletteBox_Paint);
@@ -117,9 +121,10 @@ namespace Merthsoft.TokenIDE {
 			// MaintainDim
 			// 
 			this.MaintainDim.AutoSize = true;
-			this.MaintainDim.Location = new System.Drawing.Point(95, 15);
+			this.MaintainDim.Location = new System.Drawing.Point(142, 23);
+			this.MaintainDim.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaintainDim.Name = "MaintainDim";
-			this.MaintainDim.Size = new System.Drawing.Size(87, 17);
+			this.MaintainDim.Size = new System.Drawing.Size(127, 24);
 			this.MaintainDim.TabIndex = 18;
 			this.MaintainDim.Text = "Maintain Dim";
 			this.MaintainDim.UseVisualStyleBackColor = true;
@@ -127,9 +132,10 @@ namespace Merthsoft.TokenIDE {
 			// drawGridBox
 			// 
 			this.drawGridBox.AutoSize = true;
-			this.drawGridBox.Location = new System.Drawing.Point(95, 31);
+			this.drawGridBox.Location = new System.Drawing.Point(142, 48);
+			this.drawGridBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.drawGridBox.Name = "drawGridBox";
-			this.drawGridBox.Size = new System.Drawing.Size(73, 17);
+			this.drawGridBox.Size = new System.Drawing.Size(106, 24);
 			this.drawGridBox.TabIndex = 17;
 			this.drawGridBox.Text = "Draw Grid";
 			this.drawGridBox.UseVisualStyleBackColor = true;
@@ -137,7 +143,8 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// pixelSizeBox
 			// 
-			this.pixelSizeBox.Location = new System.Drawing.Point(49, 41);
+			this.pixelSizeBox.Location = new System.Drawing.Point(74, 63);
+			this.pixelSizeBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pixelSizeBox.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -149,7 +156,7 @@ namespace Merthsoft.TokenIDE {
             0,
             0});
 			this.pixelSizeBox.Name = "pixelSizeBox";
-			this.pixelSizeBox.Size = new System.Drawing.Size(40, 20);
+			this.pixelSizeBox.Size = new System.Drawing.Size(60, 26);
 			this.pixelSizeBox.TabIndex = 16;
 			this.pixelSizeBox.Value = new decimal(new int[] {
             2,
@@ -161,24 +168,27 @@ namespace Merthsoft.TokenIDE {
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 43);
+			this.label2.Location = new System.Drawing.Point(18, 66);
+			this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(37, 13);
+			this.label2.Size = new System.Drawing.Size(54, 20);
 			this.label2.TabIndex = 15;
 			this.label2.Text = "Zoom:";
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 0);
+			this.label1.Location = new System.Drawing.Point(4, 0);
+			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(77, 13);
+			this.label1.Size = new System.Drawing.Size(112, 20);
 			this.label1.TabIndex = 9;
 			this.label1.Text = "Width x Height";
 			// 
 			// spriteHeightBox
 			// 
-			this.spriteHeightBox.Location = new System.Drawing.Point(49, 16);
+			this.spriteHeightBox.Location = new System.Drawing.Point(74, 25);
+			this.spriteHeightBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.spriteHeightBox.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -190,7 +200,7 @@ namespace Merthsoft.TokenIDE {
             0,
             0});
 			this.spriteHeightBox.Name = "spriteHeightBox";
-			this.spriteHeightBox.Size = new System.Drawing.Size(40, 20);
+			this.spriteHeightBox.Size = new System.Drawing.Size(60, 26);
 			this.spriteHeightBox.TabIndex = 8;
 			this.spriteHeightBox.Value = new decimal(new int[] {
             8,
@@ -201,7 +211,8 @@ namespace Merthsoft.TokenIDE {
 			// 
 			// spriteWidthBox
 			// 
-			this.spriteWidthBox.Location = new System.Drawing.Point(4, 16);
+			this.spriteWidthBox.Location = new System.Drawing.Point(6, 25);
+			this.spriteWidthBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.spriteWidthBox.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -213,7 +224,7 @@ namespace Merthsoft.TokenIDE {
             0,
             0});
 			this.spriteWidthBox.Name = "spriteWidthBox";
-			this.spriteWidthBox.Size = new System.Drawing.Size(40, 20);
+			this.spriteWidthBox.Size = new System.Drawing.Size(60, 26);
 			this.spriteWidthBox.TabIndex = 7;
 			this.spriteWidthBox.Value = new decimal(new int[] {
             8,
@@ -225,7 +236,8 @@ namespace Merthsoft.TokenIDE {
 			// spriteBox
 			// 
 			this.spriteBox.BackColor = System.Drawing.Color.White;
-			this.spriteBox.Location = new System.Drawing.Point(3, 3);
+			this.spriteBox.Location = new System.Drawing.Point(4, 5);
+			this.spriteBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.spriteBox.Name = "spriteBox";
 			this.spriteBox.Size = new System.Drawing.Size(81, 81);
 			this.spriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -244,9 +256,10 @@ namespace Merthsoft.TokenIDE {
             this.undoButton,
             this.redoButton,
             this.toolStripSeparator1});
-			this.mainToolStrip.Location = new System.Drawing.Point(0, 24);
+			this.mainToolStrip.Location = new System.Drawing.Point(0, 35);
 			this.mainToolStrip.Name = "mainToolStrip";
-			this.mainToolStrip.Size = new System.Drawing.Size(706, 27);
+			this.mainToolStrip.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
+			this.mainToolStrip.Size = new System.Drawing.Size(1059, 27);
 			this.mainToolStrip.TabIndex = 23;
 			this.mainToolStrip.Text = "toolStrip1";
 			// 
@@ -295,78 +308,99 @@ namespace Merthsoft.TokenIDE {
 			this.topPanel.Controls.Add(this.drawGridBox);
 			this.topPanel.Controls.Add(this.MaintainDim);
 			this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
-			this.topPanel.Location = new System.Drawing.Point(0, 51);
+			this.topPanel.Location = new System.Drawing.Point(0, 62);
+			this.topPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.topPanel.Name = "topPanel";
-			this.topPanel.Size = new System.Drawing.Size(706, 94);
+			this.topPanel.Size = new System.Drawing.Size(1059, 145);
 			this.topPanel.TabIndex = 23;
 			// 
-			// useGBox
+			// mouseButtonsPanel
 			// 
-			this.useGBox.AutoSize = true;
-			this.useGBox.Location = new System.Drawing.Point(95, 47);
-			this.useGBox.Name = "useGBox";
-			this.useGBox.Size = new System.Drawing.Size(126, 17);
-			this.useGBox.TabIndex = 31;
-			this.useGBox.Text = "Use \"G\" Optimization";
-			this.useGBox.UseVisualStyleBackColor = true;
-			// 
-			// rightMousePictureBox
-			// 
-			this.rightMousePictureBox.Location = new System.Drawing.Point(57, 13);
-			this.rightMousePictureBox.Name = "rightMousePictureBox";
-			this.rightMousePictureBox.Size = new System.Drawing.Size(49, 74);
-			this.rightMousePictureBox.TabIndex = 27;
-			this.rightMousePictureBox.TabStop = false;
-			this.rightMousePictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.rightMousePictureBox_Paint);
-			// 
-			// paletteChoice
-			// 
-			this.paletteChoice.FormattingEnabled = true;
-			this.paletteChoice.Location = new System.Drawing.Point(95, 66);
-			this.paletteChoice.Name = "paletteChoice";
-			this.paletteChoice.Size = new System.Drawing.Size(121, 21);
-			this.paletteChoice.TabIndex = 25;
-			this.paletteChoice.SelectedIndexChanged += new System.EventHandler(this.paletteChoice_SelectedIndexChanged);
-			// 
-			// leftMousePictureBox
-			// 
-			this.leftMousePictureBox.Location = new System.Drawing.Point(2, 13);
-			this.leftMousePictureBox.Name = "leftMousePictureBox";
-			this.leftMousePictureBox.Size = new System.Drawing.Size(49, 74);
-			this.leftMousePictureBox.TabIndex = 26;
-			this.leftMousePictureBox.TabStop = false;
-			this.leftMousePictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.leftMousePictureBox_Paint);
+			this.mouseButtonsPanel.Controls.Add(this.rightMouseLabel);
+			this.mouseButtonsPanel.Controls.Add(this.leftMouseLabel);
+			this.mouseButtonsPanel.Controls.Add(this.rightMousePictureBox);
+			this.mouseButtonsPanel.Controls.Add(this.leftMousePictureBox);
+			this.mouseButtonsPanel.Location = new System.Drawing.Point(333, 5);
+			this.mouseButtonsPanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.mouseButtonsPanel.Name = "mouseButtonsPanel";
+			this.mouseButtonsPanel.Size = new System.Drawing.Size(162, 138);
+			this.mouseButtonsPanel.TabIndex = 32;
 			// 
 			// rightMouseLabel
 			// 
 			this.rightMouseLabel.AutoSize = true;
-			this.rightMouseLabel.Location = new System.Drawing.Point(57, 0);
+			this.rightMouseLabel.Location = new System.Drawing.Point(86, 0);
+			this.rightMouseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.rightMouseLabel.Name = "rightMouseLabel";
-			this.rightMouseLabel.Size = new System.Drawing.Size(35, 13);
+			this.rightMouseLabel.Size = new System.Drawing.Size(51, 20);
 			this.rightMouseLabel.TabIndex = 29;
 			this.rightMouseLabel.Text = "Right:";
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(15, 69);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(29, 13);
-			this.label3.TabIndex = 23;
-			this.label3.Text = "Pen:";
 			// 
 			// leftMouseLabel
 			// 
 			this.leftMouseLabel.AutoSize = true;
-			this.leftMouseLabel.Location = new System.Drawing.Point(2, 0);
+			this.leftMouseLabel.Location = new System.Drawing.Point(3, 0);
+			this.leftMouseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.leftMouseLabel.Name = "leftMouseLabel";
-			this.leftMouseLabel.Size = new System.Drawing.Size(28, 13);
+			this.leftMouseLabel.Size = new System.Drawing.Size(41, 20);
 			this.leftMouseLabel.TabIndex = 28;
 			this.leftMouseLabel.Text = "Left:";
 			// 
+			// rightMousePictureBox
+			// 
+			this.rightMousePictureBox.Location = new System.Drawing.Point(86, 20);
+			this.rightMousePictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.rightMousePictureBox.Name = "rightMousePictureBox";
+			this.rightMousePictureBox.Size = new System.Drawing.Size(74, 114);
+			this.rightMousePictureBox.TabIndex = 27;
+			this.rightMousePictureBox.TabStop = false;
+			this.rightMousePictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.rightMousePictureBox_Paint);
+			// 
+			// leftMousePictureBox
+			// 
+			this.leftMousePictureBox.Location = new System.Drawing.Point(3, 20);
+			this.leftMousePictureBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.leftMousePictureBox.Name = "leftMousePictureBox";
+			this.leftMousePictureBox.Size = new System.Drawing.Size(74, 114);
+			this.leftMousePictureBox.TabIndex = 26;
+			this.leftMousePictureBox.TabStop = false;
+			this.leftMousePictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.leftMousePictureBox_Paint);
+			// 
+			// useGBox
+			// 
+			this.useGBox.AutoSize = true;
+			this.useGBox.Location = new System.Drawing.Point(142, 72);
+			this.useGBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.useGBox.Name = "useGBox";
+			this.useGBox.Size = new System.Drawing.Size(185, 24);
+			this.useGBox.TabIndex = 31;
+			this.useGBox.Text = "Use \"G\" Optimization";
+			this.useGBox.UseVisualStyleBackColor = true;
+			// 
+			// paletteChoice
+			// 
+			this.paletteChoice.FormattingEnabled = true;
+			this.paletteChoice.Location = new System.Drawing.Point(142, 102);
+			this.paletteChoice.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.paletteChoice.Name = "paletteChoice";
+			this.paletteChoice.Size = new System.Drawing.Size(180, 28);
+			this.paletteChoice.TabIndex = 25;
+			this.paletteChoice.SelectedIndexChanged += new System.EventHandler(this.paletteChoice_SelectedIndexChanged);
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(22, 106);
+			this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(41, 20);
+			this.label3.TabIndex = 23;
+			this.label3.Text = "Pen:";
+			// 
 			// penWidthBox
 			// 
-			this.penWidthBox.Location = new System.Drawing.Point(49, 67);
+			this.penWidthBox.Location = new System.Drawing.Point(74, 103);
+			this.penWidthBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.penWidthBox.Maximum = new decimal(new int[] {
             65536,
             0,
@@ -378,7 +412,7 @@ namespace Merthsoft.TokenIDE {
             0,
             0});
 			this.penWidthBox.Name = "penWidthBox";
-			this.penWidthBox.Size = new System.Drawing.Size(40, 20);
+			this.penWidthBox.Size = new System.Drawing.Size(60, 26);
 			this.penWidthBox.TabIndex = 24;
 			this.penWidthBox.Value = new decimal(new int[] {
             1,
@@ -398,7 +432,8 @@ namespace Merthsoft.TokenIDE {
             this.editToolStripMenuItem});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(706, 24);
+			this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
+			this.menuStrip1.Size = new System.Drawing.Size(1059, 35);
 			this.menuStrip1.TabIndex = 24;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -408,11 +443,14 @@ namespace Merthsoft.TokenIDE {
             this.openToolStripMenuItem,
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
+            this.addTilesToolStripMenuItem,
+            this.importImageToolStripMenuItem,
+            this.exportImageToolStripMenuItem,
             this.toolStripSeparator2,
             this.insertAndExitToolStripMenuItem,
             this.copyToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-			this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+			this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
 			this.fileToolStripMenuItem.Text = "File";
 			// 
 			// openToolStripMenuItem
@@ -420,7 +458,7 @@ namespace Merthsoft.TokenIDE {
 			this.openToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
 			this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
 			this.openToolStripMenuItem.Text = "Open";
 			this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripButton_Click);
 			// 
@@ -429,7 +467,7 @@ namespace Merthsoft.TokenIDE {
 			this.saveToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
 			this.saveToolStripMenuItem.Text = "Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
@@ -439,20 +477,20 @@ namespace Merthsoft.TokenIDE {
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
 			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.S)));
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
 			this.saveAsToolStripMenuItem.Text = "Save As...";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(183, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(250, 6);
 			// 
 			// insertAndExitToolStripMenuItem
 			// 
 			this.insertAndExitToolStripMenuItem.Name = "insertAndExitToolStripMenuItem";
 			this.insertAndExitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-			this.insertAndExitToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.insertAndExitToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
 			this.insertAndExitToolStripMenuItem.Text = "Insert and Exit";
 			this.insertAndExitToolStripMenuItem.Click += new System.EventHandler(this.insertAndExitToolStripMenuItem_Click);
 			// 
@@ -460,7 +498,7 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
 			this.copyToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
 			this.copyToolStripMenuItem.Text = "Copy Hex";
 			this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
 			// 
@@ -473,7 +511,7 @@ namespace Merthsoft.TokenIDE {
             this.loadTemplateToolStripMenuItem,
             this.redrawToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+			this.editToolStripMenuItem.Size = new System.Drawing.Size(54, 29);
 			this.editToolStripMenuItem.Text = "Edit";
 			// 
 			// undoToolStripMenuItem
@@ -482,7 +520,7 @@ namespace Merthsoft.TokenIDE {
 			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
 			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
 			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
 			this.undoToolStripMenuItem.Text = "Undo";
 			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoButton_Click);
 			// 
@@ -492,14 +530,14 @@ namespace Merthsoft.TokenIDE {
 			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
 			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
 			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
 			this.redoToolStripMenuItem.Text = "Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(150, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(198, 6);
 			// 
 			// loadTemplateToolStripMenuItem
 			// 
@@ -510,52 +548,60 @@ namespace Merthsoft.TokenIDE {
             this.xLIBCToolStripMenuItem,
             this.xLIBCBackgroundToolStripMenuItem});
 			this.loadTemplateToolStripMenuItem.Name = "loadTemplateToolStripMenuItem";
-			this.loadTemplateToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.loadTemplateToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
 			this.loadTemplateToolStripMenuItem.Text = "Load Template";
 			// 
 			// monochromePicToolStripMenuItem
 			// 
 			this.monochromePicToolStripMenuItem.Name = "monochromePicToolStripMenuItem";
-			this.monochromePicToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.monochromePicToolStripMenuItem.Size = new System.Drawing.Size(226, 30);
 			this.monochromePicToolStripMenuItem.Text = "Monochrome Pic";
 			this.monochromePicToolStripMenuItem.Click += new System.EventHandler(this.monochromePicToolStripMenuItem_Click);
 			// 
 			// colorPicToolStripMenuItem
 			// 
 			this.colorPicToolStripMenuItem.Name = "colorPicToolStripMenuItem";
-			this.colorPicToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.colorPicToolStripMenuItem.Size = new System.Drawing.Size(226, 30);
 			this.colorPicToolStripMenuItem.Text = "Color Pic";
 			this.colorPicToolStripMenuItem.Click += new System.EventHandler(this.colorPicToolStripMenuItem_Click);
 			// 
 			// colorImageToolStripMenuItem
 			// 
 			this.colorImageToolStripMenuItem.Name = "colorImageToolStripMenuItem";
-			this.colorImageToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.colorImageToolStripMenuItem.Size = new System.Drawing.Size(226, 30);
 			this.colorImageToolStripMenuItem.Text = "Color Image";
 			this.colorImageToolStripMenuItem.Click += new System.EventHandler(this.colorImageToolStripMenuItem_Click);
 			// 
 			// xLIBCToolStripMenuItem
 			// 
 			this.xLIBCToolStripMenuItem.Name = "xLIBCToolStripMenuItem";
-			this.xLIBCToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.xLIBCToolStripMenuItem.Size = new System.Drawing.Size(226, 30);
 			this.xLIBCToolStripMenuItem.Text = "xLIBC Tiles";
 			this.xLIBCToolStripMenuItem.Click += new System.EventHandler(this.xLIBCToolStripMenuItem_Click);
 			// 
 			// xLIBCBackgroundToolStripMenuItem
 			// 
 			this.xLIBCBackgroundToolStripMenuItem.Name = "xLIBCBackgroundToolStripMenuItem";
-			this.xLIBCBackgroundToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.xLIBCBackgroundToolStripMenuItem.Size = new System.Drawing.Size(226, 30);
 			this.xLIBCBackgroundToolStripMenuItem.Text = "xLIBC Background";
 			this.xLIBCBackgroundToolStripMenuItem.Click += new System.EventHandler(this.xLIBCBackgroundToolStripMenuItem_Click);
+			// 
+			// redrawToolStripMenuItem
+			// 
+			this.redrawToolStripMenuItem.Name = "redrawToolStripMenuItem";
+			this.redrawToolStripMenuItem.Size = new System.Drawing.Size(201, 30);
+			this.redrawToolStripMenuItem.Text = "Redraw";
+			this.redrawToolStripMenuItem.Click += new System.EventHandler(this.redrawToolStripMenuItem_Click);
 			// 
 			// spritePanel
 			// 
 			this.spritePanel.AutoScroll = true;
 			this.spritePanel.Controls.Add(this.mainContainer);
 			this.spritePanel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.spritePanel.Location = new System.Drawing.Point(0, 145);
+			this.spritePanel.Location = new System.Drawing.Point(0, 207);
+			this.spritePanel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.spritePanel.Name = "spritePanel";
-			this.spritePanel.Size = new System.Drawing.Size(706, 423);
+			this.spritePanel.Size = new System.Drawing.Size(1059, 671);
 			this.spritePanel.TabIndex = 25;
 			// 
 			// mainContainer
@@ -563,6 +609,7 @@ namespace Merthsoft.TokenIDE {
 			this.mainContainer.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.mainContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
 			this.mainContainer.Location = new System.Drawing.Point(0, 0);
+			this.mainContainer.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.mainContainer.Name = "mainContainer";
 			// 
 			// mainContainer.Panel1
@@ -573,8 +620,9 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.mainContainer.Panel2.AutoScroll = true;
 			this.mainContainer.Panel2.Controls.Add(this.spriteBox);
-			this.mainContainer.Size = new System.Drawing.Size(706, 423);
+			this.mainContainer.Size = new System.Drawing.Size(1059, 671);
 			this.mainContainer.SplitterDistance = 169;
+			this.mainContainer.SplitterWidth = 6;
 			this.mainContainer.TabIndex = 1;
 			// 
 			// tilesFlow
@@ -585,8 +633,9 @@ namespace Merthsoft.TokenIDE {
 			this.tilesFlow.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesFlow.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.tilesFlow.Location = new System.Drawing.Point(0, 0);
+			this.tilesFlow.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.tilesFlow.Name = "tilesFlow";
-			this.tilesFlow.Size = new System.Drawing.Size(169, 423);
+			this.tilesFlow.Size = new System.Drawing.Size(169, 671);
 			this.tilesFlow.TabIndex = 2;
 			this.tilesFlow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tilesFlow_MouseClick);
 			// 
@@ -596,19 +645,19 @@ namespace Merthsoft.TokenIDE {
             this.clearTilesToolStripMenuItem,
             this.switchOrientationToolStripMenuItem});
 			this.tilesContextMenu.Name = "tilesContextMenu";
-			this.tilesContextMenu.Size = new System.Drawing.Size(173, 48);
+			this.tilesContextMenu.Size = new System.Drawing.Size(230, 64);
 			// 
 			// clearTilesToolStripMenuItem
 			// 
 			this.clearTilesToolStripMenuItem.Name = "clearTilesToolStripMenuItem";
-			this.clearTilesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.clearTilesToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
 			this.clearTilesToolStripMenuItem.Text = "Clear Tiles";
 			this.clearTilesToolStripMenuItem.Click += new System.EventHandler(this.clearTilesToolStripMenuItem_Click);
 			// 
 			// switchOrientationToolStripMenuItem
 			// 
 			this.switchOrientationToolStripMenuItem.Name = "switchOrientationToolStripMenuItem";
-			this.switchOrientationToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+			this.switchOrientationToolStripMenuItem.Size = new System.Drawing.Size(229, 30);
 			this.switchOrientationToolStripMenuItem.Text = "Switch Orientation";
 			this.switchOrientationToolStripMenuItem.Click += new System.EventHandler(this.switchOrientationToolStripMenuItem_Click);
 			// 
@@ -617,22 +666,23 @@ namespace Merthsoft.TokenIDE {
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.spriteIndexLabel,
             this.outputLabel});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 568);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 878);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(706, 22);
+			this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
+			this.statusStrip1.Size = new System.Drawing.Size(1059, 30);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
 			// spriteIndexLabel
 			// 
 			this.spriteIndexLabel.Name = "spriteIndexLabel";
-			this.spriteIndexLabel.Size = new System.Drawing.Size(92, 17);
+			this.spriteIndexLabel.Size = new System.Drawing.Size(140, 25);
 			this.spriteIndexLabel.Text = "spriteIndexLabel";
 			// 
 			// outputLabel
 			// 
 			this.outputLabel.Name = "outputLabel";
-			this.outputLabel.Size = new System.Drawing.Size(71, 17);
+			this.outputLabel.Size = new System.Drawing.Size(107, 25);
 			this.outputLabel.Text = "outputLabel";
 			this.outputLabel.TextChanged += new System.EventHandler(this.outputLabel_TextChanged);
 			// 
@@ -645,35 +695,42 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.colorDialog1.FullOpen = true;
 			// 
-			// mouseButtonsPanel
+			// addTilesToolStripMenuItem
 			// 
-			this.mouseButtonsPanel.Controls.Add(this.rightMouseLabel);
-			this.mouseButtonsPanel.Controls.Add(this.leftMouseLabel);
-			this.mouseButtonsPanel.Controls.Add(this.rightMousePictureBox);
-			this.mouseButtonsPanel.Controls.Add(this.leftMousePictureBox);
-			this.mouseButtonsPanel.Location = new System.Drawing.Point(222, 3);
-			this.mouseButtonsPanel.Name = "mouseButtonsPanel";
-			this.mouseButtonsPanel.Size = new System.Drawing.Size(108, 90);
-			this.mouseButtonsPanel.TabIndex = 32;
+			this.addTilesToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
+			this.addTilesToolStripMenuItem.Name = "addTilesToolStripMenuItem";
+			this.addTilesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.addTilesToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
+			this.addTilesToolStripMenuItem.Text = "Add Tiles";
+			this.addTilesToolStripMenuItem.Click += new System.EventHandler(this.addTilesToolStripMenuItem_Click);
 			// 
-			// redrawToolStripMenuItem
+			// importImageToolStripMenuItem
 			// 
-			this.redrawToolStripMenuItem.Name = "redrawToolStripMenuItem";
-			this.redrawToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-			this.redrawToolStripMenuItem.Text = "Redraw";
-			this.redrawToolStripMenuItem.Click += new System.EventHandler(this.redrawToolStripMenuItem_Click);
+			this.importImageToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_pic;
+			this.importImageToolStripMenuItem.Name = "importImageToolStripMenuItem";
+			this.importImageToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
+			this.importImageToolStripMenuItem.Text = "Import Image";
+			// 
+			// exportImageToolStripMenuItem
+			// 
+			this.exportImageToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
+			this.exportImageToolStripMenuItem.Name = "exportImageToolStripMenuItem";
+			this.exportImageToolStripMenuItem.Size = new System.Drawing.Size(253, 30);
+			this.exportImageToolStripMenuItem.Text = "Export Image";
+			this.exportImageToolStripMenuItem.Click += new System.EventHandler(this.exportImageToolStripMenuItem_Click);
 			// 
 			// HexSprite
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(706, 590);
+			this.ClientSize = new System.Drawing.Size(1059, 908);
 			this.Controls.Add(this.spritePanel);
 			this.Controls.Add(this.statusStrip1);
 			this.Controls.Add(this.topPanel);
 			this.Controls.Add(this.mainToolStrip);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
+			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "HexSprite";
 			this.Text = "Hex Sprite Editor";
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).EndInit();
@@ -685,6 +742,8 @@ namespace Merthsoft.TokenIDE {
 			this.mainToolStrip.PerformLayout();
 			this.topPanel.ResumeLayout(false);
 			this.topPanel.PerformLayout();
+			this.mouseButtonsPanel.ResumeLayout(false);
+			this.mouseButtonsPanel.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.rightMousePictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.leftMousePictureBox)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.penWidthBox)).EndInit();
@@ -699,8 +758,6 @@ namespace Merthsoft.TokenIDE {
 			this.tilesContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
-			this.mouseButtonsPanel.ResumeLayout(false);
-			this.mouseButtonsPanel.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -762,6 +819,9 @@ namespace Merthsoft.TokenIDE {
 		private ToolStripMenuItem switchOrientationToolStripMenuItem;
 		private Panel mouseButtonsPanel;
 		private ToolStripMenuItem redrawToolStripMenuItem;
+		private ToolStripMenuItem addTilesToolStripMenuItem;
+		private ToolStripMenuItem importImageToolStripMenuItem;
+		private ToolStripMenuItem exportImageToolStripMenuItem;
 
 	}
 }

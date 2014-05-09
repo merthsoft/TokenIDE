@@ -139,16 +139,22 @@ namespace Merthsoft.TokenIDE {
 			generatePalettes();
 			if (!isMapMode) {
 				mainContainer.Panel1Collapsed = true;
+				addTilesToolStripMenuItem.Visible = false;
+				importImageToolStripMenuItem.Visible = false;
+				exportImageToolStripMenuItem.Visible = false;
 			} else {
+				this.Text = "xLIBC Map Editor";
+
 				SelectedPalette = Palette.xLIBC;
 				paletteChoice.Hide();
 				useGBox.Hide();
+				paletteBox.Hide();
+
 				saveAsToolStripMenuItem.Visible = false;
 				saveToolStripMenuItem.Visible = false;
 				loadTemplateToolStripMenuItem.Visible = false;
-				this.Text = "xLIBC Map Editor";
-				openToolStripMenuItem.Text = "&Add Tiles";
-				paletteBox.Hide();
+				openToolStripMenuItem.Visible = false;
+				
 				insertAndExitToolStripMenuItem.Enabled = true;
 				copyToolStripMenuItem.Enabled = true;
 
@@ -1136,7 +1142,7 @@ namespace Merthsoft.TokenIDE {
 				sprite = loadTiles(appVar, dataLength);
 			} else {
 				loadTiles(appVar, dataLength);
-				sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
+				sprite.Invalidate();
 			}
 		}
 
@@ -1198,12 +1204,10 @@ namespace Merthsoft.TokenIDE {
 
 		private void openToolStripButton_Click(object sender, EventArgs e) {
 			OpenFileDialog f = new OpenFileDialog();
-			if (!mapMode) {
-				f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi", "*.8ci", "*.8ca");
-				f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
-				f.AddFilter("Monochrome Pic files", "*.8xi");
-				f.AddFilter("Color Pic files", "*.8ci", "*.8ca");
-			}
+			f.AddFilter("Readable image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.8xv", "*.8cv", "*.8xi", "*.8ci", "*.8ca");
+			f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
+			f.AddFilter("Monochrome Pic files", "*.8xi");
+			f.AddFilter("Color Pic files", "*.8ci", "*.8ca");
 			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 			Open(f.FileName);
@@ -1230,7 +1234,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleRedo(true);
 
-			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
+			sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
@@ -1255,7 +1259,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleUndo(true);
 
-			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
+			sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
@@ -1790,8 +1794,28 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void redrawToolStripMenuItem_Click(object sender, EventArgs e) {
-			sprite.DirtyRectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
+			sprite.Invalidate();
 			spriteBox.Invalidate();
+		}
+
+		private void addTilesToolStripMenuItem_Click(object sender, EventArgs e) {
+			OpenFileDialog f = new OpenFileDialog();
+			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
+			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
+			Open(f.FileName);
+		}
+
+		private void exportImageToolStripMenuItem_Click(object sender, EventArgs e) {
+			SaveFileDialog sfd = new SaveFileDialog();
+			sfd.AddFilter("PNG", "*.png");
+
+			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
+
+			using (Bitmap b = new Bitmap(sprite.Width * 8, sprite.Height * 8)) {
+				sprite.Invalidate();
+				drawSprite(b, sprite);
+				b.Save(sfd.FileName);
+			}
 		}
 	}
 }
