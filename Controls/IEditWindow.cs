@@ -24,5 +24,10 @@ namespace Merthsoft.TokenIDE {
 		bool Archived { get; set; }
 
 		void Save();
+
+		void Undo();
+		void Redo();
+		void Find();
+		void Replace();
 	}
 }

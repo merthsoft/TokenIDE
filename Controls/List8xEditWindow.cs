@@ -95,5 +95,22 @@ namespace Merthsoft.TokenIDE {
 				e.Cancel = true;
 			}
 		}
+
+
+		public void Undo() {
+			
+		}
+
+		public void Redo() {
+			
+		}
+
+		public void Find() {
+			
+		}
+
+		public void Replace() {
+			
+		}
 	}
 }

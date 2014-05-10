@@ -712,5 +712,22 @@ namespace Merthsoft.TokenIDE {
 				UpdateHighlight(ProgramTextBox.VisibleRange);
 			}
 		}
+
+
+		public void Undo() {
+			ProgramTextBox.Undo();
+		}
+
+		public void Redo() {
+			ProgramTextBox.Redo();
+		}
+
+		public void Find() {
+			ProgramTextBox.ShowFindDialog();
+		}
+
+		public void Replace() {
+			ProgramTextBox.ShowReplaceDialog();
+		}
 	}
 }
