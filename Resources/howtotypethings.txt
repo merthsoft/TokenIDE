@@ -11,7 +11,7 @@ The "squared" symbol (²): ^^2
 	(Note: try ^^CHARACTER for other super-script characters, such as "sin⁻¹(")
 The "pi" symbol (π): pi
 	(Note: try this for other Greek characters as well, such as theta)
-The small L for lists (˪): |L
+The small L for lists (ʟ): |L
 Y= vars (such as Y₁): {Y1}
 R►Pr(: R>Pr(
 	(Note: when the token has ►, try >)
