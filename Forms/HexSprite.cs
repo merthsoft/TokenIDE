@@ -14,9 +14,9 @@ using Merthsoft.TokenIDE.Properties;
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
 		private readonly int transparentColor = Color.Transparent.ToArgb();
-		public static string HEADER_XLIBTILES = "xLIBPIC";
-		public static string HEADER_XLIBBGPIC = "xLIBBG ";
-		public static string HEADER_XLIB32 = "xLIB32C";
+		public const string HEADER_XLIBTILES = "xLIBPIC";
+		public const string HEADER_XLIBBGPIC = "xLIBBG ";
+		public const string HEADER_XLIB32COLORIMAGE = "xLIB32C";
 
 		private static Bitmap errorImage;
 
@@ -24,7 +24,7 @@ namespace Merthsoft.TokenIDE {
 
 		private enum Tool { Pencil, Flood, Line, Rectangle, RectangleFill, Ellipse, EllipseFill, Circle, CircleFill, Pattern, EyeDropper, }
 
-		private enum SaveType { Png, XLibTiles, XLibBGPicture, MonochromePic, ColorPic, ColorImage }
+		private enum SaveType { Png, XLibTiles, XLibBGPicture, XLib32ColorPicture, MonochromePic, ColorPic, ColorImage }
 
 		public enum Palette { BlackAndWhite, BasicColors, xLIBC, Full565 };
 
@@ -132,7 +132,7 @@ namespace Merthsoft.TokenIDE {
 			byte[] data = var.Data;
 			if (data.Length < 7) { return false; }
 			string header = Encoding.ASCII.GetString(data, 0, 7);
-			return header == HEADER_XLIB32 || header == HEADER_XLIBBGPIC || header == HEADER_XLIBTILES;
+			return header == HEADER_XLIB32COLORIMAGE || header == HEADER_XLIBBGPIC || header == HEADER_XLIBTILES;
 		}
 
 		public HexSprite(bool isMapMode = false) {
@@ -699,13 +699,13 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void setSpriteIndexText(int x, int y) {
-			spriteIndexLabel.Visible = true;
-			spriteIndexLabel.Text = string.Format("({0}, {1}) - {2} (0x{2:X2})", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
+			if (SelectedPalette == Palette.xLIBC) {
+				spriteIndexLabel.Text = string.Format("({0}, {1}) - {2} (0x{2:X2})", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
+			}
 		}
 
 		private void spriteBox_MouseLeave(object sender, EventArgs e) {
 			spriteBox.Invalidate();
-			spriteIndexLabel.Visible = false;
 		}
 
 		private void spriteBox_MouseDown(object sender, MouseEventArgs e) {
@@ -1077,12 +1077,51 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
-			if (headerString == HEADER_XLIBTILES) {
-				saveType = SaveType.XLibTiles;
-				openxLibTiles(appVar);
-			} else if (headerString == HEADER_XLIBBGPIC) {
-				saveType = SaveType.XLibBGPicture;
-				openxLibBG(appVar);
+			
+			switch (headerString) {
+				case HEADER_XLIBTILES:
+					saveType = SaveType.XLibTiles;
+					openxLibTiles(appVar);
+					break;
+
+				case HEADER_XLIBBGPIC:
+					saveType = SaveType.XLibBGPicture;
+					openxLibBG(appVar);
+					break;
+
+				case HEADER_XLIB32COLORIMAGE:
+					saveType = SaveType.XLib32ColorPicture;
+					openxLib32Color(appVar);
+					break;
+			}
+		}
+
+		private void openxLib32Color(AppVar8x appVar) {
+			SpriteWidth = 160;
+			SpriteHeight = 120;
+
+			sprite = new Sprite(SpriteWidth, SpriteHeight);
+
+			SelectedPalette = Palette.xLIBC;
+
+			List<int> colors = new List<int>();
+
+			for (int i = 7; i < 39; i++) {
+				colors.Add(appVar.Data[i]);
+			}
+
+			int x = 0;
+			int y = 0;
+			BitStream bitStream = new BitStream(appVar.Data, 312);
+			while (!bitStream.AtEnd) {
+				byte index = (byte)bitStream.Read(5);
+				sprite[x, y] = colors[index];
+
+				y++;
+				if (y == SpriteHeight) {
+					y = 0;
+					x++;
+				}
 			}
 		}
 
@@ -1372,6 +1411,7 @@ namespace Merthsoft.TokenIDE {
 			sfd.AddFilter("PNG", "*.png");
 			sfd.AddFilter("xLIB Tiles", "*.8xv");
 			sfd.AddFilter("xLIB Picture", "*.8xv");
+			sfd.AddFilter("xLIB 32-Color Picture", "*.8xv");
 			sfd.AddFilter("Monochrome Pic", "*.8xi");
 			sfd.AddFilter("Color Pic", "*.8ci");
 			sfd.AddFilter("Color Image", "*.8ca");
@@ -1406,6 +1446,10 @@ namespace Merthsoft.TokenIDE {
 
 				case SaveType.XLibBGPicture:
 					success = saveXLibBGPic();
+					break;
+
+				case SaveType.XLib32ColorPicture:
+					success = saveXLib32ColorImage();
 					break;
 
 				case SaveType.MonochromePic:
@@ -1606,8 +1650,8 @@ namespace Merthsoft.TokenIDE {
 
 		private bool saveXLibBGPic() {
 			if (SelectedPalette != Palette.xLIBC) {
-				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette. Are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
 			}
 			if (sprite.Width != 80 || sprite.Height != 60) {
 				var res = MessageBox.Show("xLIBC background pictures should be 80 wide by 60 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -1643,8 +1687,8 @@ namespace Merthsoft.TokenIDE {
 
 		private bool saveXLibTiles() {
 			if (SelectedPalette != Palette.xLIBC) {
-				var res = MessageBox.Show("You are trying to save an xLIBC file without using the xLIBC palette, are you sure you want to continue?", "Wrong Palette", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
 			}
 			if (sprite.Width != 128 || sprite.Height != 64) {
 				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -1679,6 +1723,87 @@ namespace Merthsoft.TokenIDE {
 						}
 					}
 				}
+			}
+			appVar.SetRawData(buffer);
+			using (FileStream fs = new FileStream(fileName, FileMode.Create))
+			using (BinaryWriter bw = new BinaryWriter(fs)) {
+				appVar.Save(bw);
+			}
+
+			return true;
+		}
+
+		private bool saveXLib32ColorImage() {
+			if (SelectedPalette != Palette.xLIBC) {
+				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			if (sprite.Width != 160 || sprite.Height != 120) {
+				var res = MessageBox.Show("xLIBC 32-color images should be 160 wide by 120 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+			}
+
+			List<Color> colors = new List<Color>();
+			Dictionary<byte, byte> seenColors = new Dictionary<byte, byte>();
+			Dictionary<int, int> indexToPalette = new Dictionary<int, int>();
+
+			for (int i = 0; i < sprite.Width; i++) {
+				for (int j = 0; j < sprite.Height; j++) {
+					byte pixelValue = (byte)sprite[i, j];
+					if (!seenColors.ContainsKey(pixelValue)) {
+						seenColors[pixelValue] = (byte)colors.Count;
+						indexToPalette[colors.Count] = pixelValue;
+						colors.Add(XLibPalette[pixelValue]);
+					}
+				}
+			}
+
+			if (colors.Count > 32) {
+				var res = MessageBox.Show("You are attempting to save a 32-color image with more than 32 colors. Do you want to reduce the image to 32 colors automatically?", "Too Many Colors", MessageBoxButtons.YesNo, MessageBoxIcon.Hand);
+				if (res == System.Windows.Forms.DialogResult.No) { return false; }
+				colors = colors.Take(32).ToList();
+				sprite.Invalidate();
+				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
+					drawSprite(b, sprite);
+					sprite = new Sprite(b, colors);
+					sprite.Invalidate();
+					spriteBox.Invalidate();
+				}
+
+				colors = new List<Color>();
+				seenColors = new Dictionary<byte, byte>();
+
+				for (int i = 0; i < sprite.Width; i++) {
+					for (int j = 0; j < sprite.Height; j++) {
+						sprite[i, j] = indexToPalette[sprite[i, j]];
+						byte pixelValue = (byte)sprite[i, j];
+						if (!seenColors.ContainsKey(pixelValue)) {
+							seenColors[pixelValue] = (byte)colors.Count;
+							colors.Add(XLibPalette[pixelValue]);
+						}
+					}
+				}
+			}
+
+			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
+			byte[] buffer = new byte[39 + (sprite.Width * sprite.Height * 5) / 8];
+			using (MemoryStream ms = new MemoryStream(buffer)) {
+				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIB32COLORIMAGE), 0, Encoding.ASCII.GetByteCount(HEADER_XLIB32COLORIMAGE));
+				ms.Write(seenColors.Keys.Take(32).ToArray(), 0, 32);
+				for (int i = seenColors.Count; i < 32; i++) {
+					ms.WriteByte(0);
+				}
+
+				BitStream bs = new BitStream();
+				for (int i = 0; i < sprite.Width; i++) {
+					for (int j = 0; j < sprite.Height; j++) {
+						byte color = (byte)sprite[i, j];
+						byte index = seenColors[color];
+						bs.Write(index, 5);
+					}
+				}
+
+				ms.Write(bs.Data, 0, bs.Length / 8);
 			}
 			appVar.SetRawData(buffer);
 			using (FileStream fs = new FileStream(fileName, FileMode.Create))
@@ -1825,6 +1950,10 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void addTilesToolStripMenuItem_Click(object sender, EventArgs e) {
+			if (!mapMode) {
+				openToolStripButton_Click(sender, e);
+				return;
+			}
 			OpenFileDialog f = new OpenFileDialog();
 			f.AddFilter("xLibC AppVars", "*.8xv", "*.8cv");
 			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }

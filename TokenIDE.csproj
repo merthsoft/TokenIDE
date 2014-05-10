@@ -84,6 +84,7 @@
     <Compile Include="Controls\DraggableTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="BitStream.cs" />
     <Compile Include="TabCloseEventArgs.cs" />
     <Compile Include="FileFolderDialog.cs">
       <SubType>Component</SubType>
