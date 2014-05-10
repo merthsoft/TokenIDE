@@ -1058,7 +1058,7 @@ shaunm.mcfall@gmail.com
   <Token byte="$E8" string="FindVar(" stringStarter="false" stringTerminator="false" style="Keyword" />
   <Token byte="$E9" string="PlotsOn " stringStarter="false" stringTerminator="false" />
   <Token byte="$EA" string="PlotsOff " stringStarter="false" stringTerminator="false" />
-  <Token byte="$EB" string="˪" stringStarter="false" stringTerminator="false">
+  <Token byte="$EB" string="ʟ" stringStarter="false" stringTerminator="false">
     <Alt string="smallL" />
     <Alt string="|L" />
   </Token>

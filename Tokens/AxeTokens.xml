@@ -1184,7 +1184,7 @@ to include changes if they're better!
   <Token byte="$E8" string="Get" stringStarter="false" stringTerminator="false" style="Command" group="Link Port" />
   <Token byte="$E9" string="PlotsOn " stringStarter="false" stringTerminator="false" />
   <Token byte="$EA" string="PlotsOff " stringStarter="false" stringTerminator="false" />
-  <Token byte="$EB" string="˪" stringStarter="false" stringTerminator="false" style="Default_Axe" group="Modifiers">
+  <Token byte="$EB" string="ʟ" stringStarter="false" stringTerminator="false" style="Default_Axe" group="Modifiers">
     <Alt string="smallL" />
     <Alt string="|L" />
   </Token>
