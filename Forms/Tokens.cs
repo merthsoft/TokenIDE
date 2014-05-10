@@ -469,13 +469,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void findToolStripMenuItem_Click(object sender, EventArgs e) {
-			//Find f = new Find(currWindow);
-			//f.Show();
-			if (currWindow is Prog8xEditWindow) {
-				var ew = (Prog8xEditWindow)currWindow;
-				FastColoredTextBoxNS.FindForm f = new FastColoredTextBoxNS.FindForm(ew.ProgramTextBox);
-				f.Show();
-			}
+			currWindow.Find();
 		}
 
 		private TokensProject GetProject(TreeNode node) {
@@ -707,6 +701,7 @@ namespace Merthsoft.TokenIDE {
 									"xLIBC Var Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
 								) == System.Windows.Forms.DialogResult.Yes) {
 									currWindow = prevWindow;
+									pstream.Close();
 									openSprite(fileName);
 									return;
 								}
@@ -1250,6 +1245,18 @@ namespace Merthsoft.TokenIDE {
 				f.Show();
 				tb.SelectionLength = 0;
 			}
+		}
+
+		private void undoToolStripMenuItem_Click(object sender, EventArgs e) {
+			currWindow.Undo();
+		}
+
+		private void redoToolStripMenuItem_Click(object sender, EventArgs e) {
+			currWindow.Redo();
+		}
+
+		private void replaceToolStripMenuItem_Click(object sender, EventArgs e) {
+			currWindow.Replace();
 		}
 	}
 }
