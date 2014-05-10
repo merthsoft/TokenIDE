@@ -138,6 +138,44 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		public Sprite SubSprite(int x, int y, int width, int height) {
+			Sprite newSprite = new Sprite(width, height);
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					newSprite[i, j] = this[x + i, y + j];
+				}
+			}
+
+			return newSprite;
+		}
+
+		public override bool Equals(object obj) {
+			Sprite comp = obj as Sprite;
+			if (comp == null) {
+				return base.Equals(obj);
+			}
+
+			if (comp.Width != Width || comp.Height != Height) {
+				return false;
+			}
+
+			for (int i = 0; i < Width; i++) {
+				for (int j = 0; j < Width; j++) {
+					if (comp[i, j] != this[i, j]) { return false; }
+				}
+			}
+
+			return true;
+		}
+
+		public override int GetHashCode() {
+			return sprite.GetHashCode();
+		}
+
+		public override string ToString() {
+			return string.Format("Sprite {{{0}, {1}}}", Width, Height);
+		}
+
 		public void ClearDirtyRectangle() {
 			DirtyRectangle = Rectangle.Empty;
 		}

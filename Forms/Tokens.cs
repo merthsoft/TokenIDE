@@ -700,9 +700,21 @@ namespace Merthsoft.TokenIDE {
 					}
 					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
 						using (BinaryReader preader = new BinaryReader(pstream)) {
-							ewProg.Program = new AppVar8x(preader);
+							AppVar8x newAppVar = new AppVar8x(preader);
+							if (HexSprite.IsXLibCSprite(newAppVar)) {
+								if (MessageBox.Show(
+									string.Format("{0} appears to be an xLibC image type, do you want to open it in the image editor?", fileName),
+									"xLIBC Var Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
+								) == System.Windows.Forms.DialogResult.Yes) {
+									currWindow = prevWindow;
+									openSprite(fileName);
+									return;
+								}
+							}
+							ewProg.Program = newAppVar;
 						}
 					}
+					
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
@@ -729,10 +741,8 @@ namespace Merthsoft.TokenIDE {
 				case ".8xi":
 				case ".8ci":
 				case ".8ca":
-					HexSprite hs = new HexSprite();
-					hs.Open(fileName);
-					hs.PasteTextEvent += handlePasteEvent;
-					hs.Show();
+					currWindow = prevWindow;
+					openSprite(fileName);
 					return;
 
 				default:
@@ -752,6 +762,13 @@ namespace Merthsoft.TokenIDE {
 			//} catch (Exception ex) {
 			//	MessageBox.Show(string.Format("Could not open file!\n{0}", ex.Message));
 			//}
+		}
+
+		private void openSprite(string fileName) {
+			HexSprite hs = new HexSprite();
+			hs.Open(fileName);
+			hs.PasteTextEvent += handlePasteEvent;
+			hs.Show();
 		}
 
 		private void openFileToolStripMenuItem_Click(object sender, EventArgs e) {

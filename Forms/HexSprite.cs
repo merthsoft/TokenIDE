@@ -14,8 +14,11 @@ using Merthsoft.TokenIDE.Properties;
 namespace Merthsoft.TokenIDE {
 	public partial class HexSprite : Form {
 		private readonly int transparentColor = Color.Transparent.ToArgb();
-		private const string XLIBTILES_HEADER = "xLIBPIC";
-		private const string XLIBBGPIC_HEADER = "xLIBBG ";
+		public static string HEADER_XLIBTILES = "xLIBPIC";
+		public static string HEADER_XLIBBGPIC = "xLIBBG ";
+		public static string HEADER_XLIB32 = "xLIB32C";
+
+		private static Bitmap errorImage;
 
 		public event PasteTextEventHandler PasteTextEvent;
 
@@ -116,6 +119,22 @@ namespace Merthsoft.TokenIDE {
 
 		private bool mapMode = false;
 
+		static HexSprite() {
+			errorImage = new Bitmap(8, 8);
+			using (Graphics g = Graphics.FromImage(errorImage)) {
+				g.FillRectangle(Brushes.White, 0, 0, 8, 8);
+				g.DrawLine(Pens.Red, 0, 0, 7, 7);
+				g.DrawLine(Pens.Red, 0, 7, 7, 0);
+			}
+		}
+
+		public static bool IsXLibCSprite(AppVar8x var) {
+			byte[] data = var.Data;
+			if (data.Length < 7) { return false; }
+			string header = Encoding.ASCII.GetString(data, 0, 7);
+			return header == HEADER_XLIB32 || header == HEADER_XLIBBGPIC || header == HEADER_XLIBTILES;
+		}
+
 		public HexSprite(bool isMapMode = false) {
 			InitializeComponent();
 
@@ -154,7 +173,7 @@ namespace Merthsoft.TokenIDE {
 				saveToolStripMenuItem.Visible = false;
 				loadTemplateToolStripMenuItem.Visible = false;
 				openToolStripMenuItem.Visible = false;
-				
+
 				insertAndExitToolStripMenuItem.Enabled = true;
 				copyToolStripMenuItem.Enabled = true;
 
@@ -217,7 +236,7 @@ namespace Merthsoft.TokenIDE {
 			ToolStripButton button = (ToolStripButton)sender;
 			currentButton.Checked = false;
 			previewSprite = null;
-			pattern = null;		
+			pattern = null;
 			button.Checked = true;
 			currentButton = button;
 			currentTool = (Tool)button.Tag;
@@ -321,7 +340,7 @@ namespace Merthsoft.TokenIDE {
 				if (!mapMode) {
 					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
 				} else {
-					drawCanvas = new Bitmap(SpriteWidth*8, SpriteHeight*8);
+					drawCanvas = new Bitmap(SpriteWidth * 8, SpriteHeight * 8);
 				}
 				sprite.Invalidate();
 			}
@@ -372,7 +391,7 @@ namespace Merthsoft.TokenIDE {
 				using (Brush patternBrush = new SolidBrush(Color.FromArgb(128, Color.MediumPurple))) {
 					e.Graphics.FillRectangle(patternBrush, patternRect);
 				}
-				
+
 			}
 			//} catch {
 			//	throw;
@@ -425,7 +444,7 @@ namespace Merthsoft.TokenIDE {
 
 						dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
 					} else {
-						Bitmap tile = SpriteImages[paletteIndex];
+						Bitmap tile = getImageAt(paletteIndex);
 						BitmapData tileData = tile.LockBits(tileRect, ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
 						int[] tileDataToCopy = new int[tileData.Height * tileData.Stride / 4];
 						Marshal.Copy(tileData.Scan0, tileDataToCopy, 0, tileDataToCopy.Length);
@@ -612,10 +631,10 @@ namespace Merthsoft.TokenIDE {
 			//	oldRectangle = previewSprite.DirtyRectangle;
 			//	drawRect = oldRectangle;
 			//}
-						
+
 			int defaultColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			previewSprite = new Sprite(SpriteWidth, SpriteHeight, defaultColor);
-			
+
 			//previewSprite.ClearDirtyRectangle();
 			if (oldRectangle != Rectangle.Empty) {
 				previewSprite.DirtyRectangle = oldRectangle;
@@ -672,7 +691,7 @@ namespace Merthsoft.TokenIDE {
 				}
 
 				createPreviewSprite();
-				copyPatternSprite(previewSprite); 
+				copyPatternSprite(previewSprite);
 				spriteBox.Invalidate();
 			}
 
@@ -693,7 +712,7 @@ namespace Merthsoft.TokenIDE {
 			pushHistory();
 
 			mouseX = e.X / pixelSize;
-			mouseY = e.Y / pixelSize; 
+			mouseY = e.Y / pixelSize;
 			if (mapMode) {
 				mouseX /= 8;
 				mouseY /= 8;
@@ -855,7 +874,7 @@ namespace Merthsoft.TokenIDE {
 			if (SelectedPalette == previousPalette) { return; }
 
 			pushHistory(previousPalette);
-			
+
 			switch (SelectedPalette) {
 				case Palette.BlackAndWhite:
 					togglePalette(false);
@@ -1058,10 +1077,10 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			string headerString = Encoding.ASCII.GetString(appVar.Data.Take(7).ToArray());
-			if (headerString == XLIBTILES_HEADER) {
+			if (headerString == HEADER_XLIBTILES) {
 				saveType = SaveType.XLibTiles;
 				openxLibTiles(appVar);
-			} else if (headerString == XLIBBGPIC_HEADER) {
+			} else if (headerString == HEADER_XLIBBGPIC) {
 				saveType = SaveType.XLibBGPicture;
 				openxLibBG(appVar);
 			}
@@ -1176,7 +1195,7 @@ namespace Merthsoft.TokenIDE {
 						PictureBox tile = new PictureBox() { Image = b, Size = new Size(32, 32), Tag = Sprites.Count - 1, };
 						tile.MouseClick += tile_MouseClick;
 						tile.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
-						tile.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+						tile.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
 						tilesFlow.Controls.Add(tile);
 						subSprite = new Sprite(8, 8);
 					}
@@ -1273,6 +1292,13 @@ namespace Merthsoft.TokenIDE {
 			redoToolStripMenuItem.Enabled = enabled;
 		}
 
+		private Bitmap getImageAt(int index) {
+			if (index < 0 || index >= SpriteImages.Count) {
+				return errorImage;
+			}
+			return SpriteImages[index];
+		}
+
 		private void leftMousePictureBox_Paint(object sender, PaintEventArgs e) {
 			Brush brush = null;
 			bool dispose = false;
@@ -1280,7 +1306,7 @@ namespace Merthsoft.TokenIDE {
 			if (mapMode) {
 				if (Sprites.Count > 0) {
 					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-					e.Graphics.DrawImage(SpriteImages[leftPixel], 0, 0, 32, 32);
+					e.Graphics.DrawImage(getImageAt(leftPixel), 0, 0, 32, 32);
 				}
 				return;
 			}
@@ -1314,7 +1340,7 @@ namespace Merthsoft.TokenIDE {
 			if (mapMode) {
 				if (Sprites.Count > 0) {
 					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-					e.Graphics.DrawImage(SpriteImages[rightPixel], 0, 0, 32, 32);
+					e.Graphics.DrawImage(getImageAt(rightPixel), 0, 0, 32, 32);
 				}
 				return;
 			}
@@ -1505,14 +1531,14 @@ namespace Merthsoft.TokenIDE {
 			data[0] = 0x81;
 
 			int i = 0; int j = sprite.Height - 1;
-			for (int index = 1; index < dataSize; index+=2) {
+			for (int index = 1; index < dataSize; index += 2) {
 				int val = sprite[i, j];
 				var color = MerthsoftExtensions.Color565FromRGB(val);
 				data[index + 1] = color.Item1;
 				data[index] = color.Item2;
 
 				i += 1;
-				if (i == sprite.Width-1) {
+				if (i == sprite.Width - 1) {
 					index += 2;
 					i = 0;
 					j--;
@@ -1590,7 +1616,7 @@ namespace Merthsoft.TokenIDE {
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
-				ms.Write(Encoding.ASCII.GetBytes(XLIBBGPIC_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBBGPIC_HEADER));
+				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIBBGPIC), 0, Encoding.ASCII.GetByteCount(HEADER_XLIBBGPIC));
 
 				int x = 0;
 				int y = 0;
@@ -1627,7 +1653,7 @@ namespace Merthsoft.TokenIDE {
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
 			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
-				ms.Write(Encoding.ASCII.GetBytes(XLIBTILES_HEADER), 0, Encoding.ASCII.GetByteCount(XLIBTILES_HEADER));
+				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIBTILES), 0, Encoding.ASCII.GetByteCount(HEADER_XLIBTILES));
 
 				int x = 0;
 				int y = 0;
@@ -1811,10 +1837,56 @@ namespace Merthsoft.TokenIDE {
 
 			if (sfd.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
 
+			exportImage(sfd.FileName);
+			outputLabel.Text = "Exported image.";
+		}
+
+		private void exportImage(string fileName) {
 			using (Bitmap b = new Bitmap(sprite.Width * 8, sprite.Height * 8)) {
 				sprite.Invalidate();
 				drawSprite(b, sprite);
-				b.Save(sfd.FileName);
+				b.Save(fileName);
+			}
+		}
+
+		private void importImageToolStripMenuItem_Click(object sender, EventArgs e) {
+			OpenFileDialog f = new OpenFileDialog();
+			f.AddFilter("Image files", "*.bmp", "*.png", "*.jpg", "*.jpeg", "*.gif");
+			if (f.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
+			importImage(f.FileName);
+		}
+
+		private void importImage(string fileName) {
+			if (Sprites.Count == 0) {
+				MessageBox.Show("You must add tiles first.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				outputLabel.Text = "Failed to import map.";
+				return;
+			}
+			using (Bitmap b = new Bitmap(fileName)) {
+				Sprite imageSprite = new Sprite(b, XLibPalette);
+				if (imageSprite.Width % 8 != 0 || imageSprite.Height % 8 != 0) {
+					MessageBox.Show("Image dimensions are not divisible by 8.", "Error importing map", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					outputLabel.Text = "Failed to import map.";
+					return;
+				}
+				pushHistory();
+				shouldPushHistory = false;
+				performResizeFlag = false;
+				sprite = new Sprite(imageSprite.Width / 8, imageSprite.Height / 8);
+				SpriteWidth = sprite.Width;
+				SpriteHeight = sprite.Height;
+
+				for (int x = 0; x < imageSprite.Width; x += 8) {
+					for (int y = 0; y < imageSprite.Height; y += 8) {
+						Sprite tile = imageSprite.SubSprite(x, y, 8, 8);
+						sprite[x/8, y/8] = Sprites.IndexOf(tile);
+					}
+				}
+
+				sprite.Invalidate();
+				spriteBox.Invalidate();
+				shouldPushHistory = true;
+				performResizeFlag = true;
 			}
 		}
 	}
