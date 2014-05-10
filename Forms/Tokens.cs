@@ -1233,5 +1233,20 @@ namespace Merthsoft.TokenIDE {
 
 			hexSprite.Show();
 		}
+
+		private void howToTypeThingsToolStripMenuItem_Click(object sender, EventArgs e) {
+			Form f = new Form() { Width = 600, Text = "How to Type Things in TokenIDE" };
+			TextBox tb = new TextBox() {
+				Multiline = true,
+				Dock = DockStyle.Fill,
+				ScrollBars = ScrollBars.Vertical,
+				ReadOnly = true,
+				Text = Resources.howtotypethings,
+				SelectionLength = 0,
+			};
+			f.Controls.Add(tb);
+			f.Show();
+			tb.SelectionLength = 0;
+		}
 	}
 }

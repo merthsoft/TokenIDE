@@ -880,6 +880,7 @@
 			this.howToTypeThingsToolStripMenuItem.Name = "howToTypeThingsToolStripMenuItem";
 			this.howToTypeThingsToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
 			this.howToTypeThingsToolStripMenuItem.Text = "How to type things";
+			this.howToTypeThingsToolStripMenuItem.Click += new System.EventHandler(this.howToTypeThingsToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 

@@ -290,6 +290,7 @@
     <Content Include="Assets\565palette.png" />
     <Content Include="Assets\Icons\Tools\icon_pattern.png" />
     <Content Include="Assets\logo-curved.png" />
+    <None Include="Resources\howtotypethings.txt" />
     <Content Include="Tokens\DCS8.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -1,0 +1,22 @@
+﻿TokenIDE is designed to allow you to type most things in with a standard keyboard.
+However, it also pretty prints characters as it reads them in, and as you type.
+Because of this it can be hard to know what to type to get a specific character.
+The reference pane on the left can be very helpful, but here are a few of the most
+commonly asked after characters:
+
+The "Sto" arrow (→): ->
+The negative sign (⁻): ~
+The tilde sign (~): |~
+The "squared" symbol (²): ^^2
+	(Note: try ^^CHARACTER for other super-script characters, such as sin⁻¹()
+The "pi" symbol (π): pi
+	(Note: try this for other Greek characters as well, such as theta)
+The small L for lists (˪): |L
+Y= vars (such as Y₁): {Y1}
+R►Pr(: R>Pr(
+	(Note: when the token has ►, try >)
+Mathematical symbols, such as √(: sqrt(
+
+These are some of the most commonly asked-after tokens, and how they can be typed with
+the default Tokens files. Note that if you are using a custom file not released with
+TokenIDE, you can look in the reference pane or the .XML file.
