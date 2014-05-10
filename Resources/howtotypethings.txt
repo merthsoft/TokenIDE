@@ -8,7 +8,7 @@ The "Sto" arrow (→): ->
 The negative sign (⁻): ~
 The tilde sign (~): |~
 The "squared" symbol (²): ^^2
-	(Note: try ^^CHARACTER for other super-script characters, such as sin⁻¹()
+	(Note: try ^^CHARACTER for other super-script characters, such as "sin⁻¹(")
 The "pi" symbol (π): pi
 	(Note: try this for other Greek characters as well, such as theta)
 The small L for lists (˪): |L

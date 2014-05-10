@@ -181,88 +181,88 @@ to include changes if they're better!
     </Token>
   </Token>
   <Token byte="$5E" stringStarter="false" stringTerminator="false">
-    <Token byte="$10" string="Y₁" stringStarter="false" stringTerminator="false">
+    <Token byte="$10" string="Y₁" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y1}" />
     </Token>
-    <Token byte="$11" string="Y₂" stringStarter="false" stringTerminator="false">
+    <Token byte="$11" string="Y₂" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y2}" />
     </Token>
-    <Token byte="$12" string="Y₃" stringStarter="false" stringTerminator="false">
+    <Token byte="$12" string="Y₃" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y3}" />
     </Token>
-    <Token byte="$13" string="Y₄" stringStarter="false" stringTerminator="false">
+    <Token byte="$13" string="Y₄" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y4}" />
     </Token>
-    <Token byte="$14" string="Y₅" stringStarter="false" stringTerminator="false">
+    <Token byte="$14" string="Y₅" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y5}" />
     </Token>
-    <Token byte="$15" string="Y₆" stringStarter="false" stringTerminator="false">
+    <Token byte="$15" string="Y₆" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y6}" />
     </Token>
-    <Token byte="$16" string="Y₇" stringStarter="false" stringTerminator="false">
+    <Token byte="$16" string="Y₇" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y7}" />
     </Token>
-    <Token byte="$17" string="Y₈" stringStarter="false" stringTerminator="false">
+    <Token byte="$17" string="Y₈" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y8}" />
     </Token>
-    <Token byte="$18" string="Y₉" stringStarter="false" stringTerminator="false">
+    <Token byte="$18" string="Y₉" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y9}" />
     </Token>
-    <Token byte="$19" string="Y₀" stringStarter="false" stringTerminator="false">
+    <Token byte="$19" string="Y₀" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y0}" />
     </Token>
-    <Token byte="$20" string="X₁ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$20" string="X₁ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X1T}" />
     </Token>
-    <Token byte="$21" string="Y₁ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$21" string="Y₁ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y1T}" />
     </Token>
-    <Token byte="$22" string="X₂ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$22" string="X₂ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X2T}" />
     </Token>
-    <Token byte="$23" string="Y₂ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$23" string="Y₂ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y2T}" />
     </Token>
-    <Token byte="$24" string="X₃ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$24" string="X₃ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X3T}" />
     </Token>
-    <Token byte="$25" string="Y₃ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$25" string="Y₃ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y3T}" />
     </Token>
-    <Token byte="$26" string="X₄ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$26" string="X₄ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X4T}" />
     </Token>
-    <Token byte="$27" string="Y₄ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$27" string="Y₄ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y4T}" />
     </Token>
-    <Token byte="$28" string="X₅ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$28" string="X₅ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X5T}" />
     </Token>
-    <Token byte="$29" string="Y₅ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$29" string="Y₅ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y5T}" />
     </Token>
-    <Token byte="$2A" string="X₆ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$2A" string="X₆ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{X6T}" />
     </Token>
-    <Token byte="$2B" string="Y₆ᴛ" stringStarter="false" stringTerminator="false">
+    <Token byte="$2B" string="Y₆ᴛ" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{Y6T}" />
     </Token>
-    <Token byte="$40" string="r₁" stringStarter="false" stringTerminator="false">
+    <Token byte="$40" string="r₁" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r1}" />
     </Token>
-    <Token byte="$41" string="r₂" stringStarter="false" stringTerminator="false">
+    <Token byte="$41" string="r₂" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r2}" />
     </Token>
-    <Token byte="$42" string="r₃" stringStarter="false" stringTerminator="false">
+    <Token byte="$42" string="r₃" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r3}" />
     </Token>
-    <Token byte="$43" string="r₄" stringStarter="false" stringTerminator="false">
+    <Token byte="$43" string="r₄" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r4}" />
     </Token>
-    <Token byte="$44" string="r₅" stringStarter="false" stringTerminator="false">
+    <Token byte="$44" string="r₅" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r5}" />
     </Token>
-    <Token byte="$45" string="r₆" stringStarter="false" stringTerminator="false">
+    <Token byte="$45" string="r₆" stringStarter="false" stringTerminator="false" group="Y-Vars">
       <Alt string="{r6}" />
     </Token>
     <Token byte="$80" string="|u" stringStarter="false" stringTerminator="false" />
@@ -551,7 +551,7 @@ to include changes if they're better!
   <Token byte="$82" string="*" stringStarter="false" stringTerminator="false" />
   <Token byte="$83" string="/" stringStarter="false" stringTerminator="false" />
   <Token byte="$84" string="Trace" stringStarter="false" stringTerminator="false" />
-  <Token byte="$85" string="ClrDraw" stringStarter="false" stringTerminator="false" />
+  <Token byte="$85" string="ClrDraw" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
   <Token byte="$86" string="ZStandard" stringStarter="false" stringTerminator="false" />
   <Token byte="$87" string="ZTrig" stringStarter="false" stringTerminator="false" />
   <Token byte="$88" string="ZBox" stringStarter="false" stringTerminator="false" />
@@ -565,29 +565,29 @@ to include changes if they're better!
   <Token byte="$90" string="ZoomRcl" stringStarter="false" stringTerminator="false" />
   <Token byte="$91" string="PrintScreen" stringStarter="false" stringTerminator="false" />
   <Token byte="$92" string="ZoomSto" stringStarter="false" stringTerminator="false" />
-  <Token byte="$93" string="Text(" stringStarter="false" stringTerminator="false" />
+  <Token byte="$93" string="Text(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
   <Token byte="$94" string=" nPr " stringStarter="false" stringTerminator="false" />
   <Token byte="$95" string=" nCr " stringStarter="false" stringTerminator="false" />
   <Token byte="$96" string="FnOn " stringStarter="false" stringTerminator="false" />
   <Token byte="$97" string="FnOff " stringStarter="false" stringTerminator="false" />
-  <Token byte="$98" string="StorePic " stringStarter="false" stringTerminator="false" />
-  <Token byte="$99" string="RecallPic " stringStarter="false" stringTerminator="false" />
-  <Token byte="$9A" string="StoreGDB " stringStarter="false" stringTerminator="false" />
-  <Token byte="$9B" string="RecallGDB " stringStarter="false" stringTerminator="false" />
-  <Token byte="$9C" string="Line(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$9D" string="Vertical " stringStarter="false" stringTerminator="false" />
-  <Token byte="$9E" string="Pt-On(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$9F" string="Pt-Off(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A0" string="Pt-Change(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A1" string="Pxl-On(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A2" string="Pxl-Off(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A3" string="Pxl-Change(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A4" string="Shade(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A5" string="Circle(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A6" string="Horizontal " stringStarter="false" stringTerminator="false" />
-  <Token byte="$A7" string="Tangent(" stringStarter="false" stringTerminator="false" />
-  <Token byte="$A8" string="DrawInv " stringStarter="false" stringTerminator="false" />
-  <Token byte="$A9" string="DrawF " stringStarter="false" stringTerminator="false" />
+  <Token byte="$98" string="StorePic " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$99" string="RecallPic " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9A" string="StoreGDB " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9B" string="RecallGDB " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9C" string="Line(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9D" string="Vertical " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9E" string="Pt-On(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$9F" string="Pt-Off(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A0" string="Pt-Change(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A1" string="Pxl-On(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A2" string="Pxl-Off(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A3" string="Pxl-Change(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A4" string="Shade(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A5" string="Circle(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A6" string="Horizontal " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A7" string="Tangent(" stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A8" string="DrawInv " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
+  <Token byte="$A9" string="DrawF " stringStarter="false" stringTerminator="false" group="Drawing Commands" />
   <Token byte="$AB" string="rand" stringStarter="false" stringTerminator="false" />
   <Token byte="$AC" string="π" stringStarter="false" stringTerminator="false">
     <Alt string="pi" />
@@ -749,49 +749,49 @@ to include changes if they're better!
     <Token byte="$6A" string="Asm(" stringStarter="false" stringTerminator="false" />
     <Token byte="$6B" string="AsmComp(" stringStarter="false" stringTerminator="false" />
     <Token byte="$6C" string="AsmPrgm" stringStarter="false" stringTerminator="false" />
-    <Token byte="$6E" string="Á" stringStarter="false" stringTerminator="false" />
-    <Token byte="$6F" string="À" stringStarter="false" stringTerminator="false" />
-    <Token byte="$70" string="Â" stringStarter="false" stringTerminator="false" />
-    <Token byte="$71" string="Ä" stringStarter="false" stringTerminator="false" />
-    <Token byte="$72" string="á" stringStarter="false" stringTerminator="false" />
-    <Token byte="$73" string="à" stringStarter="false" stringTerminator="false" />
-    <Token byte="$74" string="â" stringStarter="false" stringTerminator="false" />
-    <Token byte="$75" string="ä" stringStarter="false" stringTerminator="false" />
-    <Token byte="$76" string="É" stringStarter="false" stringTerminator="false" />
-    <Token byte="$77" string="È" stringStarter="false" stringTerminator="false" />
-    <Token byte="$78" string="Ê" stringStarter="false" stringTerminator="false" />
-    <Token byte="$79" string="Ë" stringStarter="false" stringTerminator="false" />
-    <Token byte="$7A" string="é" stringStarter="false" stringTerminator="false" />
-    <Token byte="$7B" string="è" stringStarter="false" stringTerminator="false" />
-    <Token byte="$7C" string="ê" stringStarter="false" stringTerminator="false" />
-    <Token byte="$7D" string="ë" stringStarter="false" stringTerminator="false" />
-    <Token byte="$7F" string="Ì" stringStarter="false" stringTerminator="false" />
-    <Token byte="$80" string="Î" stringStarter="false" stringTerminator="false" />
-    <Token byte="$81" string="Ï" stringStarter="false" stringTerminator="false" />
-    <Token byte="$82" string="í" stringStarter="false" stringTerminator="false" />
-    <Token byte="$83" string="ì" stringStarter="false" stringTerminator="false" />
-    <Token byte="$84" string="î" stringStarter="false" stringTerminator="false" />
-    <Token byte="$85" string="ï" stringStarter="false" stringTerminator="false" />
-    <Token byte="$86" string="Ó" stringStarter="false" stringTerminator="false" />
-    <Token byte="$87" string="Ò" stringStarter="false" stringTerminator="false" />
-    <Token byte="$88" string="Ô" stringStarter="false" stringTerminator="false" />
-    <Token byte="$89" string="Ö" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8A" string="ó" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8B" string="ò" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8C" string="ô" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8D" string="ö" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8E" string="Ú" stringStarter="false" stringTerminator="false" />
-    <Token byte="$8F" string="Ù" stringStarter="false" stringTerminator="false" />
-    <Token byte="$90" string="Û" stringStarter="false" stringTerminator="false" />
-    <Token byte="$91" string="Ü" stringStarter="false" stringTerminator="false" />
-    <Token byte="$92" string="ú" stringStarter="false" stringTerminator="false" />
-    <Token byte="$93" string="ù" stringStarter="false" stringTerminator="false" />
-    <Token byte="$94" string="û" stringStarter="false" stringTerminator="false" />
-    <Token byte="$95" string="ü" stringStarter="false" stringTerminator="false" />
-    <Token byte="$96" string="Ç" stringStarter="false" stringTerminator="false" />
-    <Token byte="$97" string="ç" stringStarter="false" stringTerminator="false" />
-    <Token byte="$98" string="Ñ" stringStarter="false" stringTerminator="false" />
-    <Token byte="$99" string="ñ" stringStarter="false" stringTerminator="false" />
+    <Token byte="$6E" string="Á" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$6F" string="À" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$70" string="Â" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$71" string="Ä" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$72" string="á" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$73" string="à" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$74" string="â" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$75" string="ä" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$76" string="É" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$77" string="È" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$78" string="Ê" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$79" string="Ë" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$7A" string="é" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$7B" string="è" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$7C" string="ê" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$7D" string="ë" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$7F" string="Ì" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$80" string="Î" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$81" string="Ï" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$82" string="í" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$83" string="ì" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$84" string="î" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$85" string="ï" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$86" string="Ó" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$87" string="Ò" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$88" string="Ô" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$89" string="Ö" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8A" string="ó" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8B" string="ò" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8C" string="ô" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8D" string="ö" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8E" string="Ú" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$8F" string="Ù" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$90" string="Û" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$91" string="Ü" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$92" string="ú" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$93" string="ù" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$94" string="û" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$95" string="ü" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$96" string="Ç" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$97" string="ç" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$98" string="Ñ" stringStarter="false" stringTerminator="false" group="Accented Letters" />
+    <Token byte="$99" string="ñ" stringStarter="false" stringTerminator="false" group="Accented Letters" />
     <Token byte="$9A" string="´" stringStarter="false" stringTerminator="false">
       <Alt string="|'" />
       <Alt string="^^'" />
@@ -809,56 +809,56 @@ to include changes if they're better!
     <Token byte="$9E" string="¡" stringStarter="false" stringTerminator="false">
       <Alt string="|!" />
     </Token>
-    <Token byte="$9F" string="α" stringStarter="false" stringTerminator="false">
+    <Token byte="$9F" string="α" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="alpha" />
     </Token>
-    <Token byte="$A0" string="β" stringStarter="false" stringTerminator="false">
+    <Token byte="$A0" string="β" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="beta" />
     </Token>
-    <Token byte="$A1" string="γ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A1" string="γ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="gamma" />
     </Token>
-    <Token byte="$A2" string="Δ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A2" string="Δ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="Delta" />
     </Token>
-    <Token byte="$A3" string="δ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A3" string="δ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="delta" />
     </Token>
-    <Token byte="$A4" string="ε" stringStarter="false" stringTerminator="false">
+    <Token byte="$A4" string="ε" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="epsilon" />
     </Token>
-    <Token byte="$A5" string="λ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A5" string="λ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="lambda" />
     </Token>
-    <Token byte="$A6" string="μ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A6" string="μ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="mu" />
     </Token>
-    <Token byte="$A7" string="|π" stringStarter="false" stringTerminator="false">
+    <Token byte="$A7" string="|π" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="greek_pi" />
     </Token>
-    <Token byte="$A8" string="ρ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A8" string="ρ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="rho" />
     </Token>
-    <Token byte="$A9" string="Σ" stringStarter="false" stringTerminator="false">
+    <Token byte="$A9" string="Σ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="Sigma" />
     </Token>
-    <Token byte="$AB" string="Φ" stringStarter="false" stringTerminator="false">
+    <Token byte="$AB" string="Φ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="Phi" />
     </Token>
-    <Token byte="$AC" string="Ω" stringStarter="false" stringTerminator="false">
+    <Token byte="$AC" string="Ω" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="Omega" />
     </Token>
-    <Token byte="$AD" string="ṗ" stringStarter="false" stringTerminator="false">
+    <Token byte="$AD" string="ṗ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="phat" />
     </Token>
-    <Token byte="$AE" string="χ" stringStarter="false" stringTerminator="false">
+    <Token byte="$AE" string="χ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="chi" />
     </Token>
     <Token byte="$AF" string="|F" stringStarter="false" stringTerminator="false" />
-    <Token byte="$CB" string="σ" stringStarter="false" stringTerminator="false">
+    <Token byte="$CB" string="σ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="sigma" />
     </Token>
-    <Token byte="$CC" string="τ" stringStarter="false" stringTerminator="false">
+    <Token byte="$CC" string="τ" stringStarter="false" stringTerminator="false" group="Greek">
       <Alt string="tau" />
     </Token>
     <Token byte="$CD" string="Í" stringStarter="false" stringTerminator="false" />

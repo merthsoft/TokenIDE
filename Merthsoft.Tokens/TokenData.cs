@@ -348,8 +348,9 @@ namespace Merthsoft.Tokens {
 							value.Bytes = bytes;
 							trie.AddWord(value.Name, bytes);
 						}
+						List<string> myAlts = new List<string>();
 						if (node.HasChildNodes) {
-							value.SubTokens = GetTokensFromNode(node.ChildNodes, out alts, prevBytes + key.ToString("X2"));
+							value.SubTokens = GetTokensFromNode(node.ChildNodes, out myAlts, prevBytes + key.ToString("X2"));
 						}
 						currentTokens.Add(key, value);
 						if (value.Name != null) {
@@ -357,14 +358,14 @@ namespace Merthsoft.Tokens {
 								throw new AmbiguousTokenException(value.Name);
 							}
 							FlatTokens.Add(value.Name, value);
-							foreach (string alt in alts) {
+							foreach (string alt in myAlts) {
 								if (FlatTokens.ContainsKey(alt)) {
 									throw new AmbiguousTokenException(string.Format("{0} alt: ({1})", value.Name, alt));
 								}
 								value.Alts.Add(alt);
 								FlatTokens.Add(alt, value);
 							}
-							alts.Clear();
+							myAlts.Clear();
 						}
 					} else if (node.Name == "Alt") {
 						string alt = node.Attributes["string"].Value;
