@@ -193,6 +193,7 @@ namespace Merthsoft.TokenIDE {
 
 				autoCompleteMenu = new AutocompleteMenu(ProgramTextBox);
 				autoCompleteItems = new List<AutocompleteItem>();
+#if DEBUG
 				foreach (var token in TokenData.FlatTokens) {
 					autoCompleteItems.Add(new AutocompleteItem() {
 						Text = token.Key, Tag = token.Value,
@@ -209,6 +210,7 @@ namespace Merthsoft.TokenIDE {
 				autoCompleteMenu.MinFragmentLength = 1;
 				autoCompleteMenu.SearchPattern = @"[\S\.]";
 
+#endif
 				//Range range = ProgramTextBox.Range;
 				//range.ClearFoldingMarkers();
 				//range.SetFoldingMarkers("For", "End");
