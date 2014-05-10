@@ -736,6 +736,7 @@ namespace Merthsoft.TokenIDE {
 				case ".8xi":
 				case ".8ci":
 				case ".8ca":
+				case ".gif":
 					currWindow = prevWindow;
 					openSprite(fileName);
 					return;
