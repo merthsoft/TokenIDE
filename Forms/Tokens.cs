@@ -38,7 +38,7 @@ namespace Merthsoft.TokenIDE {
 			set {
 				_tokenData = value;
 				TokensTree.Nodes.Clear();
-				commentBox.Clear();
+				commentText.Text = "";
 				List<string> groups = _tokenData.GroupNames;
 				groups.Sort();
 				foreach (string group in groups) {
@@ -582,7 +582,18 @@ namespace Merthsoft.TokenIDE {
 
 		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) {
 			if (docLinkLabel.Text == "") { return; }
-			System.Diagnostics.Process.Start(docLinkLabel.Text);
+			string site = docLinkLabel.Text;
+			launchSite(site);
+		}
+
+		private static void launchSite(string site) {
+			try {
+				System.Diagnostics.Process.Start(site);
+			} catch {
+				if (!site.StartsWith("http://") || !site.StartsWith("https://")) {
+					launchSite("http://" + site);
+				}
+			}
 		}
 
 		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
@@ -597,7 +608,7 @@ namespace Merthsoft.TokenIDE {
 				MessageBox.Show(string.Format("No online documentation available for {0}.", TokensTree.SelectedNode.Text));
 				return;
 			}
-			System.Diagnostics.Process.Start(TokenData.Sites[n.Text]);
+			launchSite(TokenData.Sites[n.Text]);
 		}
 
 		private void OpenFile(string fileName) {
@@ -709,7 +720,7 @@ namespace Merthsoft.TokenIDE {
 							ewProg.Program = newAppVar;
 						}
 					}
-					
+
 					ewProg.FullHighlightRefresh();
 					tp.Controls.Add(ewProg);
 					ewProg.ParentTabPage = tp;
@@ -1047,7 +1058,7 @@ namespace Merthsoft.TokenIDE {
 				//MessageBox.Show("Could not run program \"{0}\". Check that it exists.", "Error external tool", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
-			
+
 			if (kill == "kill" && externalTools.ContainsKey(t)) {
 				try {
 					externalTools[t].Kill();
@@ -1126,43 +1137,51 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void TokensTree_AfterSelect(object sender, TreeViewEventArgs e) {
-			if (e.Node != null) {
-				if (TokenData.Comments.ContainsKey(e.Node.Text)) {
-					string comment = TokenData.Comments[e.Node.Text];
-					if (comment != null) {
-						commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
-					} else {
-						commentBox.Text = "No data available for this command.";
-					}
-
-					TreeNode n = e.Node;
-					while (!TokenData.Sites.ContainsKey(n.Text) && n.Parent != null) {
-						n = n.Parent;
-					}
-					if (!TokenData.Sites.ContainsKey(n.Text)) {
-						docLinkLabel.Text = "";
-					} else {
-						docLinkLabel.Text = TokenData.Sites[n.Text];
-					}
-					mainToolTip.SetToolTip(docLinkLabel, docLinkLabel.Text);
-				} else {
-					commentBox.Text = "";
-				}
+			TokenData.GroupEntry entry = e.Node.Tag as TokenData.GroupEntry;
+			string mainText;
+			if (entry == null) { 
+				mainText = e.Node.Text; 
+			} else {
+				mainText = entry.Main;
 			}
+
+			if (TokenData.Comments.ContainsKey(mainText)) {
+				string comment = TokenData.Comments[mainText];
+				if (comment != null) {
+					commentText.Text = "<div>" + comment + "</div>";
+				} else {
+					commentText.Text = "No data available for this command.";
+				}
+			} else {
+				commentText.Text = "";
+			}
+			
+			var n = e.Node;
+			entry = n.Tag as TokenData.GroupEntry;
+			mainText = entry != null ? entry.Main : n.Text;
+			while (!TokenData.Sites.ContainsKey(mainText) && n.Parent != null) {
+				n = n.Parent;
+			}
+			if (!TokenData.Sites.ContainsKey(mainText)) {
+				docLinkLabel.Text = "";
+			} else {
+				docLinkLabel.Text = TokenData.Sites[mainText];
+			}
+			mainToolTip.SetToolTip(docLinkLabel, docLinkLabel.Text);
 		}
 
 		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			TokensTree.SelectedNode = e.Node;
-			if (TokenData.Comments.ContainsKey(e.Node.Text)) {
-				string comment = TokenData.Comments[e.Node.Text];
-				if (comment != null) {
-					commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
-				} else {
-					commentBox.Text = "No data available for this command.";
-				}
-			} else {
-				commentBox.Text = "";
-			}
+			//if (TokenData.Comments.ContainsKey(e.Node.Text)) {
+			//	string comment = TokenData.Comments[e.Node.Text];
+			//	if (comment != null) {
+			//		commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
+			//	} else {
+			//		commentBox.Text = "No data available for this command.";
+			//	}
+			//} else {
+			//	commentBox.Text = "";
+			//}
 		}
 
 		private void TokensTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {

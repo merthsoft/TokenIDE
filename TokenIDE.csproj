@@ -353,6 +353,10 @@
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
     </ProjectReference>
+    <ProjectReference Include="HtmlRenderer\HtmlRenderer.csproj">
+      <Project>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</Project>
+      <Name>HtmlRenderer</Name>
+    </ProjectReference>
     <ProjectReference Include="Merthsoft.CalcData\Merthsoft.CalcData.csproj">
       <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
       <Name>Merthsoft.CalcData</Name>

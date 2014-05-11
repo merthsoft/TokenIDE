@@ -45,7 +45,11 @@
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.buildAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -87,7 +91,7 @@
 			this.TokensTree = new System.Windows.Forms.TreeView();
 			this.tokensTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.navigateToDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.commentBox = new System.Windows.Forms.TextBox();
+			this.commentText = new HtmlRenderer.HtmlPanel();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.docLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.ProjectTab = new System.Windows.Forms.TabPage();
@@ -108,10 +112,6 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
 			this.EditWindows = new Merthsoft.TokenIDE.DraggableTabControl();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
@@ -304,6 +304,29 @@
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
 			// 
+			// undoToolStripMenuItem
+			// 
+			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
+			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
+			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.undoToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.undoToolStripMenuItem.Text = "Undo";
+			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+			// 
+			// redoToolStripMenuItem
+			// 
+			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
+			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
+			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.redoToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.redoToolStripMenuItem.Text = "Redo";
+			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(155, 6);
+			// 
 			// findToolStripMenuItem
 			// 
 			this.findToolStripMenuItem.Name = "findToolStripMenuItem";
@@ -311,6 +334,14 @@
 			this.findToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
 			this.findToolStripMenuItem.Text = "Find";
 			this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
+			// 
+			// replaceToolStripMenuItem
+			// 
+			this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
+			this.replaceToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
+			this.replaceToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
+			this.replaceToolStripMenuItem.Text = "Replace";
+			this.replaceToolStripMenuItem.Click += new System.EventHandler(this.replaceToolStripMenuItem_Click);
 			// 
 			// buildToolStripMenuItem
 			// 
@@ -656,7 +687,7 @@
 			// 
 			// splitContainer2.Panel2
 			// 
-			this.splitContainer2.Panel2.Controls.Add(this.commentBox);
+			this.splitContainer2.Panel2.Controls.Add(this.commentText);
 			this.splitContainer2.Panel2.Controls.Add(this.panel1);
 			this.splitContainer2.Size = new System.Drawing.Size(162, 474);
 			this.splitContainer2.SplitterDistance = 333;
@@ -681,7 +712,7 @@
 			this.tokensTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.navigateToDocsToolStripMenuItem});
 			this.tokensTreeMenuStrip.Name = "tokensTreeMenuStrip";
-			this.tokensTreeMenuStrip.Size = new System.Drawing.Size(168, 26);
+			this.tokensTreeMenuStrip.Size = new System.Drawing.Size(168, 48);
 			// 
 			// navigateToDocsToolStripMenuItem
 			// 
@@ -690,15 +721,19 @@
 			this.navigateToDocsToolStripMenuItem.Text = "Navigate To Docs";
 			this.navigateToDocsToolStripMenuItem.Click += new System.EventHandler(this.navigateToDocsToolStripMenuItem_Click);
 			// 
-			// commentBox
+			// commentText
 			// 
-			this.commentBox.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.commentBox.Location = new System.Drawing.Point(0, 0);
-			this.commentBox.Multiline = true;
-			this.commentBox.Name = "commentBox";
-			this.commentBox.ReadOnly = true;
-			this.commentBox.Size = new System.Drawing.Size(162, 120);
-			this.commentBox.TabIndex = 0;
+			this.commentText.AutoScroll = true;
+			this.commentText.AutoScrollMinSize = new System.Drawing.Size(162, 17);
+			this.commentText.BackColor = System.Drawing.SystemColors.Control;
+			this.commentText.BaseStylesheet = "div {font-family: monospace;}";
+			this.commentText.Cursor = System.Windows.Forms.Cursors.Default;
+			this.commentText.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.commentText.Location = new System.Drawing.Point(0, 0);
+			this.commentText.Name = "commentText";
+			this.commentText.Size = new System.Drawing.Size(162, 120);
+			this.commentText.TabIndex = 2;
+			this.commentText.Text = "<div>Comments go here.</div>";
 			// 
 			// panel1
 			// 
@@ -874,37 +909,6 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
-			// replaceToolStripMenuItem
-			// 
-			this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
-			this.replaceToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
-			this.replaceToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.replaceToolStripMenuItem.Text = "Replace";
-			this.replaceToolStripMenuItem.Click += new System.EventHandler(this.replaceToolStripMenuItem_Click);
-			// 
-			// undoToolStripMenuItem
-			// 
-			this.undoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_undo;
-			this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-			this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-			this.undoToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.undoToolStripMenuItem.Text = "Undo";
-			this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
-			// 
-			// redoToolStripMenuItem
-			// 
-			this.redoToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_redo;
-			this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-			this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-			this.redoToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
-			this.redoToolStripMenuItem.Text = "Redo";
-			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
-			// 
-			// toolStripSeparator10
-			// 
-			this.toolStripSeparator10.Name = "toolStripSeparator10";
-			this.toolStripSeparator10.Size = new System.Drawing.Size(155, 6);
-			// 
 			// EditWindows
 			// 
 			this.EditWindows.AllowDrop = true;
@@ -948,7 +952,6 @@
 			this.ReferenceTab.ResumeLayout(false);
 			this.splitContainer2.Panel1.ResumeLayout(false);
 			this.splitContainer2.Panel2.ResumeLayout(false);
-			this.splitContainer2.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
 			this.splitContainer2.ResumeLayout(false);
 			this.tokensTreeMenuStrip.ResumeLayout(false);
@@ -985,7 +988,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
 		private System.Windows.Forms.SplitContainer splitContainer2;
 		private System.Windows.Forms.TreeView TokensTree;
-		private System.Windows.Forms.TextBox commentBox;
 		private System.Windows.Forms.ContextMenuStrip tokensTreeMenuStrip;
 		private System.Windows.Forms.ToolStripMenuItem navigateToDocsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel statusLabel;
@@ -1053,6 +1055,7 @@
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
+		private HtmlRenderer.HtmlPanel commentText;
 	}
 }
 

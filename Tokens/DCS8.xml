@@ -5,236 +5,236 @@
     <Group name="xLib" comment="xLib Libraries" site="http://dcs.cemetech.net/index.php/Third-Party_BASIC_Libraries_%28Color%29" />
   </Groups>
   <Styles>
-    <Style name="Hyrbid" foreground="Orange" minTokenLength="0" />
+    <Style name="Hyrbid" foreground="Orange" />
   </Styles>
-  <Token byte="@det(" stringStarter="false" stringTerminator="false">
-    <Token byte="@0" string="ReadLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@1" string="ReplaceLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic">
-      <Token byte="@0" stringStarter="false" stringTerminator="false">
-        <Token byte="@," string="BufSpriteSelect(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
+  <Token byte="@det(" stringTerminator="false">
+    <Token byte="@0" string="ReadLine(" style="Hyrbid" group="Celtic" />
+    <Token byte="@1" string="ReplaceLine(" style="Hyrbid" group="Celtic">
+      <Token byte="@0" stringTerminator="false">
+        <Token byte="@," string="BufSpriteSelect(" style="Hyrbid" group="Celtic" />
       </Token>
-      <Token byte="@1" stringStarter="false" stringTerminator="false">
-        <Token byte="@," string="ExecArcPrgm(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
+      <Token byte="@1" stringTerminator="false">
+        <Token byte="@," string="ExecArcPrgm(" style="Hyrbid" group="Celtic" />
       </Token>
-      <Token byte="@2" stringStarter="false" stringTerminator="false">
-        <Token byte="@," string="DispColor(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
+      <Token byte="@2" stringTerminator="false">
+        <Token byte="@," string="DispColor(" style="Hyrbid" group="Celtic" />
       </Token>
     </Token>
-    <Token byte="@2" string="InsertLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@3" string="SpecialChars(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@4" string="CreateVar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@5" string="ArcUnarcVar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@6" string="DeleteVar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@7" string="DeleteLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@8" string="VarStatus(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
-    <Token byte="@9" stringStarter="false" stringTerminator="false">
-      <Token byte="@," string="BufSprite(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="Celtic" />
+    <Token byte="@2" string="InsertLine(" style="Hyrbid" group="Celtic" />
+    <Token byte="@3" string="SpecialChars(" style="Hyrbid" group="Celtic" />
+    <Token byte="@4" string="CreateVar(" style="Hyrbid" group="Celtic" />
+    <Token byte="@5" string="ArcUnarcVar(" style="Hyrbid" group="Celtic" />
+    <Token byte="@6" string="DeleteVar(" style="Hyrbid" group="Celtic" />
+    <Token byte="@7" string="DeleteLine(" style="Hyrbid" group="Celtic" />
+    <Token byte="@8" string="VarStatus(" style="Hyrbid" group="Celtic" />
+    <Token byte="@9" stringTerminator="false">
+      <Token byte="@," string="BufSprite(" style="Hyrbid" group="Celtic" />
     </Token>
   </Token>
-  <Token byte="$BB" stringStarter="false" stringTerminator="false">
-    <Token byte="$26" stringStarter="false" stringTerminator="false">
-      <Token byte="@0" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" string="GetxLIBVersion(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetUpGraphics(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib">
-              <Token byte="@0" stringStarter="false" stringTerminator="false">
-                <Token byte="@," string="SetFullResolution(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+  <Token byte="$BB" stringTerminator="false">
+    <Token byte="$26" stringTerminator="false">
+      <Token byte="@0" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" string="GetxLIBVersion(" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="SetUpGraphics(" style="Hyrbid" group="xLib">
+              <Token byte="@0" stringTerminator="false">
+                <Token byte="@," string="SetFullResolution(" style="Hyrbid" group="xLib" />
               </Token>
-              <Token byte="@1" string="SetHalfResolution(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+              <Token byte="@1" string="SetHalfResolution(" style="Hyrbid" group="xLib" />
             </Token>
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="ChangeSpeed(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib">
-              <Token byte="@0" string="SetSpeed6MHz(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-              <Token byte="@1" string="SetSpeed15MHz(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="ChangeSpeed(" style="Hyrbid" group="xLib">
+              <Token byte="@0" string="SetSpeed6MHz(" style="Hyrbid" group="xLib" />
+              <Token byte="@1" string="SetSpeed15MHz(" style="Hyrbid" group="xLib" />
             </Token>
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetupColorMode(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="SetupColorMode(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@1" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetUservar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@1" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="GetUservar(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetUservar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="SetUservar(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="AddToUservar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="AddToUservar(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SubFromUservar(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="SubFromUservar(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@2" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetKeyCheckList(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib">
-              <Token byte="@0" string="GetKey(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@2" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="GetKeyCheckList(" style="Hyrbid" group="xLib">
+              <Token byte="@0" string="GetKey(" style="Hyrbid" group="xLib" />
             </Token>
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetKeyArrows(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="GetKeyArrows(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetKeyArrowsDiagonals(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="GetKeyArrowsDiagonals(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetKeyArrowsCheckTile(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="GetKeyArrowsCheckTile(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@4" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetKeyArrowsDiagonalsCheckTile(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-        </Token>
-      </Token>
-      <Token byte="@3" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMapA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMapB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_GetTileA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_GetTileB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@4" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_SetTile(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@5" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_ReplaceTile(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@6" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_GetSectionA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@7" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawMap_GetSectionB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@4" stringTerminator="false">
+            <Token byte="@," string="GetKeyArrowsDiagonalsCheckTile(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@4" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@3" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="DrawMapA(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="DrawMapB(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteList8x8A(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="DrawMap_GetTileA(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteList8x8B(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="DrawMap_GetTileB(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@4" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteTileBGA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@4" stringTerminator="false">
+            <Token byte="@," string="DrawMap_SetTile(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@5" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawSpriteTileBGB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@5" stringTerminator="false">
+            <Token byte="@," string="DrawMap_ReplaceTile(" style="Hyrbid" group="xLib" />
           </Token>
-        </Token>
-      </Token>
-      <Token byte="@5" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="LoadTilePic(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@6" stringTerminator="false">
+            <Token byte="@," string="DrawMap_GetSectionA(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="LoadBGPic(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DisplayBGPic(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawPicSectionA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@4" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawPicSectionB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          </Token>
-          <Token byte="@5" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="LoadSingleTile(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@7" stringTerminator="false">
+            <Token byte="@," string="DrawMap_GetSectionB(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@6" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawString(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@4" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteA(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawStringValueA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteB(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawStringValueB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteList8x8A(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteList8x8B(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@4" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteTileBGA(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@5" stringTerminator="false">
+            <Token byte="@," string="DrawSpriteTileBGB(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@7" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetPixelA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@5" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="LoadTilePic(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetPixelB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-            <Token byte="@0" stringStarter="false" stringTerminator="false">
-              <Token byte="@," string="InvertFilledRectangle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="LoadBGPic(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="DisplayBGPic(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="DrawPicSectionA(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@4" stringTerminator="false">
+            <Token byte="@," string="DrawPicSectionB(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@5" stringTerminator="false">
+            <Token byte="@," string="LoadSingleTile(" style="Hyrbid" group="xLib" />
+          </Token>
+        </Token>
+      </Token>
+      <Token byte="@6" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="DrawString(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="DrawStringValueA(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="DrawStringValueB(" style="Hyrbid" group="xLib" />
+          </Token>
+        </Token>
+      </Token>
+      <Token byte="@7" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" stringTerminator="false">
+            <Token byte="@," string="GetPixelA(" style="Hyrbid" group="xLib" />
+          </Token>
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="GetPixelB(" style="Hyrbid" group="xLib" />
+            <Token byte="@0" stringTerminator="false">
+              <Token byte="@," string="InvertFilledRectangle(" style="Hyrbid" group="xLib" />
             </Token>
-            <Token byte="@1" stringStarter="false" stringTerminator="false">
-              <Token byte="@," string="DrawCircle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+            <Token byte="@1" stringTerminator="false">
+              <Token byte="@," string="DrawCircle(" style="Hyrbid" group="xLib" />
             </Token>
-            <Token byte="@2" stringStarter="false" stringTerminator="false">
-              <Token byte="@," string="DrawFilledCircle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+            <Token byte="@2" stringTerminator="false">
+              <Token byte="@," string="DrawFilledCircle(" style="Hyrbid" group="xLib" />
             </Token>
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetPixelA(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="SetPixelA(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetPixelB(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="SetPixelB(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@4" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="InvertPixel(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@4" stringTerminator="false">
+            <Token byte="@," string="InvertPixel(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@5" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@5" stringTerminator="false">
+            <Token byte="@," string="DrawLine(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@6" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="InvertLine(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@6" stringTerminator="false">
+            <Token byte="@," string="InvertLine(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@7" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="DrawRectangle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@7" stringTerminator="false">
+            <Token byte="@," string="DrawRectangle(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@8" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="InvertRectangle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@8" stringTerminator="false">
+            <Token byte="@," string="InvertRectangle(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@9" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="FillRectangle(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@9" stringTerminator="false">
+            <Token byte="@," string="FillRectangle(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@8" stringStarter="false" stringTerminator="false">
-        <Token byte="@," stringStarter="false" stringTerminator="false">
-          <Token byte="@0" string="GetLCDBuffer(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
-          <Token byte="@1" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetLCDBuffer(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@8" stringTerminator="false">
+        <Token byte="@," stringTerminator="false">
+          <Token byte="@0" string="GetLCDBuffer(" style="Hyrbid" group="xLib" />
+          <Token byte="@1" stringTerminator="false">
+            <Token byte="@," string="SetLCDBuffer(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@2" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="SetGRAMOffset(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@2" stringTerminator="false">
+            <Token byte="@," string="SetGRAMOffset(" style="Hyrbid" group="xLib" />
           </Token>
-          <Token byte="@3" stringStarter="false" stringTerminator="false">
-            <Token byte="@," string="GetRand(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+          <Token byte="@3" stringTerminator="false">
+            <Token byte="@," string="GetRand(" style="Hyrbid" group="xLib" />
           </Token>
         </Token>
       </Token>
-      <Token byte="@9" string="UpdateLCD(" stringStarter="false" stringTerminator="false" style="Hyrbid" group="xLib" />
+      <Token byte="@9" string="UpdateLCD(" style="Hyrbid" group="xLib" />
     </Token>
   </Token>
 </Tokens>
