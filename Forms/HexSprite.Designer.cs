@@ -512,10 +512,10 @@ namespace Merthsoft.TokenIDE {
 			this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.undoToolStripMenuItem,
             this.redoToolStripMenuItem,
+            this.shiftTilesToolStripMenuItem,
             this.toolStripSeparator3,
             this.loadTemplateToolStripMenuItem,
-            this.redrawToolStripMenuItem,
-            this.shiftTilesToolStripMenuItem});
+            this.redrawToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -603,7 +603,7 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.shiftTilesToolStripMenuItem.Name = "shiftTilesToolStripMenuItem";
 			this.shiftTilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-			this.shiftTilesToolStripMenuItem.Text = "Shift Tiles";
+			this.shiftTilesToolStripMenuItem.Text = "Shift Values";
 			this.shiftTilesToolStripMenuItem.Click += new System.EventHandler(this.shiftTilesToolStripMenuItem_Click);
 			// 
 			// spritePanel

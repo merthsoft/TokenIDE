@@ -56,7 +56,7 @@ namespace Merthsoft.TokenIDE {
 		private bool shouldPushHistory = false;
 		private int historyPosition;
 
-		private Sprite sprite;
+		public Sprite Sprite;
 		private Sprite previewSprite = null;
 		private Sprite pattern = null;
 
@@ -103,9 +103,9 @@ namespace Merthsoft.TokenIDE {
 		private int leftPixel = 1;
 		private int rightPixel = 0;
 
-		private List<Color> CelticPalette = Pic8xC.Palette;
+		public List<Color> CelticPalette = Pic8xC.Palette;
 
-		private List<Color> XLibPalette = new List<Color>();
+		public List<Color> XLibPalette = new List<Color>();
 
 		private List<SolidBrush> CelticBrushes = new List<SolidBrush>();
 		private List<SolidBrush> XLibBrushes = new List<SolidBrush>();
@@ -117,7 +117,7 @@ namespace Merthsoft.TokenIDE {
 		private int picNumber = -1;
 		private SaveType saveType;
 
-		private bool mapMode = false;
+		public bool MapMode { get; private set; }
 
 		static HexSprite() {
 			errorImage = new Bitmap(8, 8);
@@ -138,14 +138,14 @@ namespace Merthsoft.TokenIDE {
 		public HexSprite(bool isMapMode = false) {
 			InitializeComponent();
 
-			mapMode = isMapMode;
+			MapMode = isMapMode;
 
 			Icon = Icon.FromHandle(Properties.Resources.icon_hexsprite.GetHicon());
 			outputLabel.Text = "";
 			spriteIndexLabel.Visible = true;
 			spriteIndexLabel.Text = "";
 
-			sprite = new Sprite(8, 8);
+			Sprite = new Sprite(8, 8);
 
 			history = new List<Tuple<Sprite, Palette>>();
 			historyPosition = 0;
@@ -165,7 +165,6 @@ namespace Merthsoft.TokenIDE {
 				addTilesToolStripMenuItem.Visible = false;
 				importImageToolStripMenuItem.Visible = false;
 				exportImageToolStripMenuItem.Visible = false;
-				shiftTilesToolStripMenuItem.Visible = false;
 			} else {
 				this.Text = "xLIBC Map Editor";
 
@@ -218,7 +217,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void generatePalettes() {
-			if (!mapMode) {
+			if (!MapMode) {
 				CelticPalette.ForEach(c => {
 					SolidBrush brush = new SolidBrush(c);
 					CelticBrushes.Add(brush);
@@ -272,7 +271,7 @@ namespace Merthsoft.TokenIDE {
 					break;
 
 				case Palette.xLIBC:
-					if (!mapMode) { goto default; }
+					if (!MapMode) { goto default; }
 					newSprite = new Sprite(hex, SpriteWidth, out height, 8);
 					break;
 
@@ -281,7 +280,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			SpriteHeight = height;
 			//performResizeFlag = true;
-			sprite = newSprite;
+			Sprite = newSprite;
 			spriteBox.Invalidate();
 
 			if (hex.Contains("G")) {
@@ -315,9 +314,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void resizeSprite(int newW, int newH) {
-			if (sprite == null || !performResizeFlag)
+			if (Sprite == null || !performResizeFlag)
 				return;
-			if (sprite != null) {
+			if (Sprite != null) {
 				pushHistory();
 			}
 
@@ -327,13 +326,13 @@ namespace Merthsoft.TokenIDE {
 			SpriteHeight = newH;
 			shouldPushHistory = shouldPushBackup;
 
-			sprite.Resize(newW, newH);
+			Sprite.Resize(newW, newH);
 			spriteBox.Invalidate();
 		}
 
 		private void spriteBox_Paint(object sender, PaintEventArgs e) {
 			int realPixelSize = pixelSize;
-			if (mapMode) {
+			if (MapMode) {
 				realPixelSize *= 8;
 			}
 
@@ -342,19 +341,19 @@ namespace Merthsoft.TokenIDE {
 
 			//try {
 			if (drawCanvas == null || drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
-				if (!mapMode) {
+				if (!MapMode) {
 					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
 				} else {
 					drawCanvas = new Bitmap(SpriteWidth * 8, SpriteHeight * 8);
 				}
-				sprite.Invalidate();
+				Sprite.Invalidate();
 			}
 
 			lock (drawCanvas) {
-				drawSprite(drawCanvas, sprite);
+				DrawSprite(drawCanvas, Sprite);
 
 				if (previewSprite != null) {
-					drawSprite(drawCanvas, previewSprite, false);
+					DrawSprite(drawCanvas, previewSprite, false);
 				}
 			}
 
@@ -373,7 +372,7 @@ namespace Merthsoft.TokenIDE {
 					}
 				}
 
-				if (!mapMode) {
+				if (!MapMode) {
 					using (Pen largeGridPen = new Pen(Color.Black)) {
 						largeGridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
 						for (int j = 0; j < SpriteHeight; j += 8) {
@@ -403,17 +402,17 @@ namespace Merthsoft.TokenIDE {
 			//}
 		}
 
-		private void drawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true, Palette? palette = null, bool dontUseMapMode = false) {
+		public void DrawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true, Palette? palette = null, bool dontUseMapMode = false) {
 			Rectangle drawBounds = spriteToUse.DirtyRectangle;
 
 			if (drawBounds == Rectangle.Empty) { return; }
 
-			if (mapMode && !dontUseMapMode && Sprites.Count == 0) { return; }
+			if (MapMode && !dontUseMapMode && Sprites.Count == 0) { return; }
 
 			Palette realPalette = palette ?? SelectedPalette;
 
 			Rectangle lockRect = drawBounds;
-			if (mapMode && !dontUseMapMode) {
+			if (MapMode && !dontUseMapMode) {
 				lockRect = new Rectangle(lockRect.X * 8, lockRect.Y * 8, lockRect.Width * 8, lockRect.Height * 8);
 			}
 
@@ -428,24 +427,30 @@ namespace Merthsoft.TokenIDE {
 					int paletteIndex = spriteToUse[i + drawBounds.X, j + drawBounds.Y];
 					if (paletteIndex == skippedColor) { continue; }
 
-					if (!mapMode || dontUseMapMode) {
+					if (!MapMode || dontUseMapMode) {
 						Color drawColor = Color.White;
-						switch (realPalette) {
-							case Palette.BlackAndWhite:
-								drawColor = paletteIndex == 0 ? Color.White : Color.Black;
-								break;
-							case Palette.BasicColors:
-								drawColor = CelticPalette[paletteIndex];
-								break;
-							case Palette.xLIBC:
-								drawColor = XLibPalette[paletteIndex];
-								break;
-							case Palette.Full565:
-								drawColor = Color.FromArgb(paletteIndex);
-								break;
-							default:
-								break;
-						}
+						try {
+							switch (realPalette) {
+								case Palette.BlackAndWhite:
+									paletteIndex %= 2;
+									drawColor = paletteIndex == 0 ? Color.White : Color.Black;
+									break;
+								case Palette.BasicColors:
+									paletteIndex %= CelticPalette.Count;
+									drawColor = CelticPalette[paletteIndex];
+									break;
+								case Palette.xLIBC:
+									paletteIndex %= XLibPalette.Count;
+									drawColor = XLibPalette[paletteIndex];
+									break;
+								case Palette.Full565:
+									paletteIndex = (int)((ulong)paletteIndex % ulong.MaxValue);
+									drawColor = Color.FromArgb(paletteIndex);
+									break;
+								default:
+									break;
+							}
+						} catch { }
 
 						dataToCopy[i + j * data.Stride / 4] = drawColor.ToArgb();
 					} else {
@@ -466,11 +471,11 @@ namespace Merthsoft.TokenIDE {
 			Marshal.Copy(dataToCopy, 0, data.Scan0, dataToCopy.Length);
 			b.UnlockBits(data);
 
-			sprite.ClearDirtyRectangle();
+			Sprite.ClearDirtyRectangle();
 		}
 
 		private void handleMouse(MouseEventArgs e) {
-			if (mapMode && Sprites.Count == 0) { return; }
+			if (MapMode && Sprites.Count == 0) { return; }
 
 			buttonOld = button;
 			button = e.Button;
@@ -479,13 +484,13 @@ namespace Merthsoft.TokenIDE {
 			mouseX = e.X / pixelSize;
 			mouseY = e.Y / pixelSize;
 
-			if (mapMode) {
+			if (MapMode) {
 				mouseX /= 8;
 				mouseY /= 8;
 			}
 
 			if (previewSprite != null) {
-				sprite.DirtyRectangle = previewSprite.DirtyRectangle;
+				Sprite.DirtyRectangle = previewSprite.DirtyRectangle;
 			}
 
 			int pixelColor = -1;
@@ -503,16 +508,16 @@ namespace Merthsoft.TokenIDE {
 			switch (currentTool) {
 				case Tool.Pencil:
 					if (button != System.Windows.Forms.MouseButtons.None) {
-						sprite.DrawLine(mouseXOld, mouseYOld, mouseX, mouseY, pixelColor, penWidth);
+						Sprite.DrawLine(mouseXOld, mouseYOld, mouseX, mouseY, pixelColor, penWidth);
 					}
 					break;
 
 				case Tool.Flood:
 					if (button != System.Windows.Forms.MouseButtons.None) {
 						if (MerthsoftExtensions.IsShiftDown) {
-							sprite.ReplaceAll(mouseX, mouseY, pixelColor);
+							Sprite.ReplaceAll(mouseX, mouseY, pixelColor);
 						} else {
-							sprite.FloodFill(mouseX, mouseY, pixelColor);
+							Sprite.FloodFill(mouseX, mouseY, pixelColor);
 						}
 					}
 					break;
@@ -545,7 +550,7 @@ namespace Merthsoft.TokenIDE {
 						createPatternSprite();
 						drawing = false;
 					} else if (pattern != null && button == System.Windows.Forms.MouseButtons.Left) {
-						copyPatternSprite(sprite);
+						copyPatternSprite(Sprite);
 					} else if (button == System.Windows.Forms.MouseButtons.Right) {
 						previewSprite = null;
 						pattern = null;
@@ -614,9 +619,9 @@ namespace Merthsoft.TokenIDE {
 				case Tool.EyeDropper:
 					if (SelectedPalette != Palette.BlackAndWhite && mouseX >= 0 && mouseY >= 0 && mouseX < SpriteWidth && mouseY < SpriteHeight) {
 						if (button == System.Windows.Forms.MouseButtons.Left) {
-							setLeftMouseButton(sprite[mouseX, mouseY]);
+							setLeftMouseButton(Sprite[mouseX, mouseY]);
 						} else if (button == System.Windows.Forms.MouseButtons.Right) {
-							setRightMouseButton(sprite[mouseX, mouseY]);
+							setRightMouseButton(Sprite[mouseX, mouseY]);
 						}
 					}
 					break;
@@ -655,7 +660,7 @@ namespace Merthsoft.TokenIDE {
 			pattern = new Sprite(patternWidth, patternHeight);
 			for (int i = 0; i < patternWidth; i++) {
 				for (int j = 0; j < patternHeight; j++) {
-					pattern[i, j] = sprite[i + patternX, j + patternY];
+					pattern[i, j] = Sprite[i + patternX, j + patternY];
 				}
 			}
 		}
@@ -674,7 +679,7 @@ namespace Merthsoft.TokenIDE {
 			for (int j = drawRect.Y; j < drawRect.Y + drawRect.Height; j++) {
 				for (int i = drawRect.X; i < drawRect.X + drawRect.Width; i++) {
 					if (previewSprite[i, j] != skippedColor) {
-						sprite[i, j] = previewSprite[i, j];
+						Sprite[i, j] = previewSprite[i, j];
 					}
 				}
 			}
@@ -690,7 +695,7 @@ namespace Merthsoft.TokenIDE {
 				mouseX = e.X / pixelSize;
 				mouseY = e.Y / pixelSize;
 
-				if (mapMode) {
+				if (MapMode) {
 					mouseX /= 8;
 					mouseY /= 8;
 				}
@@ -718,7 +723,7 @@ namespace Merthsoft.TokenIDE {
 
 			mouseX = e.X / pixelSize;
 			mouseY = e.Y / pixelSize;
-			if (mapMode) {
+			if (MapMode) {
 				mouseX /= 8;
 				mouseY /= 8;
 			}
@@ -732,11 +737,11 @@ namespace Merthsoft.TokenIDE {
 
 		private void pushHistory(Palette? palette = null) {
 			if (shouldPushHistory == false) { return; }
-			if (sprite == null || previousPalette == null) { return; }
+			if (Sprite == null || previousPalette == null) { return; }
 			if (historyPosition != history.Count) {
 				history.RemoveRange(historyPosition, history.Count - historyPosition);
 			}
-			history.Add(Tuple.Create(sprite.Copy(), palette ?? SelectedPalette));
+			history.Add(Tuple.Create(Sprite.Copy(), palette ?? SelectedPalette));
 			historyPosition = history.Count;
 			toggleRedo(false);
 			toggleUndo(true);
@@ -765,19 +770,19 @@ namespace Merthsoft.TokenIDE {
 					if (i % 8 == 0) {
 						t += ",%";
 					}
-					t += sprite[i, j].ToString();
+					t += Sprite[i, j].ToString();
 
 					switch (SelectedPalette) {
 						case Palette.BlackAndWhite:
-							line.Append(sprite[i, j].ToString());
+							line.Append(Sprite[i, j].ToString());
 							break;
 
 						case Palette.BasicColors:
-							line.Append(sprite[i, j].ToString("X1"));
+							line.Append(Sprite[i, j].ToString("X1"));
 							break;
 
 						case Palette.xLIBC:
-							line.Append(sprite[i, j].ToString("X2"));
+							line.Append(Sprite[i, j].ToString("X2"));
 							break;
 
 						default:
@@ -878,6 +883,8 @@ namespace Merthsoft.TokenIDE {
 		private void paletteChoice_SelectedIndexChanged(object sender, EventArgs e) {
 			if (SelectedPalette == previousPalette) { return; }
 
+			shiftTilesToolStripMenuItem.Enabled = SelectedPalette != Palette.Full565;
+
 			pushHistory(previousPalette);
 
 			switch (SelectedPalette) {
@@ -916,18 +923,18 @@ namespace Merthsoft.TokenIDE {
 
 			// If you're changing palettes, just give up for now
 			// [TODO] Make this smarter?
-			if (sprite != null) {
+			if (Sprite != null) {
 				using (Bitmap b = new Bitmap(SpriteWidth, SpriteHeight)) {
 					shouldPushHistory = false;
-					sprite.DirtyRectangle = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
-					drawSprite(b, sprite, palette: previousPalette);
+					Sprite.DirtyRectangle = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
+					DrawSprite(b, Sprite, palette: previousPalette);
 					loadImage(b);
 					shouldPushHistory = true;
 				}
 			}
 
 			previousPalette = SelectedPalette;
-			sprite.Invalidate();
+			Sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
@@ -1055,19 +1062,19 @@ namespace Merthsoft.TokenIDE {
 			switch (SelectedPalette) {
 				case Palette.BlackAndWhite:
 					image.PosterizeImage();
-					sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
+					Sprite = new Sprite(image, new List<Color>() { Color.White, Color.Black });
 					break;
 
 				case Palette.BasicColors:
-					sprite = new Sprite(image, CelticPalette, 0);
+					Sprite = new Sprite(image, CelticPalette, 0);
 					break;
 
 				case Palette.xLIBC:
-					sprite = new Sprite(image, XLibPalette);
+					Sprite = new Sprite(image, XLibPalette);
 					break;
 
 				case Palette.Full565:
-					sprite = new Sprite(image);
+					Sprite = new Sprite(image);
 					break;
 			}
 
@@ -1105,7 +1112,7 @@ namespace Merthsoft.TokenIDE {
 			SpriteWidth = 160;
 			SpriteHeight = 120;
 
-			sprite = new Sprite(SpriteWidth, SpriteHeight);
+			Sprite = new Sprite(SpriteWidth, SpriteHeight);
 
 			SelectedPalette = Palette.xLIBC;
 
@@ -1120,7 +1127,7 @@ namespace Merthsoft.TokenIDE {
 			BitStream bitStream = new BitStream(appVar.Data, 312);
 			while (!bitStream.AtEnd) {
 				byte index = (byte)bitStream.Read(5);
-				sprite[x, y] = colors[index];
+				Sprite[x, y] = colors[index];
 
 				y++;
 				if (y == SpriteHeight) {
@@ -1179,14 +1186,14 @@ namespace Merthsoft.TokenIDE {
 			SpriteWidth = 80;
 			SpriteHeight = 60;
 
-			sprite = new Sprite(SpriteWidth, SpriteHeight);
+			Sprite = new Sprite(SpriteWidth, SpriteHeight);
 
 			SelectedPalette = Palette.xLIBC;
 
 			int x = 0;
 			int y = 0;
 			for (int i = 7; i < appVar.Data.Length; i++) {
-				sprite[x, y] = appVar.Data[i];
+				Sprite[x, y] = appVar.Data[i];
 				y++;
 				if (y == 60) {
 					y = 0;
@@ -1198,14 +1205,14 @@ namespace Merthsoft.TokenIDE {
 		private void openxLibTiles(AppVar8x appVar) {
 			int dataLength = appVar.Data.Length;
 
-			if (!mapMode) {
+			if (!MapMode) {
 				SelectedPalette = Palette.xLIBC;
 				SpriteWidth = 128;
 				SpriteHeight = 64;
-				sprite = loadTiles(appVar, dataLength);
+				Sprite = loadTiles(appVar, dataLength);
 			} else {
 				loadTiles(appVar, dataLength);
-				sprite.Invalidate();
+				Sprite.Invalidate();
 			}
 		}
 
@@ -1220,7 +1227,7 @@ namespace Merthsoft.TokenIDE {
 			Sprite subSprite = new Sprite(8, 8);
 			for (int i = 7; i < dataLength; i++) {
 				newSprite[x + spriteX, y + spriteY] = appVar.Data[i];
-				if (mapMode) {
+				if (MapMode) {
 					subSprite[spriteX, spriteY] = appVar.Data[i];
 				}
 				spriteY++;
@@ -1229,9 +1236,9 @@ namespace Merthsoft.TokenIDE {
 					spriteX++;
 				}
 				if (spriteX == 8) {
-					if (mapMode) {
+					if (MapMode) {
 						Bitmap b = new Bitmap(8, 8);
-						drawSprite(b, subSprite, palette: Palette.xLIBC, dontUseMapMode: true);
+						DrawSprite(b, subSprite, palette: Palette.xLIBC, dontUseMapMode: true);
 						SpriteImages.Add(b);
 						b = ResizeBitmap(b, 32, 32);
 						Sprites.Add(subSprite);
@@ -1287,7 +1294,7 @@ namespace Merthsoft.TokenIDE {
 		private void undo() {
 			if (historyPosition == history.Count) {
 				//history.Add(copySpriteArray());
-				history.Add(Tuple.Create(sprite.Copy(), SelectedPalette));
+				history.Add(Tuple.Create(Sprite.Copy(), SelectedPalette));
 			}
 
 			copySpriteFromHistory(--historyPosition);
@@ -1297,7 +1304,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleRedo(true);
 
-			sprite.Invalidate();
+			Sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
@@ -1307,10 +1314,10 @@ namespace Merthsoft.TokenIDE {
 
 			var historyItem = history[position];
 			SelectedPalette = historyItem.Item2;
-			sprite = historyItem.Item1;
+			Sprite = historyItem.Item1;
 
-			SpriteHeight = sprite.Height;
-			SpriteWidth = sprite.Width;
+			SpriteHeight = Sprite.Height;
+			SpriteWidth = Sprite.Width;
 			shouldPushHistory = true;
 			performResizeFlag = true;
 		}
@@ -1322,7 +1329,7 @@ namespace Merthsoft.TokenIDE {
 			}
 			toggleUndo(true);
 
-			sprite.Invalidate();
+			Sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
@@ -1347,7 +1354,7 @@ namespace Merthsoft.TokenIDE {
 			Brush brush = null;
 			bool dispose = false;
 
-			if (mapMode) {
+			if (MapMode) {
 				if (Sprites.Count > 0) {
 					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 					e.Graphics.DrawImage(getImageAt(leftPixel), 0, 0, 32, 32);
@@ -1381,7 +1388,7 @@ namespace Merthsoft.TokenIDE {
 			Brush brush = null;
 			bool dispose = false;
 
-			if (mapMode) {
+			if (MapMode) {
 				if (Sprites.Count > 0) {
 					e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 					e.Graphics.DrawImage(getImageAt(rightPixel), 0, 0, 32, 32);
@@ -1486,7 +1493,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You cannot save a pic file using a color palette.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 96 || sprite.Height != 64) {
+			if (Sprite.Width != 96 || Sprite.Height != 64) {
 				var res = MessageBox.Show("Pic files should be 96 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
@@ -1496,14 +1503,14 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			Pic8x picture = new Pic8x((byte)(picNumber));
-			int dataSize = sprite.Width * sprite.Height / 8;
+			int dataSize = Sprite.Width * Sprite.Height / 8;
 			byte[] data = new byte[dataSize];
 			byte b = 0;
 			int index = 0;
 			int bit = 7;
-			for (int j = 0; j < sprite.Height; j++) {
-				for (int i = 0; i < sprite.Width; i++) {
-					int val = sprite[i, j];
+			for (int j = 0; j < Sprite.Height; j++) {
+				for (int i = 0; i < Sprite.Width; i++) {
+					int val = Sprite[i, j];
 					b |= (byte)(val << bit--);
 					if (bit == -1) {
 						bit = 7;
@@ -1525,7 +1532,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You cannot save a color pic file using a palette other than CelticIICSE.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 265 || sprite.Height != 165) {
+			if (Sprite.Width != 265 || Sprite.Height != 165) {
 				var res = MessageBox.Show("Pic files should be 265 wide by 165 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
@@ -1535,18 +1542,18 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			Pic8xC picture = new Pic8xC((byte)(picNumber));
-			int dataSize = sprite.Width * sprite.Height / 2;
+			int dataSize = Sprite.Width * Sprite.Height / 2;
 			byte[] data = new byte[dataSize];
 
 			int i = 0; int j = 0;
 			for (int index = 0; index < dataSize; index++) {
-				byte b = (byte)(sprite[i, j] << 4);
-				if (i + 1 < sprite.Width) {
-					b |= (byte)sprite[i + 1, j];
+				byte b = (byte)(Sprite[i, j] << 4);
+				if (i + 1 < Sprite.Width) {
+					b |= (byte)Sprite[i + 1, j];
 				}
 				data[index] = b;
 				i += 2;
-				if (i > sprite.Width) {
+				if (i > Sprite.Width) {
 					i = 0;
 					j++;
 				}
@@ -1565,7 +1572,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You cannot save a color image file using a palette other than Full565.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 134 || sprite.Height != 83) {
+			if (Sprite.Width != 134 || Sprite.Height != 83) {
 				var res = MessageBox.Show("Pic files should be 133 wide by 83 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
@@ -1575,19 +1582,19 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			Image8xC picture = new Image8xC((byte)(picNumber));
-			int dataSize = sprite.Width * sprite.Height * 2 + 1;
+			int dataSize = Sprite.Width * Sprite.Height * 2 + 1;
 			byte[] data = new byte[dataSize];
 			data[0] = 0x81;
 
-			int i = 0; int j = sprite.Height - 1;
+			int i = 0; int j = Sprite.Height - 1;
 			for (int index = 1; index < dataSize; index += 2) {
-				int val = sprite[i, j];
+				int val = Sprite[i, j];
 				var color = MerthsoftExtensions.Color565FromRGB(val);
 				data[index + 1] = color.Item1;
 				data[index] = color.Item2;
 
 				i += 1;
-				if (i == sprite.Width - 1) {
+				if (i == Sprite.Width - 1) {
 					index += 2;
 					i = 0;
 					j--;
@@ -1639,10 +1646,10 @@ namespace Merthsoft.TokenIDE {
 
 		private bool savePng() {
 			bool success;
-			using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
+			using (Bitmap b = new Bitmap(Sprite.Width, Sprite.Height)) {
 				//using (Graphics g = Graphics.FromImage(b)) {
-				sprite.Invalidate();
-				drawSprite(b, sprite);
+				Sprite.Invalidate();
+				DrawSprite(b, Sprite);
 				try {
 					b.Save(fileName);
 					success = true;
@@ -1658,23 +1665,23 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 80 || sprite.Height != 60) {
+			if (Sprite.Width != 80 || Sprite.Height != 60) {
 				var res = MessageBox.Show("xLIBC background pictures should be 80 wide by 60 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
-			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
+			byte[] buffer = new byte[Sprite.Width * Sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIBBGPIC), 0, Encoding.ASCII.GetByteCount(HEADER_XLIBBGPIC));
 
 				int x = 0;
 				int y = 0;
 
-				for (int i = 0; i < sprite.Width * sprite.Height; i++) {
-					byte data = (byte)sprite[x, y];
+				for (int i = 0; i < Sprite.Width * Sprite.Height; i++) {
+					byte data = (byte)Sprite[x, y];
 					ms.WriteByte(data);
 					y++;
-					if (y == sprite.Height) {
+					if (y == Sprite.Height) {
 						y = 0;
 						x++;
 					}
@@ -1695,12 +1702,12 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 128 || sprite.Height != 64) {
+			if (Sprite.Width != 128 || Sprite.Height != 64) {
 				var res = MessageBox.Show("xLIBC tile/sprite definitions should be 128 wide by 64 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
-			byte[] buffer = new byte[sprite.Width * sprite.Height + 7];
+			byte[] buffer = new byte[Sprite.Width * Sprite.Height + 7];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIBTILES), 0, Encoding.ASCII.GetByteCount(HEADER_XLIBTILES));
 
@@ -1709,8 +1716,8 @@ namespace Merthsoft.TokenIDE {
 				int spriteX = 0;
 				int spriteY = 0;
 
-				for (int i = 0; i < sprite.Width * sprite.Height; i++) {
-					byte data = (byte)sprite[x + spriteX, y + spriteY];
+				for (int i = 0; i < Sprite.Width * Sprite.Height; i++) {
+					byte data = (byte)Sprite[x + spriteX, y + spriteY];
 					ms.WriteByte(data);
 
 					spriteY++;
@@ -1722,7 +1729,7 @@ namespace Merthsoft.TokenIDE {
 						spriteX = 0;
 						spriteY = 0;
 						y += 8;
-						if (y == sprite.Height) {
+						if (y == Sprite.Height) {
 							y = 0;
 							x += 8;
 						}
@@ -1743,7 +1750,7 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You can only save an xLIBC file using the xLIBC palette, switch palettes to continue.", "Wrong Palette", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
-			if (sprite.Width != 160 || sprite.Height != 120) {
+			if (Sprite.Width != 160 || Sprite.Height != 120) {
 				var res = MessageBox.Show("xLIBC 32-color images should be 160 wide by 120 tall. Are you sure you want to continue?", "Wrong Dimensions", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 			}
@@ -1752,9 +1759,9 @@ namespace Merthsoft.TokenIDE {
 			Dictionary<byte, byte> seenColors = new Dictionary<byte, byte>();
 			Dictionary<int, int> indexToPalette = new Dictionary<int, int>();
 
-			for (int i = 0; i < sprite.Width; i++) {
-				for (int j = 0; j < sprite.Height; j++) {
-					byte pixelValue = (byte)sprite[i, j];
+			for (int i = 0; i < Sprite.Width; i++) {
+				for (int j = 0; j < Sprite.Height; j++) {
+					byte pixelValue = (byte)Sprite[i, j];
 					if (!seenColors.ContainsKey(pixelValue)) {
 						seenColors[pixelValue] = (byte)colors.Count;
 						indexToPalette[colors.Count] = pixelValue;
@@ -1767,21 +1774,21 @@ namespace Merthsoft.TokenIDE {
 				var res = MessageBox.Show("You are attempting to save a 32-color image with more than 32 colors. Do you want to reduce the image to 32 colors automatically?", "Too Many Colors", MessageBoxButtons.YesNo, MessageBoxIcon.Hand);
 				if (res == System.Windows.Forms.DialogResult.No) { return false; }
 				colors = colors.Take(32).ToList();
-				sprite.Invalidate();
-				using (Bitmap b = new Bitmap(sprite.Width, sprite.Height)) {
-					drawSprite(b, sprite);
-					sprite = new Sprite(b, colors);
-					sprite.Invalidate();
+				Sprite.Invalidate();
+				using (Bitmap b = new Bitmap(Sprite.Width, Sprite.Height)) {
+					DrawSprite(b, Sprite);
+					Sprite = new Sprite(b, colors);
+					Sprite.Invalidate();
 					spriteBox.Invalidate();
 				}
 
 				colors = new List<Color>();
 				seenColors = new Dictionary<byte, byte>();
 
-				for (int i = 0; i < sprite.Width; i++) {
-					for (int j = 0; j < sprite.Height; j++) {
-						sprite[i, j] = indexToPalette[sprite[i, j]];
-						byte pixelValue = (byte)sprite[i, j];
+				for (int i = 0; i < Sprite.Width; i++) {
+					for (int j = 0; j < Sprite.Height; j++) {
+						Sprite[i, j] = indexToPalette[Sprite[i, j]];
+						byte pixelValue = (byte)Sprite[i, j];
 						if (!seenColors.ContainsKey(pixelValue)) {
 							seenColors[pixelValue] = (byte)colors.Count;
 							colors.Add(XLibPalette[pixelValue]);
@@ -1791,7 +1798,7 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			AppVar8x appVar = new AppVar8x(new FileInfo(fileName).GetFileName(), Var8x.CalcType.Calc8x) { Archived = true };
-			byte[] buffer = new byte[39 + (sprite.Width * sprite.Height * 5) / 8];
+			byte[] buffer = new byte[39 + (Sprite.Width * Sprite.Height * 5) / 8];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIB32COLORIMAGE), 0, Encoding.ASCII.GetByteCount(HEADER_XLIB32COLORIMAGE));
 				ms.Write(seenColors.Keys.Take(32).ToArray(), 0, 32);
@@ -1800,9 +1807,9 @@ namespace Merthsoft.TokenIDE {
 				}
 
 				BitStream bs = new BitStream();
-				for (int i = 0; i < sprite.Width; i++) {
-					for (int j = 0; j < sprite.Height; j++) {
-						byte color = (byte)sprite[i, j];
+				for (int i = 0; i < Sprite.Width; i++) {
+					for (int j = 0; j < Sprite.Height; j++) {
+						byte color = (byte)Sprite[i, j];
 						byte index = seenColors[color];
 						bs.Write(index, 5);
 					}
@@ -1950,12 +1957,12 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void redrawToolStripMenuItem_Click(object sender, EventArgs e) {
-			sprite.Invalidate();
+			Sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 
 		private void addTilesToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (!mapMode) {
+			if (!MapMode) {
 				openToolStripButton_Click(sender, e);
 				return;
 			}
@@ -1976,9 +1983,9 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void exportImage(string fileName) {
-			using (Bitmap b = new Bitmap(sprite.Width * 8, sprite.Height * 8)) {
-				sprite.Invalidate();
-				drawSprite(b, sprite);
+			using (Bitmap b = new Bitmap(Sprite.Width * 8, Sprite.Height * 8)) {
+				Sprite.Invalidate();
+				DrawSprite(b, Sprite);
 				b.Save(fileName);
 			}
 		}
@@ -2006,18 +2013,18 @@ namespace Merthsoft.TokenIDE {
 				pushHistory();
 				shouldPushHistory = false;
 				performResizeFlag = false;
-				sprite = new Sprite(imageSprite.Width / 8, imageSprite.Height / 8);
-				SpriteWidth = sprite.Width;
-				SpriteHeight = sprite.Height;
+				Sprite = new Sprite(imageSprite.Width / 8, imageSprite.Height / 8);
+				SpriteWidth = Sprite.Width;
+				SpriteHeight = Sprite.Height;
 
 				for (int x = 0; x < imageSprite.Width; x += 8) {
 					for (int y = 0; y < imageSprite.Height; y += 8) {
 						Sprite tile = imageSprite.SubSprite(x, y, 8, 8);
-						sprite[x/8, y/8] = Sprites.IndexOf(tile);
+						Sprite[x/8, y/8] = Sprites.IndexOf(tile);
 					}
 				}
 
-				sprite.Invalidate();
+				Sprite.Invalidate();
 				spriteBox.Invalidate();
 				shouldPushHistory = true;
 				performResizeFlag = true;
@@ -2025,22 +2032,13 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void shiftTilesToolStripMenuItem_Click(object sender, EventArgs e) {
-			ShiftTiles st = new ShiftTiles() {
+			ShiftTiles st = new ShiftTiles(this) {
 				Start = leftPixel, End = rightPixel
 			};
 			if (st.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
-			int start = st.Start;
-			int end = st.End;
-			int amount = st.Amount;
-			for (int i = 0; i < sprite.Width; i++) {
-				for (int j = 0; j < sprite.Height; j++) {
-					int tile = sprite[i, j];
-					if (tile >= start && tile <= end) {
-						sprite[i, j] += amount;
-					}
-				}
-			}
-			sprite.Invalidate();
+
+			Sprite = st.Sprite;
+			Sprite.Invalidate();
 			spriteBox.Invalidate();
 		}
 	}
