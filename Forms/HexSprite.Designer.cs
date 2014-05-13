@@ -74,6 +74,7 @@ namespace Merthsoft.TokenIDE {
 			this.xLIBCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.shiftTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
 			this.mainContainer = new System.Windows.Forms.SplitContainer();
 			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
@@ -513,7 +514,8 @@ namespace Merthsoft.TokenIDE {
             this.redoToolStripMenuItem,
             this.toolStripSeparator3,
             this.loadTemplateToolStripMenuItem,
-            this.redrawToolStripMenuItem});
+            this.redrawToolStripMenuItem,
+            this.shiftTilesToolStripMenuItem});
 			this.editToolStripMenuItem.Name = "editToolStripMenuItem";
 			this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
 			this.editToolStripMenuItem.Text = "Edit";
@@ -596,6 +598,13 @@ namespace Merthsoft.TokenIDE {
 			this.redrawToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.redrawToolStripMenuItem.Text = "Redraw";
 			this.redrawToolStripMenuItem.Click += new System.EventHandler(this.redrawToolStripMenuItem_Click);
+			// 
+			// shiftTilesToolStripMenuItem
+			// 
+			this.shiftTilesToolStripMenuItem.Name = "shiftTilesToolStripMenuItem";
+			this.shiftTilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.shiftTilesToolStripMenuItem.Text = "Shift Tiles";
+			this.shiftTilesToolStripMenuItem.Click += new System.EventHandler(this.shiftTilesToolStripMenuItem_Click);
 			// 
 			// spritePanel
 			// 
@@ -796,6 +805,7 @@ namespace Merthsoft.TokenIDE {
 		private ToolStripMenuItem addTilesToolStripMenuItem;
 		private ToolStripMenuItem importImageToolStripMenuItem;
 		private ToolStripMenuItem exportImageToolStripMenuItem;
+		private ToolStripMenuItem shiftTilesToolStripMenuItem;
 
 	}
 }

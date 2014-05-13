@@ -33,7 +33,7 @@ to include changes if they're better!
     <Style name="Var" foreground="Red" />
   </Styles>
   <Token byte="$00" string=""/>
-  <Token byte="$01" string="►DMS" style="Command">
+  <Token byte="$01" string="►DMS" style="Command" comment="`number►DMS`\nFormats *number* as an angle with degree, minute, and second parts." site="http://tibasicdev.wikidot.com/dms">
     <Alt string="&gt;DMS" />
   </Token>
 	<Token byte="$02" string="►Dec" style="Command" >

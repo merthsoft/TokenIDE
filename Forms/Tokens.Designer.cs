@@ -91,7 +91,7 @@
 			this.TokensTree = new System.Windows.Forms.TreeView();
 			this.tokensTreeMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.navigateToDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.commentText = new HtmlRenderer.HtmlPanel();
+			this.commentText = new System.Windows.Forms.WebBrowser();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.docLinkLabel = new System.Windows.Forms.LinkLabel();
 			this.ProjectTab = new System.Windows.Forms.TabPage();
@@ -712,7 +712,7 @@
 			this.tokensTreeMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.navigateToDocsToolStripMenuItem});
 			this.tokensTreeMenuStrip.Name = "tokensTreeMenuStrip";
-			this.tokensTreeMenuStrip.Size = new System.Drawing.Size(168, 48);
+			this.tokensTreeMenuStrip.Size = new System.Drawing.Size(168, 26);
 			// 
 			// navigateToDocsToolStripMenuItem
 			// 
@@ -723,17 +723,16 @@
 			// 
 			// commentText
 			// 
-			this.commentText.AutoScroll = true;
-			this.commentText.AutoScrollMinSize = new System.Drawing.Size(162, 17);
-			this.commentText.BackColor = System.Drawing.SystemColors.Control;
-			this.commentText.BaseStylesheet = "div {font-family: monospace;}";
-			this.commentText.Cursor = System.Windows.Forms.Cursors.Default;
+			this.commentText.AllowWebBrowserDrop = false;
 			this.commentText.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.commentText.IsWebBrowserContextMenuEnabled = false;
 			this.commentText.Location = new System.Drawing.Point(0, 0);
 			this.commentText.Name = "commentText";
+			this.commentText.ScriptErrorsSuppressed = true;
 			this.commentText.Size = new System.Drawing.Size(162, 120);
 			this.commentText.TabIndex = 2;
-			this.commentText.Text = "<div>Comments go here.</div>";
+			this.commentText.WebBrowserShortcutsEnabled = false;
+			this.commentText.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.commentText_DocumentCompleted);
 			// 
 			// panel1
 			// 
@@ -970,14 +969,20 @@
 
 		private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
-		private System.Windows.Forms.StatusStrip bottomStatusStrip;
+		private System.Windows.Forms.ToolStripMenuItem changeTokenFileToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem buildToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toTokensToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem hexSpriteEditorToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem dCSGuiDesignerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem imageEditorToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem changeTokenFileToolStripMenuItem;
+		private System.Windows.Forms.StatusStrip bottomStatusStrip;
+
+		#region Windows Form Designer generated code
+
+
+		#endregion
+
 		private DraggableTabControl EditWindows;
 		private System.Windows.Forms.SplitContainer mainContainer;
 		private System.Windows.Forms.ToolStripMenuItem openFileToolStripMenuItem;
@@ -1055,7 +1060,7 @@
 		private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
-		private HtmlRenderer.HtmlPanel commentText;
+		private System.Windows.Forms.WebBrowser commentText;
 	}
 }
 

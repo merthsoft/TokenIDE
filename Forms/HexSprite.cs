@@ -155,12 +155,17 @@ namespace Merthsoft.TokenIDE {
 				this.Icon = icon;
 			}
 
+#if RELEASE
+			redrawToolStripMenuItem.Visible = false;
+#endif
+
 			generatePalettes();
 			if (!isMapMode) {
 				mainContainer.Panel1Collapsed = true;
 				addTilesToolStripMenuItem.Visible = false;
 				importImageToolStripMenuItem.Visible = false;
 				exportImageToolStripMenuItem.Visible = false;
+				shiftTilesToolStripMenuItem.Visible = false;
 			} else {
 				this.Text = "xLIBC Map Editor";
 
@@ -2017,6 +2022,26 @@ namespace Merthsoft.TokenIDE {
 				shouldPushHistory = true;
 				performResizeFlag = true;
 			}
+		}
+
+		private void shiftTilesToolStripMenuItem_Click(object sender, EventArgs e) {
+			ShiftTiles st = new ShiftTiles() {
+				Start = leftPixel, End = rightPixel
+			};
+			if (st.ShowDialog() != System.Windows.Forms.DialogResult.OK) { return; }
+			int start = st.Start;
+			int end = st.End;
+			int amount = st.Amount;
+			for (int i = 0; i < sprite.Width; i++) {
+				for (int j = 0; j < sprite.Height; j++) {
+					int tile = sprite[i, j];
+					if (tile >= start && tile <= end) {
+						sprite[i, j] += amount;
+					}
+				}
+			}
+			sprite.Invalidate();
+			spriteBox.Invalidate();
 		}
 	}
 }

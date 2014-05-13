@@ -14,9 +14,14 @@ using Merthsoft.TokenIDE.Project;
 using Merthsoft.TokenIDE.Properties;
 using Merthsoft.Tokens;
 using Merthsoft.Tokens.DCSGUI;
+using System.Web;
 
 namespace Merthsoft.TokenIDE {
 	public partial class Tokens : Form {
+		private MarkdownSharp.Markdown markdown;
+		private string referenceCommentStart;
+		private string referenceCommentEnd;
+
 		private bool prettyPrint;
 		private TokenData _tokenData;
 		private dynamic config;
@@ -38,7 +43,7 @@ namespace Merthsoft.TokenIDE {
 			set {
 				_tokenData = value;
 				TokensTree.Nodes.Clear();
-				commentText.Text = "";
+				setReferenceComment("");
 				List<string> groups = _tokenData.GroupNames;
 				groups.Sort();
 				foreach (string group in groups) {
@@ -61,6 +66,11 @@ namespace Merthsoft.TokenIDE {
 		public Tokens(string[] files) {
 			InitializeComponent();
 
+			markdown = new MarkdownSharp.Markdown();
+			markdown.AutoNewLines = true;
+			referenceCommentStart = string.Format("<html><head><style>body {{ background-color:#{0:X2}{1:X2}{2:X2}; font-family:sans-serif; font-size: 9pt; margins: 0,0,0,0; padding: 0,0,0,0 }}</style></head><body><div>", SystemColors.Control.R, SystemColors.Control.G, SystemColors.Control.B);
+			referenceCommentEnd = "</div></body></html>";
+			
 			EditWindows.TabClose += EditWindows_TabClose;
 
 			statusLabel.Text = "";
@@ -1137,10 +1147,15 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void TokensTree_AfterSelect(object sender, TreeViewEventArgs e) {
-			TokenData.GroupEntry entry = e.Node.Tag as TokenData.GroupEntry;
+			TreeNode node = e.Node;
+			setReferenceInfo(node);
+		}
+
+		private void setReferenceInfo(TreeNode node) {
+			TokenData.GroupEntry entry = node.Tag as TokenData.GroupEntry;
 			string mainText;
-			if (entry == null) { 
-				mainText = e.Node.Text; 
+			if (entry == null) {
+				mainText = node.Text;
 			} else {
 				mainText = entry.Main;
 			}
@@ -1148,19 +1163,21 @@ namespace Merthsoft.TokenIDE {
 			if (TokenData.Comments.ContainsKey(mainText)) {
 				string comment = TokenData.Comments[mainText];
 				if (comment != null) {
-					commentText.Text = "<div>" + comment + "</div>";
+					setReferenceComment(comment);
 				} else {
-					commentText.Text = "No data available for this command.";
+					setReferenceComment("No data available for this command.");
 				}
 			} else {
-				commentText.Text = "";
+				setReferenceComment("");
 			}
-			
-			var n = e.Node;
+
+			var n = node;
 			entry = n.Tag as TokenData.GroupEntry;
 			mainText = entry != null ? entry.Main : n.Text;
 			while (!TokenData.Sites.ContainsKey(mainText) && n.Parent != null) {
 				n = n.Parent;
+				entry = n.Tag as TokenData.GroupEntry;
+				mainText = entry != null ? entry.Main : n.Text;
 			}
 			if (!TokenData.Sites.ContainsKey(mainText)) {
 				docLinkLabel.Text = "";
@@ -1170,18 +1187,14 @@ namespace Merthsoft.TokenIDE {
 			mainToolTip.SetToolTip(docLinkLabel, docLinkLabel.Text);
 		}
 
+		private void setReferenceComment(string comment) {
+			comment = HttpUtility.HtmlEncode(comment);
+			comment = markdown.Transform(comment);
+			commentText.DocumentText = string.Concat(referenceCommentStart, comment, referenceCommentEnd);
+		}
+
 		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
 			TokensTree.SelectedNode = e.Node;
-			//if (TokenData.Comments.ContainsKey(e.Node.Text)) {
-			//	string comment = TokenData.Comments[e.Node.Text];
-			//	if (comment != null) {
-			//		commentBox.Text = comment.Replace("\n", Environment.NewLine);//.Replace("\\n", "\n");
-			//	} else {
-			//		commentBox.Text = "No data available for this command.";
-			//	}
-			//} else {
-			//	commentBox.Text = "";
-			//}
 		}
 
 		private void TokensTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
@@ -1278,5 +1291,12 @@ namespace Merthsoft.TokenIDE {
 		private void replaceToolStripMenuItem_Click(object sender, EventArgs e) {
 			currWindow.Replace();
 		}
+
+		private void commentText_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e) {
+			if (!commentText.DocumentText.ToLowerInvariant().Contains("<style>")) {
+				setReferenceInfo(TokensTree.SelectedNode);
+			}
+		}
+
 	}
 }

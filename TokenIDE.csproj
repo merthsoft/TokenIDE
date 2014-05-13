@@ -72,6 +72,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -85,6 +86,14 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BitStream.cs" />
+    <Compile Include="Forms\ShiftTiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ShiftTiles.Designer.cs">
+      <DependentUpon>ShiftTiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Markdown\Escapes.cs" />
+    <Compile Include="Markdown\Markdown.cs" />
     <Compile Include="TabCloseEventArgs.cs" />
     <Compile Include="FileFolderDialog.cs">
       <SubType>Component</SubType>
@@ -216,6 +225,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ColorPicker.resx">
       <DependentUpon>ColorPicker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ShiftTiles.resx">
+      <DependentUpon>ShiftTiles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Tokens.resx">
       <DependentUpon>Tokens.cs</DependentUpon>
@@ -352,10 +364,6 @@
     <ProjectReference Include="FastColoredTextBox\FastColoredTextBox.csproj">
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
-    </ProjectReference>
-    <ProjectReference Include="HtmlRenderer\HtmlRenderer.csproj">
-      <Project>{1B058920-24B4-4140-8AE7-C8C6C38CA52D}</Project>
-      <Name>HtmlRenderer</Name>
     </ProjectReference>
     <ProjectReference Include="Merthsoft.CalcData\Merthsoft.CalcData.csproj">
       <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
