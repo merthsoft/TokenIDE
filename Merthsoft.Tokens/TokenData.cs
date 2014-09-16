@@ -105,14 +105,13 @@ namespace Merthsoft.Tokens {
 		}
 
 		Dictionary<byte, TokenDictionaryEntry> tokens;
-		Trie<string> trie;
 
 		public string CommentString { get; private set; }
 		public string DirectiveString { get; private set; }
 		public bool TrimStart { get; private set; }
 
 		public Dictionary<byte, TokenDictionaryEntry> Tokens { get { return tokens; } private set { tokens = value; } }
-		public Trie<string> Trie { get { return trie; } private set { trie = value; } }
+		public Trie<char, string> Trie { get; private set; }
 		public List<string> GroupNames { get; private set; }
 		public Dictionary<string, Style> Styles { get; private set; }
 		public Dictionary<string, string> Comments { get; private set; }
@@ -152,7 +151,7 @@ namespace Merthsoft.Tokens {
 			XmlNodeList tokenNodes = root.SelectNodes("/t:Tokens/t:Token", nsMan);
 			XmlNodeList groupNodes = root.SelectNodes("/t:Tokens/t:Groups/t:Group", nsMan);
 			XmlNodeList styleNodes = root.SelectNodes("/t:Tokens/t:Styles/t:Style", nsMan);
-			trie = new Trie<string>();
+			Trie = new Trie<char, string>();
 			Groups = new Dictionary<string, string>();
 			Comments = new Dictionary<string, string>();
 			Sites = new Dictionary<string, string>();
@@ -346,7 +345,7 @@ namespace Merthsoft.Tokens {
 
 							string bytes = prevBytes + key.ToString("X2");
 							value.Bytes = bytes;
-							trie.AddWord(value.Name, bytes);
+							Trie.AddData(value.Name, bytes);
 						}
 						List<string> myAlts = new List<string>();
 						if (node.HasChildNodes) {
@@ -369,7 +368,7 @@ namespace Merthsoft.Tokens {
 						}
 					} else if (node.Name == "Alt") {
 						string alt = node.Attributes["string"].Value;
-						trie.AddWord(alt, prevBytes);
+						Trie.AddData(alt, prevBytes);
 						alts.Add(alt);
 					}
 				}
@@ -409,73 +408,61 @@ namespace Merthsoft.Tokens {
 		/// <param name="numTokens">The number of tokens in this string.</param>
 		/// <returns>An array of tokens as bytes.</returns>
 		public byte[] Tokenize(string data, out int numTokens, out List<List<TokenData.TokenDictionaryEntry>> tokens, bool exceptionOnUnknownToken) {
-			Trie<string> trie = this.Trie;
-			string s = string.Empty;
+			StringBuilder bytes = new StringBuilder();
 			int i = 0;
+
 			while (TrimStart && i < data.Length && (data[i] == ' ' || data[i] == '\t')) {
 				i++;
 			}
+
+			char[] rawData = data.ToArray();
 			numTokens = 0;
 			int lineNumber = 0;
 			tokens = new List<List<TokenDictionaryEntry>>();
 			tokens.Add(new List<TokenDictionaryEntry>());
-			while (i < data.Length) {
-				string foundData = null;
-				string lastGoodData = null;
-				bool atLeaf = false;
-				int back = 0;
-				bool found = false;
-				string sub = string.Empty;
-				do {
-					sub += data[i++].ToString();
-					if (sub == "\\") {
-						if (i != data.Length) {
-							sub += data[i++].ToString();
-							if (!trie.FindWord(sub, ref lastGoodData, out atLeaf)) {
-								trie.FindWord(sub[1].ToString(), ref lastGoodData, out atLeaf);
-							}
+
+			while (i < rawData.Length) {
+				string foundData;
+				char[] match;
+				bool found;
+
+				if (rawData[i] != '\\') {
+					found = Trie.LongestSubstringMatch(rawData.Skip(i), out foundData, out match);
+				} else {
+					i++;
+					if (i == rawData.Length) { break; }
+
+					match = new[] { rawData[i] };
+					found = Trie.GetData(match, out foundData);
+				}
+
+				if (!found) {
+					if (rawData[i] == '\r') { i++; } else {
+						if (exceptionOnUnknownToken) {
+							throw new TokenizationException(foundData, i - 1);
 						}
-						break;
-					}
-					//if (sub.EndsWith("\\")) {
-					//	back++;
-					//	break;
-					//}
-					found = trie.FindWord(sub, ref foundData, out atLeaf);
-					if (foundData != null && foundData != lastGoodData) {
-						lastGoodData = foundData;
-						back = 0;
-					} else if (sub != "\r") {
-						back++;
-					}
-				} while (found && !atLeaf && i < data.Length);
-				numTokens++;
-				s += lastGoodData;
-				if (lastGoodData == null && sub != "\r") {
-					if (exceptionOnUnknownToken) {
-						throw new TokenizationException(sub, i - 1);
-					}
-					tokens[lineNumber].Add(new TokenDictionaryEntry() { Name = sub, StyleType = "Error" });
-					if (!sub.StartsWith("\\")) { i++; }
-				} else if (sub == "\n") {
-					lineNumber++;
-					tokens.Add(new List<TokenDictionaryEntry>());
-					while (TrimStart && i < data.Length && (data[i] == ' ' || data[i] == '\t')) {
-					    i++;
-					}
-				} else if (sub != "\r") {
-					if (sub.StartsWith("\\")) {
-						tokens[lineNumber].Add(FlatTokens[sub.Substring(1, sub.Length - back - 1)]);
-					} else {
-						tokens[lineNumber].Add(FlatTokens[sub.Substring(0, sub.Length - back)]);
+						tokens[lineNumber].Add(new TokenDictionaryEntry() { Name = foundData, StyleType = "Error" });
+						if (!foundData.StartsWith("\\")) { i++; }
 					}
 				} else {
-					numTokens--;
+					string token = new string(match);
+					i += token.Length;
+					numTokens++;
+					bytes.Append(foundData);
+
+					if (token != "\n") {
+						tokens[lineNumber].Add(FlatTokens[token]);
+					} else {
+						lineNumber++;
+						tokens.Add(new List<TokenDictionaryEntry>());
+						while (TrimStart && i < data.Length && (data[i] == ' ' || data[i] == '\t')) {
+							i++;
+						}
+					}
 				}
-				i -= back;
 			}
 
-			return HexHelper.GetByteArray(s);
+			return HexHelper.GetByteArray(bytes.ToString());
 		}
 
 		/// <summary>

@@ -1,75 +1,75 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Merthsoft.Tokens {
-	class TrieNode<T> {
-		public string s;
-		public Hashtable outEdges;
-		public T data;
+	public class Trie<TKey, TData> {
+		public int LongestPath { get; private set; }
+		private TrieNode<TKey, TData> head = new TrieNode<TKey, TData>();
 
-		public TrieNode(string s) {
-			this.s = s;
-			outEdges = new Hashtable();
-		}
-	}
+		public void AddData(IEnumerable<TKey> key, TData data) {
+			TrieNode <TKey, TData> currentNode = head;
 
-	/// <summary>
-	/// Represents a Trie data structure.
-	/// </summary>
-	public class Trie<T> {
-		TrieNode<T> head;
-
-		/// <summary>
-		/// Create an empty trie
-		/// </summary>
-		public Trie() {
-			head = new TrieNode<T>(string.Empty);
-		}
-
-		/// <summary>
-		/// Add a word to the tire
-		/// </summary>
-		/// <param name="word">The word to add</param>
-		/// <param name="data">The data to associate with the word</param>
-		public void AddWord(string word, T data) {
-			TrieNode<T> n = head;
-			for (int i = 0; i < word.Length; i++) {
-				char c = word[i];
-				if (!n.outEdges.ContainsKey(c)) {
-					TrieNode<T> newNode = new TrieNode<T>(word.Substring(0, i + 1));
-					n.outEdges.Add(c, newNode);
+			int length = 0;
+			foreach (TKey k in key) {
+				if (!currentNode.Children.ContainsKey(k)) {
+					currentNode.Children[k] = new TrieNode<TKey, TData>();
 				}
-				n = (TrieNode<T>)n.outEdges[c];
+				currentNode = currentNode.Children[k];
+				length++;
 			}
 
-			n.data = data;
+			if (length > LongestPath) { LongestPath = length; }
+
+			//if (currentNode == head) { throw new ArgumentException("key must contain a non-zero number of elements."); }
+
+			currentNode.Data = data;
+			currentNode.TerminalNode = true;
 		}
 
-		/// <summary>
-		/// Searches the Trie for the passed in word.
-		/// </summary>
-		/// <param name="word">The word to find.</param>
-		/// <param name="data">The data associated with this word.</param>
-		/// <param name="atLeaf">Gets set to true if the node is a leaf node.</param>
-		/// <returns>true - word found
-		/// false - word not found
-		/// This could return true even if the data is null (i.e. if the word was not actually added),
-		/// if the word you are searching for is a prefix of an existing word. If you allow nulls but not
-		/// prefixes, you could use the "atLeaf" parameter to ensure that you are at a leaf. If you don't
-		/// allow nulls, then the returned data would be null if this word wasn't actually added.</returns>
-		public bool FindWord(string word, ref T data, out bool atLeaf) {
-			TrieNode<T> n = head;
-			for (int i = 0; i < word.Length; i++) {
-				char c = word[i];
-				if (!n.outEdges.ContainsKey(c)) {
-					atLeaf = n.outEdges.Count == 0;
-					return false;
+		public bool GetData(IEnumerable<TKey> key, out TData data) {
+			TrieNode<TKey, TData> currentNode = head;
+
+			foreach (TKey k in key) {
+				if (!currentNode.Children.ContainsKey(k)) {
+					throw new KeyNotFoundException(string.Format("Key {0} not found.", key));
 				}
-				n = (TrieNode<T>)n.outEdges[c];
+				currentNode = currentNode.Children[k];
 			}
-			atLeaf = (n.outEdges.Count == 0);
-			data = n.data;
-			return n.s == word;
+
+			if (!currentNode.TerminalNode) {
+				throw new KeyNotFoundException(string.Format("Key {0} not found.", key));
+			}
+
+			data = currentNode.Data;
+
+			return currentNode.Children.Count != 0 && currentNode != head;
+		}
+
+		public bool LongestSubstringMatch(IEnumerable<TKey> key, out TData data, out TKey[] matchingKey) {
+			TrieNode<TKey, TData> currentNode = head;
+			TrieNode<TKey, TData> lastMatch = head;
+			List<TKey> lastMatchingKeyList = new List<TKey>();
+			List<TKey> matchingKeyList = new List<TKey>();
+
+			foreach (TKey k in key) {
+				if (!currentNode.Children.ContainsKey(k)) {
+					currentNode = lastMatch;
+					matchingKeyList = lastMatchingKeyList;
+					break;
+				}
+				matchingKeyList.Add(k);
+				currentNode = currentNode.Children[k];
+				if (currentNode.TerminalNode) {
+					lastMatch = currentNode;
+					lastMatchingKeyList = matchingKeyList.ToList();
+				}
+			}
+
+			data = lastMatch.Data;
+			matchingKey = lastMatchingKeyList.ToArray();
+			return lastMatch != head;
 		}
 	}
 }

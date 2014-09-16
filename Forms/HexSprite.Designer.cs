@@ -28,6 +28,7 @@ namespace Merthsoft.TokenIDE {
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HexSprite));
 			this.paletteBox = new System.Windows.Forms.PictureBox();
 			this.MaintainDim = new System.Windows.Forms.CheckBox();
 			this.drawGridBox = new System.Windows.Forms.CheckBox();
@@ -58,6 +59,7 @@ namespace Merthsoft.TokenIDE {
 			this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveAsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.addTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.clearTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.importImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.exportImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
@@ -66,6 +68,7 @@ namespace Merthsoft.TokenIDE {
 			this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.shiftTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
 			this.loadTemplateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.monochromePicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,19 +76,20 @@ namespace Merthsoft.TokenIDE {
 			this.colorImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.xLIBCBackgroundToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.xLIBCToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.redrawToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.shiftTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spritePanel = new System.Windows.Forms.Panel();
 			this.mainContainer = new System.Windows.Forms.SplitContainer();
 			this.tilesFlow = new System.Windows.Forms.FlowLayoutPanel();
-			this.tilesContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-			this.clearTilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.switchOrientationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+			this.tilesPaneOrientationMenu = new System.Windows.Forms.ToolStripSplitButton();
+			this.horizonalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.verticalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.spriteIndexLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.outputLabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.clearTextTimer = new System.Windows.Forms.Timer(this.components);
 			this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+			this.dCSHeaderSpriteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)(this.paletteBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pixelSizeBox)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.spriteHeightBox)).BeginInit();
@@ -103,7 +107,6 @@ namespace Merthsoft.TokenIDE {
 			this.mainContainer.Panel1.SuspendLayout();
 			this.mainContainer.Panel2.SuspendLayout();
 			this.mainContainer.SuspendLayout();
-			this.tilesContextMenu.SuspendLayout();
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -424,6 +427,7 @@ namespace Merthsoft.TokenIDE {
             this.saveToolStripMenuItem,
             this.saveAsToolStripMenuItem,
             this.addTilesToolStripMenuItem,
+            this.clearTilesToolStripMenuItem,
             this.importImageToolStripMenuItem,
             this.exportImageToolStripMenuItem,
             this.toolStripSeparator2,
@@ -469,6 +473,13 @@ namespace Merthsoft.TokenIDE {
 			this.addTilesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
 			this.addTilesToolStripMenuItem.Text = "Add Tiles";
 			this.addTilesToolStripMenuItem.Click += new System.EventHandler(this.addTilesToolStripMenuItem_Click);
+			// 
+			// clearTilesToolStripMenuItem
+			// 
+			this.clearTilesToolStripMenuItem.Name = "clearTilesToolStripMenuItem";
+			this.clearTilesToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+			this.clearTilesToolStripMenuItem.Text = "Clear Tiles";
+			this.clearTilesToolStripMenuItem.Click += new System.EventHandler(this.clearTilesToolStripMenuItem_Click);
 			// 
 			// importImageToolStripMenuItem
 			// 
@@ -540,6 +551,13 @@ namespace Merthsoft.TokenIDE {
 			this.redoToolStripMenuItem.Text = "Redo";
 			this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoButton_Click);
 			// 
+			// shiftTilesToolStripMenuItem
+			// 
+			this.shiftTilesToolStripMenuItem.Name = "shiftTilesToolStripMenuItem";
+			this.shiftTilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
+			this.shiftTilesToolStripMenuItem.Text = "Shift Values";
+			this.shiftTilesToolStripMenuItem.Click += new System.EventHandler(this.shiftTilesToolStripMenuItem_Click);
+			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
@@ -552,7 +570,9 @@ namespace Merthsoft.TokenIDE {
             this.colorPicToolStripMenuItem,
             this.colorImageToolStripMenuItem,
             this.xLIBCToolStripMenuItem,
-            this.xLIBCBackgroundToolStripMenuItem});
+            this.xLIBCBackgroundToolStripMenuItem,
+            this.xLIBCToolStripMenuItem1,
+            this.dCSHeaderSpriteToolStripMenuItem});
 			this.loadTemplateToolStripMenuItem.Name = "loadTemplateToolStripMenuItem";
 			this.loadTemplateToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.loadTemplateToolStripMenuItem.Text = "Load Template";
@@ -560,37 +580,44 @@ namespace Merthsoft.TokenIDE {
 			// monochromePicToolStripMenuItem
 			// 
 			this.monochromePicToolStripMenuItem.Name = "monochromePicToolStripMenuItem";
-			this.monochromePicToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.monochromePicToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.monochromePicToolStripMenuItem.Text = "Monochrome Pic";
 			this.monochromePicToolStripMenuItem.Click += new System.EventHandler(this.monochromePicToolStripMenuItem_Click);
 			// 
 			// colorPicToolStripMenuItem
 			// 
 			this.colorPicToolStripMenuItem.Name = "colorPicToolStripMenuItem";
-			this.colorPicToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.colorPicToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.colorPicToolStripMenuItem.Text = "Color Pic";
 			this.colorPicToolStripMenuItem.Click += new System.EventHandler(this.colorPicToolStripMenuItem_Click);
 			// 
 			// colorImageToolStripMenuItem
 			// 
 			this.colorImageToolStripMenuItem.Name = "colorImageToolStripMenuItem";
-			this.colorImageToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.colorImageToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.colorImageToolStripMenuItem.Text = "Color Image";
 			this.colorImageToolStripMenuItem.Click += new System.EventHandler(this.colorImageToolStripMenuItem_Click);
 			// 
 			// xLIBCToolStripMenuItem
 			// 
 			this.xLIBCToolStripMenuItem.Name = "xLIBCToolStripMenuItem";
-			this.xLIBCToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.xLIBCToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.xLIBCToolStripMenuItem.Text = "xLIBC Tiles";
 			this.xLIBCToolStripMenuItem.Click += new System.EventHandler(this.xLIBCToolStripMenuItem_Click);
 			// 
 			// xLIBCBackgroundToolStripMenuItem
 			// 
 			this.xLIBCBackgroundToolStripMenuItem.Name = "xLIBCBackgroundToolStripMenuItem";
-			this.xLIBCBackgroundToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+			this.xLIBCBackgroundToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.xLIBCBackgroundToolStripMenuItem.Text = "xLIBC Background";
 			this.xLIBCBackgroundToolStripMenuItem.Click += new System.EventHandler(this.xLIBCBackgroundToolStripMenuItem_Click);
+			// 
+			// xLIBCToolStripMenuItem1
+			// 
+			this.xLIBCToolStripMenuItem1.Name = "xLIBCToolStripMenuItem1";
+			this.xLIBCToolStripMenuItem1.Size = new System.Drawing.Size(188, 22);
+			this.xLIBCToolStripMenuItem1.Text = "xLIBC 32-Color Image";
+			this.xLIBCToolStripMenuItem1.Click += new System.EventHandler(this.xLIBCToolStripMenuItem1_Click);
 			// 
 			// redrawToolStripMenuItem
 			// 
@@ -598,13 +625,6 @@ namespace Merthsoft.TokenIDE {
 			this.redrawToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
 			this.redrawToolStripMenuItem.Text = "Redraw";
 			this.redrawToolStripMenuItem.Click += new System.EventHandler(this.redrawToolStripMenuItem_Click);
-			// 
-			// shiftTilesToolStripMenuItem
-			// 
-			this.shiftTilesToolStripMenuItem.Name = "shiftTilesToolStripMenuItem";
-			this.shiftTilesToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-			this.shiftTilesToolStripMenuItem.Text = "Shift Values";
-			this.shiftTilesToolStripMenuItem.Click += new System.EventHandler(this.shiftTilesToolStripMenuItem_Click);
 			// 
 			// spritePanel
 			// 
@@ -639,7 +659,6 @@ namespace Merthsoft.TokenIDE {
 			// 
 			this.tilesFlow.AutoScroll = true;
 			this.tilesFlow.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-			this.tilesFlow.ContextMenuStrip = this.tilesContextMenu;
 			this.tilesFlow.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tilesFlow.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
 			this.tilesFlow.Location = new System.Drawing.Point(0, 0);
@@ -648,31 +667,10 @@ namespace Merthsoft.TokenIDE {
 			this.tilesFlow.TabIndex = 2;
 			this.tilesFlow.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tilesFlow_MouseClick);
 			// 
-			// tilesContextMenu
-			// 
-			this.tilesContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.clearTilesToolStripMenuItem,
-            this.switchOrientationToolStripMenuItem});
-			this.tilesContextMenu.Name = "tilesContextMenu";
-			this.tilesContextMenu.Size = new System.Drawing.Size(173, 48);
-			// 
-			// clearTilesToolStripMenuItem
-			// 
-			this.clearTilesToolStripMenuItem.Name = "clearTilesToolStripMenuItem";
-			this.clearTilesToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.clearTilesToolStripMenuItem.Text = "Clear Tiles";
-			this.clearTilesToolStripMenuItem.Click += new System.EventHandler(this.clearTilesToolStripMenuItem_Click);
-			// 
-			// switchOrientationToolStripMenuItem
-			// 
-			this.switchOrientationToolStripMenuItem.Name = "switchOrientationToolStripMenuItem";
-			this.switchOrientationToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-			this.switchOrientationToolStripMenuItem.Text = "Switch Orientation";
-			this.switchOrientationToolStripMenuItem.Click += new System.EventHandler(this.switchOrientationToolStripMenuItem_Click);
-			// 
 			// statusStrip1
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tilesPaneOrientationMenu,
             this.spriteIndexLabel,
             this.outputLabel});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 568);
@@ -680,6 +678,32 @@ namespace Merthsoft.TokenIDE {
 			this.statusStrip1.Size = new System.Drawing.Size(706, 22);
 			this.statusStrip1.TabIndex = 1;
 			this.statusStrip1.Text = "statusStrip1";
+			// 
+			// tilesPaneOrientationMenu
+			// 
+			this.tilesPaneOrientationMenu.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.tilesPaneOrientationMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.horizonalToolStripMenuItem,
+            this.verticalToolStripMenuItem});
+			this.tilesPaneOrientationMenu.Image = ((System.Drawing.Image)(resources.GetObject("tilesPaneOrientationMenu.Image")));
+			this.tilesPaneOrientationMenu.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.tilesPaneOrientationMenu.Name = "tilesPaneOrientationMenu";
+			this.tilesPaneOrientationMenu.Size = new System.Drawing.Size(141, 20);
+			this.tilesPaneOrientationMenu.Text = "Tiles pane oritentation";
+			// 
+			// horizonalToolStripMenuItem
+			// 
+			this.horizonalToolStripMenuItem.Name = "horizonalToolStripMenuItem";
+			this.horizonalToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.horizonalToolStripMenuItem.Text = "Horizonal";
+			this.horizonalToolStripMenuItem.Click += new System.EventHandler(this.horizonalToolStripMenuItem_Click);
+			// 
+			// verticalToolStripMenuItem
+			// 
+			this.verticalToolStripMenuItem.Name = "verticalToolStripMenuItem";
+			this.verticalToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.verticalToolStripMenuItem.Text = "Vertical";
+			this.verticalToolStripMenuItem.Click += new System.EventHandler(this.verticalToolStripMenuItem_Click);
 			// 
 			// spriteIndexLabel
 			// 
@@ -702,6 +726,13 @@ namespace Merthsoft.TokenIDE {
 			// colorDialog1
 			// 
 			this.colorDialog1.FullOpen = true;
+			// 
+			// dCSHeaderSpriteToolStripMenuItem
+			// 
+			this.dCSHeaderSpriteToolStripMenuItem.Name = "dCSHeaderSpriteToolStripMenuItem";
+			this.dCSHeaderSpriteToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
+			this.dCSHeaderSpriteToolStripMenuItem.Text = "DCS Header Sprite";
+			this.dCSHeaderSpriteToolStripMenuItem.Click += new System.EventHandler(this.dCSHeaderSpriteToolStripMenuItem_Click);
 			// 
 			// HexSprite
 			// 
@@ -738,7 +769,6 @@ namespace Merthsoft.TokenIDE {
 			this.mainContainer.Panel2.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).EndInit();
 			this.mainContainer.ResumeLayout(false);
-			this.tilesContextMenu.ResumeLayout(false);
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -797,15 +827,18 @@ namespace Merthsoft.TokenIDE {
 		private ToolStripMenuItem xLIBCBackgroundToolStripMenuItem;
 		private SplitContainer mainContainer;
 		private FlowLayoutPanel tilesFlow;
-		private ContextMenuStrip tilesContextMenu;
-		private ToolStripMenuItem clearTilesToolStripMenuItem;
-		private ToolStripMenuItem switchOrientationToolStripMenuItem;
 		private Panel mouseButtonsPanel;
 		private ToolStripMenuItem redrawToolStripMenuItem;
 		private ToolStripMenuItem addTilesToolStripMenuItem;
 		private ToolStripMenuItem importImageToolStripMenuItem;
 		private ToolStripMenuItem exportImageToolStripMenuItem;
 		private ToolStripMenuItem shiftTilesToolStripMenuItem;
+		private ToolStripMenuItem clearTilesToolStripMenuItem;
+		private ToolStripSplitButton tilesPaneOrientationMenu;
+		private ToolStripMenuItem horizonalToolStripMenuItem;
+		private ToolStripMenuItem verticalToolStripMenuItem;
+		private ToolStripMenuItem xLIBCToolStripMenuItem1;
+		private ToolStripMenuItem dCSHeaderSpriteToolStripMenuItem;
 
 	}
 }

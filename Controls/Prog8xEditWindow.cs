@@ -323,22 +323,22 @@ namespace Merthsoft.TokenIDE {
 				}
 			}
 			//}
-			try {
+			//try {
 				string programText = sb.ToString();
 				byte[] data = TokenData.Tokenize(programText, out _numTokens, out tokens, breakOnError);
 				lengthWithoutComments = data.Length - numCommentLines;
 				return data;
-			} catch (TokenizationException ex) {
-				MessageBox.Show(ex.Message, "Building file failed.");
-				ProgramTextBox.Selection = new Range(ProgramTextBox, ex.Location, ex.InvalidString.Length);
-				ProgramTextBox.DoSelectionVisible();
-				lengthWithoutComments = 0;
-				return null;
-			} catch (Exception ex) {
-				MessageBox.Show(ex.Message, "Building file failed.");
-				lengthWithoutComments = 0;
-				return null;
-			}
+			//} catch (TokenizationException ex) {
+			//	MessageBox.Show(ex.Message, "Building file failed.");
+			//	ProgramTextBox.Selection = new Range(ProgramTextBox, ex.Location, ex.InvalidString.Length);
+			//	ProgramTextBox.DoSelectionVisible();
+			//	lengthWithoutComments = 0;
+			//	return null;
+			//} catch (Exception ex) {
+			//	MessageBox.Show(ex.Message, "Building file failed.");
+			//	lengthWithoutComments = 0;
+			//	return null;
+			//}
 		}
 
 		public byte[] GenerateByteData(bool newLinesForComments, bool breakOnError, out List<List<TokenData.TokenDictionaryEntry>> tokens) {

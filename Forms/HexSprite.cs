@@ -165,6 +165,8 @@ namespace Merthsoft.TokenIDE {
 				addTilesToolStripMenuItem.Visible = false;
 				importImageToolStripMenuItem.Visible = false;
 				exportImageToolStripMenuItem.Visible = false;
+				clearTilesToolStripMenuItem.Visible = false;
+				tilesPaneOrientationMenu.Visible = false;
 			} else {
 				this.Text = "xLIBC Map Editor";
 
@@ -1092,18 +1094,18 @@ namespace Merthsoft.TokenIDE {
 			
 			switch (headerString) {
 				case HEADER_XLIBTILES:
-					saveType = SaveType.XLibTiles;
 					openxLibTiles(appVar);
+					saveType = SaveType.XLibTiles;
 					break;
 
 				case HEADER_XLIBBGPIC:
-					saveType = SaveType.XLibBGPicture;
 					openxLibBG(appVar);
+					saveType = SaveType.XLibBGPicture;
 					break;
 
 				case HEADER_XLIB32COLORIMAGE:
-					saveType = SaveType.XLib32ColorPicture;
 					openxLib32Color(appVar);
+					saveType = SaveType.XLib32ColorPicture;
 					break;
 			}
 		}
@@ -1857,6 +1859,12 @@ namespace Merthsoft.TokenIDE {
 			spriteIndexLabel.Visible = true;
 		}
 
+
+
+		private void xLIBCToolStripMenuItem1_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.XLib32ColorPicture);
+		}
+
 		private void changeTemplate(SaveType saveType) {
 			if (MessageBox.Show("This will crop your image to size, are you sure you want to continue?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Hand) == System.Windows.Forms.DialogResult.No) {
 				return;
@@ -1884,6 +1892,14 @@ namespace Merthsoft.TokenIDE {
 				case SaveType.ColorImage:
 					SelectedPalette = Palette.Full565;
 					resizeSprite(133, 83);
+					break;
+				case SaveType.XLib32ColorPicture:
+					SelectedPalette = Palette.xLIBC;
+					resizeSprite(160, 120);
+					break;
+				case SaveType.Png:
+					SelectedPalette = Palette.BasicColors;
+					resizeSprite(16, 16);
 					break;
 			}
 		}
@@ -1944,16 +1960,6 @@ namespace Merthsoft.TokenIDE {
 			leftMousePictureBox.Invalidate();
 			rightMousePictureBox.Invalidate();
 			spriteBox.Invalidate();
-		}
-
-		private void switchOrientationToolStripMenuItem_Click(object sender, EventArgs e) {
-			if (mainContainer.Orientation == Orientation.Vertical) {
-				mainContainer.Orientation = Orientation.Horizontal;
-				//tilesFlow.FlowDirection = FlowDirection.LeftToRight;
-			} else {
-				mainContainer.Orientation = Orientation.Vertical;
-				//tilesFlow.FlowDirection = FlowDirection.TopDown;
-			}
 		}
 
 		private void redrawToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -2040,6 +2046,18 @@ namespace Merthsoft.TokenIDE {
 			Sprite = st.Sprite;
 			Sprite.Invalidate();
 			spriteBox.Invalidate();
+		}
+
+		private void horizonalToolStripMenuItem_Click(object sender, EventArgs e) {
+			mainContainer.Orientation = Orientation.Horizontal;
+		}
+
+		private void verticalToolStripMenuItem_Click(object sender, EventArgs e) {
+			mainContainer.Orientation = Orientation.Vertical;
+		}
+
+		private void dCSHeaderSpriteToolStripMenuItem_Click(object sender, EventArgs e) {
+			changeTemplate(SaveType.Png);
 		}
 	}
 }

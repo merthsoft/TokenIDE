@@ -1053,12 +1053,12 @@ to include changes if they're better!
     <Alt string="tanh^-1(" />
   </Token>
   <Token byte="$CE" string="If " style="Command" />
-  <Token byte="$CF" string="Then" style="Command" />
+  <Token byte="$CF" string="Then" style="Command" indentGroup="End"/>
   <Token byte="$D0" string="Else" style="Command" />
-  <Token byte="$D1" string="While " style="Command" />
-  <Token byte="$D2" string="Repeat " style="Command" />
-  <Token byte="$D3" string="For(" style="Command" />
-  <Token byte="$D4" string="End" style="Command" />
+  <Token byte="$D1" string="While " style="Command" indentGroup="End"/>
+  <Token byte="$D2" string="Repeat " style="Command" indentGroup="End"/>
+  <Token byte="$D3" string="For(" style="Command" indentGroup="End" />
+  <Token byte="$D4" string="End" style="Command" indentGroupTerminator="true" indentGroup="End" />
   <Token byte="$D5" string="Return" style="Command" />
   <Token byte="$D6" string="Lbl " style="Command" />
   <Token byte="$D7" string="Goto " style="Command" />

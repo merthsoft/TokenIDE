@@ -50,8 +50,9 @@
     <Compile Include="AmbiguousTokenException.cs" />
     <Compile Include="TokenData.cs" />
     <Compile Include="TokenizationException.cs" />
-    <Compile Include="Trie.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trie.cs" />
+    <Compile Include="TrieNode.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FastColoredTextBox\FastColoredTextBox.csproj">
