@@ -1803,7 +1803,8 @@ namespace Merthsoft.TokenIDE {
 			byte[] buffer = new byte[39 + (Sprite.Width * Sprite.Height * 5) / 8];
 			using (MemoryStream ms = new MemoryStream(buffer)) {
 				ms.Write(Encoding.ASCII.GetBytes(HEADER_XLIB32COLORIMAGE), 0, Encoding.ASCII.GetByteCount(HEADER_XLIB32COLORIMAGE));
-				ms.Write(seenColors.Keys.Take(32).ToArray(), 0, 32);
+				byte[] seenColorsTable = seenColors.Keys.Take(32).ToArray();
+				ms.Write(seenColorsTable, 0, seenColorsTable.Length);
 				for (int i = seenColors.Count; i < 32; i++) {
 					ms.WriteByte(0);
 				}

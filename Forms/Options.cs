@@ -25,6 +25,7 @@ namespace Merthsoft.TokenIDE {
 		public Font SelectedFont {
 			get { return selectedFont; }
 			set {
+				if (value == null) { return; }
 				selectedFont = value;
 				fontLabel.Text = string.Format("{0}, {1}pt", value.Name, value.SizeInPoints);
 				if (window != null) {
