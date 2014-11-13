@@ -922,7 +922,6 @@
 			this.EditWindows.SelectedIndexChanged += new System.EventHandler(this.EditWindows_SelectedIndexChanged);
 			this.EditWindows.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
 			this.EditWindows.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
-			this.EditWindows.MouseClick += new System.Windows.Forms.MouseEventHandler(this.EditWindows_MouseClick);
 			// 
 			// Tokens
 			// 
@@ -938,7 +937,6 @@
 			this.Name = "Tokens";
 			this.Text = "TokenIDE";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TokenIDE_FormClosing);
-			this.Load += new System.EventHandler(this.Tokens_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
 			this.bottomStatusStrip.ResumeLayout(false);

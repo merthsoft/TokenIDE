@@ -26,18 +26,12 @@ namespace Merthsoft.TokenIDE {
 		private TokenData _tokenData;
 		private dynamic config;
 		private IEditWindow currWindow;
-		//UserControl currWindow;
+
 		private Dictionary<ToolStripMenuItem, Process> externalTools = new Dictionary<ToolStripMenuItem, Process>();
 
 		private Font editorFont;
 		private List<TokensProject> projects;
-
-		private int NumWindows {
-			get {
-				return EditWindows.TabPages.Count;
-			}
-		}
-
+        
 		private TokenData TokenData {
 			get { return _tokenData; }
 			set {
@@ -74,8 +68,6 @@ namespace Merthsoft.TokenIDE {
 			EditWindows.TabClose += EditWindows_TabClose;
 
 			statusLabel.Text = "";
-			//TokenData = new TokenData("Tokens.xml");
-			//Environment.CurrentDirectory = Application.StartupPath;
 			config = Config.ReadIni("TokenIDE.ini");
 
 			if (!OpenTokensFile(Path.Combine(Application.StartupPath, config.TokenIDE.file.ToString()))) {
@@ -343,14 +335,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void changeSaveDirectoryToolStripMenuItem_Click(object sender, EventArgs e) {
-			//var fbd = new FolderSelectDialog() {
-			//    Title = "Save Directory",
-			//    InitialDirectory = Environment.CurrentDirectory,
-			//};
-			//if (!fbd.ShowDialog()) {
-			//    return;
-			//}
-
 			var fbd = new OpenFileDialog() {
 				InitialDirectory = Environment.CurrentDirectory,
 				ValidateNames = false,
@@ -429,12 +413,6 @@ namespace Merthsoft.TokenIDE {
 			window.ProgramText = sb.ToString();
 		}
 
-		private void EditWindows_MouseClick(object sender, MouseEventArgs e) {
-			//if (e.Button == System.Windows.Forms.MouseButtons.Middle) {
-			//        CloseTab(EditWindows.Tab);
-			//}
-		}
-
 		private void EditWindows_SelectedIndexChanged(object sender, EventArgs e) {
 			if (EditWindows.TabPages.Count > 0) {
 				currWindow = (IEditWindow)EditWindows.SelectedTab.Controls[0];
@@ -463,8 +441,6 @@ namespace Merthsoft.TokenIDE {
 
 				var newProjectFile = new ProjectFile() { Path = fileInfo.Name };
 
-				//string outName = fileInfo.FileName() + projectTree.SelectedNode.Text == "Program" ? ".8xp" : ".8xk";
-				//newProjectFile.Output = Path.Combine(project.OutDirectory, fileName);
 				section.Add(newProjectFile);
 				AddProjectItem(projectTree.SelectedNode, newProjectFile);
 			}
@@ -604,9 +580,6 @@ namespace Merthsoft.TokenIDE {
 					launchSite("http://" + site);
 				}
 			}
-		}
-
-		private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
 		}
 
 		private void navigateToDocsToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -774,11 +747,6 @@ namespace Merthsoft.TokenIDE {
 			}
 			currWindow.SaveDirectory = fi.Directory.FullName;
 			currWindow.New = false;
-			//currWindow.DragEnter += TokenIDE_DragEnter;
-			//currWindow.DragDrop += TokenIDE_DragDrop;
-			//} catch (Exception ex) {
-			//	MessageBox.Show(string.Format("Could not open file!\n{0}", ex.Message));
-			//}
 		}
 
 		private void openSprite(string fileName) {
@@ -912,9 +880,6 @@ namespace Merthsoft.TokenIDE {
 				(selectedNode.Text != "Programs" && selectedNode.Text != "AppVars")) {
 				OpenFile(Path.Combine(selectedProject.BaseDirectory, ((ProjectFile)selectedNode.Tag).Path));
 			}
-			//if (selectedNode.Tag != null && selectedNode.Parent.Text == "Programs" || selectedNode.Parent.Text == "AppVars") {
-			//OpenFile(((ProjectItem)selectedNode.Tag).File);
-			//}
 		}
 
 		private void projectTree_MouseClick(object sender, MouseEventArgs e) {
@@ -936,6 +901,7 @@ namespace Merthsoft.TokenIDE {
 
 			return val;
 		}
+
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e) {
 			if (EditWindows.SelectedTab.Controls[0] is Prog8xEditWindow) {
 				SaveTextFile(true);
@@ -950,7 +916,6 @@ namespace Merthsoft.TokenIDE {
 
 		private void SaveTextFile(bool saveAs) {
 			if (currWindow.New || saveAs) {
-				//string progName = InputBox.ShowInputBox("Program Name");
 				SaveFileDialog sfd = new SaveFileDialog();
 				sfd.AddExtension = true;
 				sfd.FileName = currWindow.OnCalcName + ".txt";
@@ -959,7 +924,6 @@ namespace Merthsoft.TokenIDE {
 				//sfd.CheckFileExists = true;
 				if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
 				if (!string.IsNullOrWhiteSpace(sfd.FileName)) {
-					//currWindow.ProgramName = new FileInfo(sfd.FileName).Name;
 					currWindow.FileName = sfd.FileName;
 				} else {
 					statusLabel.Text = "Save failed";
@@ -967,19 +931,14 @@ namespace Merthsoft.TokenIDE {
 				}
 				currWindow.New = false;
 			}
-			//if (String.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
-			//    statusLabel.Text = "Save failed";
-			//    return;
-			//}
-			//string programName = currWindow.ProgramName;
-			//SaveProgram(currWindow.SaveDirectory, programName, !currWindow.HasSaved);
+
 			try {
 				currWindow.Save();
 				statusLabel.Text = "Save succeeded.";
 			} catch (Exception ex) {
 				statusLabel.Text = "Save failed: " + ex.Message;
 			}
-			//currWindow.HasSaved = true;
+
 			return;
 		}
 
@@ -1000,7 +959,6 @@ namespace Merthsoft.TokenIDE {
 			}
 			if (string.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
 				currWindow.OnCalcName = InputBox.Show("Program Name");
-				//currWindow.FileName = currWindow.ProgramName;
 			}
 			if (string.IsNullOrWhiteSpace(currWindow.OnCalcName)) {
 				statusLabel.Text = "Build failed";
@@ -1013,11 +971,6 @@ namespace Merthsoft.TokenIDE {
 			}
 
 			if (string.IsNullOrWhiteSpace(currWindow.SaveDirectory)) {
-				//var fbd = new FolderSelectDialog() {
-				//    InitialDirectory = Environment.CurrentDirectory,
-				//    Title = "Save Directory",
-				//};
-				//FileFolderDialog ffd = new FileFolderDialog() {
 				var fbd = new OpenFileDialog() {
 					InitialDirectory = Environment.CurrentDirectory,
 					ValidateNames = false,
@@ -1065,7 +1018,6 @@ namespace Merthsoft.TokenIDE {
 			string kill = vals.ElementAtOrDefault(4, s => s.ToLowerInvariant());
 
 			if (program == null) {
-				//MessageBox.Show("Could not run program \"{0}\". Check that it exists.", "Error external tool", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -1141,9 +1093,6 @@ namespace Merthsoft.TokenIDE {
 
 		private void tokenize8xvToolStripMenuItem_Click(object sender, EventArgs e) {
 			buildFile(Var8x.VarType.AppVar, Var8x.CalcType.Calc8x);
-		}
-
-		private void Tokens_Load(object sender, EventArgs e) {
 		}
 
 		private void TokensTree_AfterSelect(object sender, TreeViewEventArgs e) {
