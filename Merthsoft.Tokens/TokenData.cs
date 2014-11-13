@@ -117,8 +117,6 @@ namespace Merthsoft.Tokens {
 		public Dictionary<string, string> Groups { get; private set; }
 		public Dictionary<string, string> Sites { get; private set; }
 		public Dictionary<string, TokenDictionaryEntry> FlatTokens { get; private set; }
-		//public int FontSize { get; private set; }
-		//public string FontFamily { get; private set; }
 
 		/// <summary>
 		/// Reads tokens in from an xml file.
@@ -131,16 +129,6 @@ namespace Merthsoft.Tokens {
 			XmlDocument doc = new XmlDocument();
 			doc.Load(xmlFile);
 			readTokenData(doc, fi.DirectoryName);
-		}
-
-		public TokenData(XmlDocument doc, string searchFolder = null) {
-			readTokenData(doc, searchFolder);
-		}
-
-		public TokenData(string xml, string searchFolder) {
-			XmlDocument doc = new XmlDocument();
-			doc.LoadXml(xml);
-			readTokenData(doc, searchFolder);
 		}
 
 		private void readTokenData(XmlDocument doc, string searchFolder) {
@@ -158,9 +146,6 @@ namespace Merthsoft.Tokens {
 			GroupNames = new List<string>();
 			Styles = new Dictionary<string, Style>();
 			FlatTokens = new Dictionary<string, TokenDictionaryEntry>();
-
-			//FontSize = styleNodes[0].ParentNode.GetAttributeOrDefault("fontSize", 12);
-			//FontFamily = styleNodes[0].ParentNode.GetAttributeOrDefault("fontFamily", "Consolas");
 
 			string parentXml = root.GetAttributeOrDefault("parentXml", null);
 			if (!string.IsNullOrWhiteSpace(parentXml)) {
@@ -477,14 +462,18 @@ namespace Merthsoft.Tokens {
 
 			Dictionary<byte, TokenData.TokenDictionaryEntry> tokens = Tokens;
 			StringBuilder text = new StringBuilder(bytes.Length);
-			TokenDictionaryEntry entry;
 
 			int i = 0;
 			while (i < bytes.Length) {
 				byte[] outBytes;
-				BytesToStringTrie.LongestSubstringMatch(bytes, i, out entry, out outBytes);
-				text.Append(entry.Name);
-				i += outBytes.Length;
+                TokenDictionaryEntry entry;
+                if (BytesToStringTrie.LongestSubstringMatch(bytes, i, out entry, out outBytes)) {
+                    text.Append(entry.Name);
+                    i += outBytes.Length;
+                } else {
+                    text.AppendFormat("{{UNKNOWN TOKEN [{0}]}}", bytes[i]);
+                    i++;
+                }
 			}
 
 			return text.ToString();
