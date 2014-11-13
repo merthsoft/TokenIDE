@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -47,13 +48,14 @@ namespace Merthsoft.Tokens {
 			return currentNode.Children.Count != 0 && currentNode != head;
 		}
 
-		public bool LongestSubstringMatch(IEnumerable<TKey> key, out TData data, out TKey[] matchingKey) {
+		public bool LongestSubstringMatch(TKey[] key, int start, out TData data, out TKey[] matchingKey) {
 			TrieNode<TKey, TData> currentNode = head;
 			TrieNode<TKey, TData> lastMatch = head;
 			List<TKey> lastMatchingKeyList = new List<TKey>();
 			List<TKey> matchingKeyList = new List<TKey>();
 
-			foreach (TKey k in key) {
+			for (int i = start; i < key.Length; i++) {
+				var k = key[i];
 				if (!currentNode.Children.ContainsKey(k)) {
 					currentNode = lastMatch;
 					matchingKeyList = lastMatchingKeyList;

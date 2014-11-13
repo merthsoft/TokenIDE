@@ -104,14 +104,13 @@ namespace Merthsoft.Tokens {
 			}
 		}
 
-		Dictionary<byte, TokenDictionaryEntry> tokens;
-
 		public string CommentString { get; private set; }
 		public string DirectiveString { get; private set; }
 		public bool TrimStart { get; private set; }
 
-		public Dictionary<byte, TokenDictionaryEntry> Tokens { get { return tokens; } private set { tokens = value; } }
-		public Trie<char, string> Trie { get; private set; }
+		public Dictionary<byte, TokenDictionaryEntry> Tokens { get; private set; }
+		public Trie<char, string> StringToBytesTrie { get; private set; }
+		public Trie<byte, TokenDictionaryEntry> BytesToStringTrie { get; private set; }
 		public List<string> GroupNames { get; private set; }
 		public Dictionary<string, Style> Styles { get; private set; }
 		public Dictionary<string, string> Comments { get; private set; }
@@ -151,7 +150,8 @@ namespace Merthsoft.Tokens {
 			XmlNodeList tokenNodes = root.SelectNodes("/t:Tokens/t:Token", nsMan);
 			XmlNodeList groupNodes = root.SelectNodes("/t:Tokens/t:Groups/t:Group", nsMan);
 			XmlNodeList styleNodes = root.SelectNodes("/t:Tokens/t:Styles/t:Style", nsMan);
-			Trie = new Trie<char, string>();
+			StringToBytesTrie = new Trie<char, string>();
+			BytesToStringTrie = new Trie<byte, TokenDictionaryEntry>();
 			Groups = new Dictionary<string, string>();
 			Comments = new Dictionary<string, string>();
 			Sites = new Dictionary<string, string>();
@@ -173,7 +173,8 @@ namespace Merthsoft.Tokens {
 				TokenData parentData = new TokenData(parentXml);
 
 				Tokens = parentData.Tokens;
-				Trie = parentData.Trie;
+				StringToBytesTrie = parentData.StringToBytesTrie;
+				BytesToStringTrie = parentData.BytesToStringTrie;
 				Groups = parentData.Groups;
 				Comments = parentData.Comments;
 				Sites = parentData.Sites;
@@ -213,11 +214,11 @@ namespace Merthsoft.Tokens {
 			List<string> alts;
 			Dictionary<byte, TokenDictionaryEntry> newTokens = GetTokensFromNode(tokenNodes, out alts);
 
-			if (tokens == null) {
-				tokens = newTokens;
+			if (Tokens == null) {
+				Tokens = newTokens;
 			} else {
 				foreach (TokenDictionaryEntry token in newTokens.Values) {
-					Combine(tokens, token);
+					Combine(Tokens, token);
 				}
 			}
 		}
@@ -251,7 +252,7 @@ namespace Merthsoft.Tokens {
 		}
 
 		public List<GroupEntry> GetAllInGroup(string group) {
-			return GetAllInGroup(group, tokens);
+			return GetAllInGroup(group, Tokens);
 		}
 
 		private List<GroupEntry> GetAllInGroup(string group, Dictionary<byte, TokenDictionaryEntry> tokens) {
@@ -345,7 +346,8 @@ namespace Merthsoft.Tokens {
 
 							string bytes = prevBytes + key.ToString("X2");
 							value.Bytes = bytes;
-							Trie.AddData(value.Name, bytes);
+							StringToBytesTrie.AddData(value.Name, bytes);
+							BytesToStringTrie.AddData(HexHelper.GetByteArray(bytes), value);
 						}
 						List<string> myAlts = new List<string>();
 						if (node.HasChildNodes) {
@@ -368,7 +370,7 @@ namespace Merthsoft.Tokens {
 						}
 					} else if (node.Name == "Alt") {
 						string alt = node.Attributes["string"].Value;
-						Trie.AddData(alt, prevBytes);
+						StringToBytesTrie.AddData(alt, prevBytes);
 						alts.Add(alt);
 					}
 				}
@@ -427,13 +429,13 @@ namespace Merthsoft.Tokens {
 				bool found;
 
 				if (rawData[i] != '\\') {
-					found = Trie.LongestSubstringMatch(rawData.Skip(i), out foundData, out match);
+					found = StringToBytesTrie.LongestSubstringMatch(rawData, i, out foundData, out match);
 				} else {
 					i++;
 					if (i == rawData.Length) { break; }
 
 					match = new[] { rawData[i] };
-					found = Trie.GetData(match, out foundData);
+					found = StringToBytesTrie.GetData(match, out foundData);
 				}
 
 				if (!found) {
@@ -469,68 +471,23 @@ namespace Merthsoft.Tokens {
 		/// Converts an array of bytes to a string of tokenizeable words.
 		/// </summary>
 		/// <param name="bytes">The bytes to convert.</param>
-		/// <param name="lines">Holds the output of each line as line/token</param>
-		/// <returns>The array as a string of tokenizeable words.</returns>
-		public string Detokenize(byte[] bytes, out List<List<TokenDictionaryEntry>> lines) {
-			lines = new List<List<TokenDictionaryEntry>>();
-			lines.Add(new List<TokenDictionaryEntry>());
-			if (bytes == null)
-				return "";
-			Dictionary<byte, TokenData.TokenDictionaryEntry> tokens = Tokens;
-			string s = string.Empty;
-			int lineNumber = 0;
-			TokenDictionaryEntry entry;
-			for (int i = 0; i < bytes.Length; i++) {
-				string s1 = GetStringFromBytes(bytes, ref i, tokens, out entry);
-				//s1 = Regex.Unescape(s1);
-				if (s1 != "\n") {
-					lines[lineNumber].Add(entry);
-				} else {
-					s1 = Environment.NewLine;
-					lineNumber++;
-					lines.Add(new List<TokenDictionaryEntry>());
-				}
-				s += s1;
-			}
-			return s;
-		}
-
-		/// <summary>
-		/// Converts an array of bytes to a string of tokenizeable words.
-		/// </summary>
-		/// <param name="bytes">The bytes to convert.</param>
 		/// <returns>The array as a string of tokenizeable words.</returns>
 		public string Detokenize(byte[] bytes) {
-			List<List<TokenDictionaryEntry>> discard;
-			return Detokenize(bytes, out discard);
-		}
+			if (bytes == null || bytes.Length == 0) { return ""; }
 
-		private static string GetStringFromBytes(byte[] bytes, ref int index, Dictionary<byte, TokenData.TokenDictionaryEntry> tokens, out TokenDictionaryEntry entry) {
-			if (index == bytes.Length) {
-				entry = null;
-				return null;
+			Dictionary<byte, TokenData.TokenDictionaryEntry> tokens = Tokens;
+			StringBuilder text = new StringBuilder(bytes.Length);
+			TokenDictionaryEntry entry;
+
+			int i = 0;
+			while (i < bytes.Length) {
+				byte[] outBytes;
+				BytesToStringTrie.LongestSubstringMatch(bytes, i, out entry, out outBytes);
+				text.Append(entry.Name);
+				i += outBytes.Length;
 			}
-			byte b = bytes[index];
-			string s1 = null;
-			entry = null;
-			if (!tokens.ContainsKey(b)) {
-				s1 = string.Format("[NOT FOUND: {0:X2}]", b);
-				entry = null;
-			} else if (tokens[b].SubTokens == null) {
-				entry = tokens[b];
-				s1 = entry.Name;
-			} else {
-				index++;
-				if (index != bytes.Length && tokens[b].SubTokens.ContainsKey(bytes[index])) {
-					s1 = GetStringFromBytes(bytes, ref index, tokens[b].SubTokens, out entry);
-				}
-				if (s1 == null) {
-					index--;
-					entry = tokens[b];
-					s1 = entry.Name;
-				}
-			}
-			return s1;
+
+			return text.ToString();
 		}
 	}
 }

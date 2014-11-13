@@ -126,8 +126,7 @@ namespace Merthsoft.TokenIDE {
 				byte[] data = _program.Data;
 				if (data != null) {
 					UpdateBytesLabel(data.Length);
-					List<List<TokenData.TokenDictionaryEntry>> tokens;
-					ProgramText = TokenData.Detokenize(data, out tokens);
+					ProgramText = TokenData.Detokenize(data);
 				}
 				archivedCheckBox.Checked = _program.Archived;
 				if (_program is Prog8x) {
@@ -352,18 +351,17 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		public void RefreshBytes(bool setProgramText = true, byte[] data = null) {
-			List<List<TokenData.TokenDictionaryEntry>> tokens;
 			if (data == null) {
 				int length;
+				List<List<TokenData.TokenDictionaryEntry>> tokens;
 				data = GenerateByteData(true, false, out tokens, out length);
 				UpdateBytesLabel(length);
 			}
 			if (setProgramText) {
-				ProgramText = TokenData.Detokenize(data, out tokens);
+				ProgramText = TokenData.Detokenize(data);
 			} else {
-				TokenData.Detokenize(data, out tokens);
+				TokenData.Detokenize(data);
 			}
-			//UpdateTokensBox(tokens);
 		}
 
 		public void Save() {
