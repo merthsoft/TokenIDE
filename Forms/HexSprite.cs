@@ -118,16 +118,7 @@ namespace Merthsoft.TokenIDE {
 		private SaveType saveType;
 
 		public bool MapMode { get; private set; }
-
-		static HexSprite() {
-			errorImage = new Bitmap(8, 8);
-			using (Graphics g = Graphics.FromImage(errorImage)) {
-				g.FillRectangle(Brushes.White, 0, 0, 8, 8);
-				g.DrawLine(Pens.Red, 0, 0, 7, 7);
-				g.DrawLine(Pens.Red, 0, 7, 7, 0);
-			}
-		}
-
+        
 		public static bool IsXLibCSprite(AppVar8x var) {
 			byte[] data = var.Data;
 			if (data.Length < 7) { return false; }
@@ -251,7 +242,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void createSpriteFromHex(string hex) {
-			//performResizeFlag = false;
 			string widthString;
 			int width;
 			do {
@@ -281,7 +271,6 @@ namespace Merthsoft.TokenIDE {
 					throw new Exception("Can only create sprite from hex in Black and White or Celtic palette modes.");
 			}
 			SpriteHeight = height;
-			//performResizeFlag = true;
 			Sprite = newSprite;
 			spriteBox.Invalidate();
 
@@ -341,7 +330,6 @@ namespace Merthsoft.TokenIDE {
 			spriteBox.Width = SpriteWidth * realPixelSize;
 			spriteBox.Height = SpriteHeight * realPixelSize;
 
-			//try {
 			if (drawCanvas == null || drawCanvas.Width != SpriteWidth || drawCanvas.Height != SpriteHeight) {
 				if (!MapMode) {
 					drawCanvas = new Bitmap(SpriteWidth, SpriteHeight);
@@ -399,9 +387,6 @@ namespace Merthsoft.TokenIDE {
 				}
 
 			}
-			//} catch {
-			//	throw;
-			//}
 		}
 
 		public void DrawSprite(Bitmap b, Sprite spriteToUse, bool clearDirty = true, Palette? palette = null, bool dontUseMapMode = false) {
@@ -638,16 +623,10 @@ namespace Merthsoft.TokenIDE {
 		private void createPreviewSprite() {
 			Rectangle drawRect = new Rectangle(0, 0, SpriteWidth, SpriteHeight);
 			Rectangle oldRectangle = Rectangle.Empty;
-
-			//if (previewSprite != null) {
-			//	oldRectangle = previewSprite.DirtyRectangle;
-			//	drawRect = oldRectangle;
-			//}
-
+            
 			int defaultColor = SelectedPalette == Palette.Full565 ? transparentColor : -1;
 			previewSprite = new Sprite(SpriteWidth, SpriteHeight, defaultColor);
 
-			//previewSprite.ClearDirtyRectangle();
 			if (oldRectangle != Rectangle.Empty) {
 				previewSprite.DirtyRectangle = oldRectangle;
 			}
@@ -824,14 +803,6 @@ namespace Merthsoft.TokenIDE {
 		private void paletteBox_Paint(object sender, PaintEventArgs e) {
 			Graphics g = e.Graphics;
 			drawPalette(g);
-		}
-
-		private double getBrightness(Color c) {
-			double red = c.R;
-			double green = c.G;
-			double blue = c.B;
-
-			return red * 0.299 + green * 0.587 + blue * 0.114;
 		}
 
 		private void drawPalette(Graphics g) {
@@ -1649,7 +1620,6 @@ namespace Merthsoft.TokenIDE {
 		private bool savePng() {
 			bool success;
 			using (Bitmap b = new Bitmap(Sprite.Width, Sprite.Height)) {
-				//using (Graphics g = Graphics.FromImage(b)) {
 				Sprite.Invalidate();
 				DrawSprite(b, Sprite);
 				try {
@@ -1859,9 +1829,7 @@ namespace Merthsoft.TokenIDE {
 		private void spriteBox_MouseEnter(object sender, EventArgs e) {
 			spriteIndexLabel.Visible = true;
 		}
-
-
-
+        
 		private void xLIBCToolStripMenuItem1_Click(object sender, EventArgs e) {
 			changeTemplate(SaveType.XLib32ColorPicture);
 		}
