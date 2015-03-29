@@ -108,12 +108,15 @@ namespace FastColoredTextBoxNS
             foreach (var w in wrappers)
                 dic[w.Action] = w.Action;
 
-            foreach (var item in Enum.GetValues(typeof(FCTBAction)))
-            if ((FCTBAction)item != FCTBAction.None)
-            if(!((FCTBAction)item).ToString().StartsWith("CustomAction"))
-            {
-                if(!dic.ContainsKey((FCTBAction)item))
-                    sb.Append(item+", ");
+            foreach (var item in Enum.GetValues(typeof(FCTBAction))) {
+                if ((FCTBAction)item == FCTBAction.None)
+                    continue;
+
+                if (((FCTBAction)item).ToString().StartsWith("CustomAction"))
+                    continue;
+
+                if (!dic.ContainsKey((FCTBAction)item))
+                    sb.Append(item + ", ");
             }
 
             return sb.ToString().TrimEnd(' ', ',');

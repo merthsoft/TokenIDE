@@ -3343,6 +3343,10 @@ namespace FastColoredTextBoxNS
                     CommentSelected();
                     break;
 
+                case FCTBAction.UncommentSelected:
+                    UncommentSelected();
+                    break;
+
                 case FCTBAction.Cut:
                     if (!Selection.ReadOnly)
                         Cut();
@@ -3881,6 +3885,10 @@ namespace FastColoredTextBoxNS
             CommentSelected(CommentPrefix);
         }
 
+        public void UncommentSelected() {
+            UncommentSelected(CommentPrefix);
+        }
+
         /// <summary>
         /// Insert/remove comment prefix into selected lines
         /// </summary>
@@ -3889,11 +3897,13 @@ namespace FastColoredTextBoxNS
             if (string.IsNullOrEmpty(commentPrefix))
                 return;
             Selection.Normalize();
-            bool isCommented = lines[Selection.Start.iLine].Text.TrimStart().StartsWith(commentPrefix);
-            if (isCommented)
-                RemoveLinePrefix(commentPrefix);
-            else
-                InsertLinePrefix(commentPrefix);
+            InsertLinePrefix(commentPrefix);
+        }
+
+        public void UncommentSelected(string commentPrefix) {
+            if (string.IsNullOrEmpty(commentPrefix)) { return; }
+            Selection.Normalize();
+            RemoveLinePrefix(commentPrefix);
         }
 
         /*

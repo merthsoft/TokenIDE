@@ -200,6 +200,7 @@ namespace FastColoredTextBoxNS
         ScrollUp,
         SelectAll,
         UnbookmarkLine,
+        UncommentSelected,
         Undo,
         UpperCase,
         ZoomIn,

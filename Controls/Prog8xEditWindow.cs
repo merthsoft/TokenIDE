@@ -190,9 +190,11 @@ namespace Merthsoft.TokenIDE {
 				styles.Add("Error", ErrorStyle.Default);
 				styles.Add("ErrorString", new ErrorStyle(styles["String"] ?? ErrorStyle.Default));
 
-				autoCompleteMenu = new AutocompleteMenu(ProgramTextBox);
-				autoCompleteItems = new List<AutocompleteItem>();
+                ProgramTextBox.CommentPrefix = _TokenData.CommentString;
+
 #if DEBUG
+                autoCompleteMenu = new AutocompleteMenu(ProgramTextBox);
+				autoCompleteItems = new List<AutocompleteItem>();
 				foreach (var token in TokenData.FlatTokens) {
 					autoCompleteItems.Add(new AutocompleteItem() {
 						Text = token.Key, Tag = token.Value,

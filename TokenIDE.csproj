@@ -92,6 +92,7 @@
     <Compile Include="Forms\ShiftTiles.Designer.cs">
       <DependentUpon>ShiftTiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="KeyboardChord.cs" />
     <Compile Include="Markdown\Escapes.cs" />
     <Compile Include="Markdown\Markdown.cs" />
     <Compile Include="TabCloseEventArgs.cs" />
