@@ -31,7 +31,7 @@ namespace Merthsoft.TokenIDE {
 
 		private Font editorFont;
 		private List<TokensProject> projects;
-		
+
 		private TokenData TokenData {
 			get { return _tokenData; }
 			set {
@@ -43,9 +43,9 @@ namespace Merthsoft.TokenIDE {
 				foreach (string group in groups) {
 					TreeNode n = new TreeNode(group);
 					TokensTree.Nodes.Add(n);
-					List<Merthsoft.Tokens.TokenData.GroupEntry> inGroup = _tokenData.GetAllInGroup(group);
+					List<TokenData.GroupEntry> inGroup = _tokenData.GetAllInGroup(group);
 					inGroup.Sort();
-					foreach (Merthsoft.Tokens.TokenData.GroupEntry token in inGroup) {
+					foreach (TokenData.GroupEntry token in inGroup) {
 						TreeNode tNode = new TreeNode(token.ToString());
 						tNode.Tag = token;
 						n.Nodes.Add(tNode);
@@ -60,8 +60,7 @@ namespace Merthsoft.TokenIDE {
 		public Tokens(string[] files) {
 			InitializeComponent();
 
-			markdown = new MarkdownSharp.Markdown();
-			markdown.AutoNewLines = true;
+			markdown = new MarkdownSharp.Markdown() { AutoNewLines = true };
 			referenceCommentStart = string.Format("<html><head><style>body {{ background-color:#{0:X2}{1:X2}{2:X2}; font-family:sans-serif; font-size: 9pt; margins: 0,0,0,0; padding: 0,0,0,0 }}</style></head><body><div>", SystemColors.Control.R, SystemColors.Control.G, SystemColors.Control.B);
 			referenceCommentEnd = "</div></body></html>";
 			
@@ -156,7 +155,7 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public void dumpTokens(Dictionary<byte, TokenData.TokenDictionaryEntry> data, StringBuilder sb) {
+		public static void dumpTokens(Dictionary<byte, TokenData.TokenDictionaryEntry> data, StringBuilder sb) {
 			foreach (var token in data) {
 				if (token.Value.Name != null) {
 					sb.AppendFormat(string.Format("{0} - {1}", token.Value.Bytes, token.Value.Name.Replace("{", "{{").Replace("}", "}}").Replace("\\", "\\\\")));
@@ -166,7 +165,7 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
-		public string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
+		public static string getExtension(Var8x.VarType? varType, Var8x.CalcType? calcType) {
 			if (varType == null && calcType == null) {
 				return ".bin";
 			}
@@ -209,7 +208,7 @@ namespace Merthsoft.TokenIDE {
 					break;
 			}
 
-			return "." + prefix + suffix;
+			return string.Format(".{0}{1}", prefix, suffix);
 		}
 
 		private static void AddProjectItem(TreeNode treeNode, ProjectFile projItem) {
@@ -264,19 +263,13 @@ namespace Merthsoft.TokenIDE {
 
 			projects.Add(proj);
 
-			TreeNode projectNode = new TreeNode(proj.Name);
-			projectNode.ImageKey = "icon_project.png";
-			projectNode.Tag = proj;
+			TreeNode projectNode = new TreeNode(proj.Name) { ImageKey = "icon_project.png", Tag = proj };
 
-			TreeNode ramNode = new TreeNode("RAM");
-			ramNode.ImageKey = "icon_project_blank.png";
-			ramNode.Tag = proj.Ram;
+			TreeNode ramNode = new TreeNode("RAM") { ImageKey = "icon_project_blank.png", Tag = proj.Ram };
 			AddMemorySection(proj.Ram, ramNode);
 			projectNode.Nodes.Add(ramNode);
 
-			TreeNode archiveNode = new TreeNode("Archive");
-			archiveNode.ImageKey = "icon_project_blank.png";
-			archiveNode.Tag = proj.Archive;
+			TreeNode archiveNode = new TreeNode("Archive") { ImageKey = "icon_project_blank.png", Tag = proj.Archive };
 			AddMemorySection(proj.Archive, archiveNode);
 			projectNode.Nodes.Add(archiveNode);
 
@@ -324,7 +317,7 @@ namespace Merthsoft.TokenIDE {
 				bool locked = false;
 				if (currWindow is Prog8xEditWindow) {
 					locked = ((Prog8xEditWindow)currWindow).Locked;
-				}
+				} 
 
 				build(varType, calcType, currWindow, dir, currWindow.NumTokens, data, currWindow.Archived, locked);
 				statusLabel.Text = "Build succeeded";
@@ -458,7 +451,7 @@ namespace Merthsoft.TokenIDE {
 			currWindow.Find();
 		}
 
-		private TokensProject GetProject(TreeNode node) {
+		private static TokensProject GetProject(TreeNode node) {
 			if (node.Parent == null) {
 				return (TokensProject)node.Tag;
 			}
@@ -498,9 +491,6 @@ namespace Merthsoft.TokenIDE {
 #endif
 		}
 
-		private void hexSpriteEditorToolStripMenuItem_Click(object sender, EventArgs e) {
-		}
-
 		private void hexViewToolStripMenuItem_Click(object sender, EventArgs e) {
 			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
 			if (window == null) { return; }
@@ -514,16 +504,10 @@ namespace Merthsoft.TokenIDE {
 				sb.AppendLine();
 			}
 
-			TextBox tb = new TextBox();
-			tb.Dock = DockStyle.Fill;
-			tb.Multiline = true;
-			tb.ScrollBars = ScrollBars.Both;
-			tb.Font = editorFont;
-			tb.WordWrap = false;
-			tb.Text = sb.ToString();
+			TextBox tb = new TextBox() { Dock = DockStyle.Fill, Multiline = true, ScrollBars = ScrollBars.Both, Font = editorFont, WordWrap = false };
+			Text = sb.ToString();
 
-			Form f = new Form();
-			f.Text = "Hex View";
+			Form f = new Form() { Text = "Hex View" };
 			f.Controls.Add(tb);
 
 			f.Show();
@@ -536,14 +520,10 @@ namespace Merthsoft.TokenIDE {
 #if !DEBUG
 			try {
 #endif
-			HexSprite s = new HexSprite();
+			HexSprite sprite = new HexSprite() { SpriteHeight = 64, SpriteWidth = 96, SelectedPalette = HexSprite.Palette.BlackAndWhite };
 
-			s.SpriteHeight = 64;
-			s.SpriteWidth = 96;
-			s.SelectedPalette = HexSprite.Palette.BlackAndWhite;
-
-			s.PasteTextEvent += handlePasteEvent;
-			s.Show();
+			sprite.PasteTextEvent += handlePasteEvent;
+			sprite.Show();
 #if !DEBUG
 			} catch (Exception ex) {
 				MessageBox.Show(ex.ToString());
@@ -611,132 +591,131 @@ namespace Merthsoft.TokenIDE {
 			IEditWindow prevWindow = currWindow;
 			string ext = fi.Extension.ToLower();
 			switch (ext) {
-				case ".8xp":
-				case ".83p":
-				case ".82p":
-				case ".73p":
-				case ".85p":
-					TokenData tokenData = new Merthsoft.Tokens.TokenData((string)((IDictionary<string, object>)(config.Extensions))[ext.Substring(1)]);
-					currWindow = ewProg = new Prog8xEditWindow(tokenData, fileName);
-					if (fi.Length > short.MaxValue / 4) {
-						ewProg.LiveUpdate = false;
+			case ".8xp":
+			case ".83p":
+			case ".82p":
+			case ".73p":
+			case ".85p":
+				TokenData tokenData = new TokenData((string)((IDictionary<string, object>)(config.Extensions))[ext.Substring(1)]);
+				currWindow = ewProg = new Prog8xEditWindow(tokenData, fileName);
+				if (fi.Length > short.MaxValue / 4) {
+					ewProg.LiveUpdate = false;
+				}
+				using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+				using (BinaryReader preader = new BinaryReader(pstream)) {
+					Prog8x newProg8x = new Prog8x(preader);
+					if (newProg8x.IsAsm) {
+						if (MessageBox.Show(
+								string.Format("{0} is an assembly program, are you sure you want to open it?", fileName),
+								"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
+							) == System.Windows.Forms.DialogResult.No) {
+							currWindow = prevWindow;
+							return;
+						}
 					}
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+					ewProg.Program = newProg8x;
+				}
+
+				ewProg.FullHighlightRefresh();
+				tp.Controls.Add(ewProg);
+				ewProg.ParentTabPage = tp;
+				ewProg.ReadOnly = false;
+				ewProg.ProgramTextBox.Font = editorFont;
+				ewProg.PrettyPrint = prettyPrint;
+				break;
+
+			case ".txt":
+				currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+				if (fi.Length > short.MaxValue / 4) {
+					ewProg.LiveUpdate = false;
+				}
+				ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
+				using (StreamReader sr = new StreamReader(fileName)) {
+					ewProg.ProgramText = sr.ReadToEnd();
+				}
+				ewProg.RefreshBytes(false);
+				ewProg.FullHighlightRefresh();
+				tp.Controls.Add(ewProg);
+				ewProg.ParentTabPage = tp;
+				ewProg.PrettyPrint = prettyPrint;
+				ewProg.ProgramTextBox.Font = editorFont;
+				break;
+
+			case ".bin":
+				currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+				if (fi.Length > short.MaxValue / 4) {
+					ewProg.LiveUpdate = false;
+				}
+				ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
+
+				using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+				using (BinaryReader preader = new BinaryReader(pstream)) {
+					ewProg.ProgramText = TokenData.Detokenize(preader.ReadBytes((int)preader.BaseStream.Length));
+				}
+
+				ewProg.RefreshBytes();
+				ewProg.FullHighlightRefresh();
+				tp.Controls.Add(ewProg);
+				ewProg.ParentTabPage = tp;
+				ewProg.ProgramTextBox.Font = editorFont;
+				ewProg.PrettyPrint = prettyPrint;
+				break;
+
+			case ".8xv":
+				currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
+				if (fi.Length > short.MaxValue / 4) {
+					ewProg.LiveUpdate = false;
+				}
+				using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
 					using (BinaryReader preader = new BinaryReader(pstream)) {
-						Prog8x newProg8x = new Prog8x(preader);
-						if (newProg8x.IsAsm) {
-							if (MessageBox.Show(
-									string.Format("{0} is an assembly program, are you sure you want to open it?", fileName),
-									"ASM Program Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
-								) == System.Windows.Forms.DialogResult.No) {
+						AppVar8x newAppVar = new AppVar8x(preader);
+						if (HexSprite.IsXLibCSprite(newAppVar)) {
+							var prompt = string.Format("{0} appears to be an xLibC image type, do you want to open it in the image editor?", fileName);
+							var openInSpriteEditorPrompt = MessageBox.Show(prompt, "xLIBC Var Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+							if (openInSpriteEditorPrompt == System.Windows.Forms.DialogResult.Yes) {
 								currWindow = prevWindow;
+								pstream.Close();
+								openSprite(fileName);
 								return;
 							}
 						}
-						ewProg.Program = newProg8x;
+						ewProg.Program = newAppVar;
 					}
+				}
 
-					ewProg.FullHighlightRefresh();
-					tp.Controls.Add(ewProg);
-					ewProg.ParentTabPage = tp;
-					ewProg.ReadOnly = false;
-					ewProg.ProgramTextBox.Font = editorFont;
-					ewProg.PrettyPrint = prettyPrint;
-					break;
+				ewProg.FullHighlightRefresh();
+				tp.Controls.Add(ewProg);
+				ewProg.ParentTabPage = tp;
+				ewProg.ReadOnly = false;
+				ewProg.ProgramTextBox.Font = editorFont;
+				ewProg.PrettyPrint = prettyPrint;
+				break;
 
-				case ".txt":
-					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
-					if (fi.Length > short.MaxValue / 4) {
-						ewProg.LiveUpdate = false;
-					}
-					ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
-					using (StreamReader sr = new StreamReader(fileName)) {
-						ewProg.ProgramText = sr.ReadToEnd();
-					}
-					ewProg.RefreshBytes(false);
-					ewProg.FullHighlightRefresh();
-					tp.Controls.Add(ewProg);
-					ewProg.ParentTabPage = tp;
-					ewProg.PrettyPrint = prettyPrint;
-					ewProg.ProgramTextBox.Font = editorFont;
-					break;
-
-				case ".bin":
-					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
-					if (fi.Length > short.MaxValue / 4) {
-						ewProg.LiveUpdate = false;
-					}
-					ewProg.Program = new Prog8x(fi.Name.Split('.')[0]);
-
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open))
+			case ".8xl":
+				currWindow = ewList = new List8xEditWindow(fileName);
+				using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
 					using (BinaryReader preader = new BinaryReader(pstream)) {
-						ewProg.ProgramText = TokenData.Detokenize(preader.ReadBytes((int)preader.BaseStream.Length));
+						ewList.List = new RealList8x(preader);
 					}
+				}
+				tp.Controls.Add(ewList);
+				ewList.ParentTabPage = tp;
+				break;
 
-					ewProg.RefreshBytes();
-					ewProg.FullHighlightRefresh();
-					tp.Controls.Add(ewProg);
-					ewProg.ParentTabPage = tp;
-					ewProg.ProgramTextBox.Font = editorFont;
-					ewProg.PrettyPrint = prettyPrint;
-					break;
+			case ".png":
+			case ".bmp":
+			case ".jpg":
+			case ".jpeg":
+			case ".8xi":
+			case ".8ci":
+			case ".8ca":
+			case ".gif":
+				currWindow = prevWindow;
+				openSprite(fileName);
+				return;
 
-				case ".8xv":
-					currWindow = ewProg = new Prog8xEditWindow(TokenData, fileName);
-					if (fi.Length > short.MaxValue / 4) {
-						ewProg.LiveUpdate = false;
-					}
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
-						using (BinaryReader preader = new BinaryReader(pstream)) {
-							AppVar8x newAppVar = new AppVar8x(preader);
-							if (HexSprite.IsXLibCSprite(newAppVar)) {
-								if (MessageBox.Show(
-									string.Format("{0} appears to be an xLibC image type, do you want to open it in the image editor?", fileName),
-									"xLIBC Var Detected", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation
-								) == System.Windows.Forms.DialogResult.Yes) {
-									currWindow = prevWindow;
-									pstream.Close();
-									openSprite(fileName);
-									return;
-								}
-							}
-							ewProg.Program = newAppVar;
-						}
-					}
-
-					ewProg.FullHighlightRefresh();
-					tp.Controls.Add(ewProg);
-					ewProg.ParentTabPage = tp;
-					ewProg.ReadOnly = false;
-					ewProg.ProgramTextBox.Font = editorFont;
-					ewProg.PrettyPrint = prettyPrint;
-					break;
-
-				case ".8xl":
-					currWindow = ewList = new List8xEditWindow(fileName);
-					using (FileStream pstream = new FileStream(fileName, FileMode.Open)) {
-						using (BinaryReader preader = new BinaryReader(pstream)) {
-							ewList.List = new RealList8x(preader);
-						}
-					}
-					tp.Controls.Add(ewList);
-					ewList.ParentTabPage = tp;
-					break;
-
-				case ".png":
-				case ".bmp":
-				case ".jpg":
-				case ".jpeg":
-				case ".8xi":
-				case ".8ci":
-				case ".8ca":
-				case ".gif":
-					currWindow = prevWindow;
-					openSprite(fileName);
-					return;
-
-				default:
-					throw new Exception(string.Format("File type not supported: {0}.", fi.Extension));
+			default:
+				throw new Exception(string.Format("File type not supported: {0}.", fi.Extension));
 			}
 			tp.Text = currWindow.OnCalcName;
 			EditWindows.TabPages.Add(tp);
@@ -1059,22 +1038,22 @@ namespace Merthsoft.TokenIDE {
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void TokenIDE_FormClosing(object sender, FormClosingEventArgs e) {
-			bool dirty = false;
-			foreach (TabPage tp in EditWindows.TabPages) {
-				if (((IEditWindow)tp.Controls[0]).Dirty) {
-					dirty = true;
-				}
-			}
-			if (dirty) {
-				if (MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?",
-						MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No) {
-					e.Cancel = true;
-				}
-			}
-		}
+        private void TokenIDE_FormClosing(object sender, FormClosingEventArgs e) {
+            bool dirty = false;
+            foreach (TabPage tp in EditWindows.TabPages) {
+                if (((IEditWindow)tp.Controls[0]).Dirty) {
+                    dirty = true;
+                }
+            }
+            if (dirty) {
+                var quitWithoutSavePrompt = MessageBox.Show("File has not been saved, are you sure you want to exit?", "Exit?", MessageBoxButtons.YesNo);
+                if (quitWithoutSavePrompt == System.Windows.Forms.DialogResult.No) {
+                    e.Cancel = true;
+                }
+            }
+        }
 
-		private void tokenize73pToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void tokenize73pToolStripMenuItem_Click(object sender, EventArgs e) {
 			buildFile(Var8x.VarType.Program, Var8x.CalcType.Calc73);
 		}
 
@@ -1103,14 +1082,9 @@ namespace Merthsoft.TokenIDE {
 
 		private void setReferenceInfo(TreeNode node) {
 			TokenData.GroupEntry entry = node.Tag as TokenData.GroupEntry;
-			string mainText;
-			if (entry == null) {
-				mainText = node.Text;
-			} else {
-				mainText = entry.Main;
-			}
+            string mainText = entry == null ? node.Text : entry.Main;
 
-			if (TokenData.Comments.ContainsKey(mainText)) {
+            if (TokenData.Comments.ContainsKey(mainText)) {
 				string comment = TokenData.Comments[mainText];
 				if (comment != null) {
 					setReferenceComment(comment);
@@ -1152,7 +1126,7 @@ namespace Merthsoft.TokenIDE {
 			Prog8xEditWindow ew = (Prog8xEditWindow)currWindow;
 
 			if (e.Node.Nodes.Count == 0 && e.Node.IsSelected) {
-				ew.SelectedText = ((Merthsoft.Tokens.TokenData.GroupEntry)e.Node.Tag).Main;
+				ew.SelectedText = ((TokenData.GroupEntry)e.Node.Tag).Main;
 				ew.ProgramTextBox.Focus();
 			}
 		}
@@ -1186,12 +1160,8 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void collapsePaneButton_ButtonClick(object sender, EventArgs e) {
-			if (mainContainer.Panel1Collapsed) {
-				collapsePaneButton.Text = "<";
-			} else {
-				collapsePaneButton.Text = ">";
-			}
-			mainContainer.Panel1Collapsed = !mainContainer.Panel1Collapsed;
+            collapsePaneButton.Text = mainContainer.Panel1Collapsed ? "<" : ">";
+            mainContainer.Panel1Collapsed = !mainContainer.Panel1Collapsed;
 		}
 
 		private void xLIBCMapEditorToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -1249,7 +1219,7 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void changeProgramNameToolStripMenuItem_Click(object sender, EventArgs e) {
-			currWindow.OnCalcName = InputBox.Show("Program Name");
+			currWindow.OnCalcName = InputBox.Show("Program Name", currWindow.OnCalcName) ?? currWindow.OnCalcName;
 		}
 	}
 }

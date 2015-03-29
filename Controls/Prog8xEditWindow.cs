@@ -226,8 +226,6 @@ namespace Merthsoft.TokenIDE {
 		private Font font { get; set; }
 
 		private int LastLength { get; set; }
-
-		private int NumberOfLines { get; set; }
 		private bool StringFlag { get; set; }
 
 		public Prog8xEditWindow(TokenData td, string fileName) {
@@ -260,7 +258,6 @@ namespace Merthsoft.TokenIDE {
 			replacements = new List<List<Replacement>>();
 			int lineNumber = 0;
 			Dictionary<string, string> directives = new Dictionary<string, string>();
-			Dictionary<string, string> backward = new Dictionary<string, string>();
 			int ifCount = 0;
 			Stack<bool> ifFlag = new Stack<bool>();
 			tokens = null;
@@ -270,7 +267,7 @@ namespace Merthsoft.TokenIDE {
 					string line = ProgramTextBox.Lines[i];
 					lineNumber++;
 					replacements.Add(new List<Replacement>());
-					if (line.TrimStart().StartsWith(CommentString.ToString())) {
+					if (line.TrimStart().StartsWith(CommentString)) {
 						if (newLinesForComments) {
 							sb.AppendLine();
 							numCommentLines++;
@@ -278,7 +275,7 @@ namespace Merthsoft.TokenIDE {
 						continue;
 					}
 
-					if (line.TrimStart().StartsWith(DirectiveString.ToString())) {
+					if (line.TrimStart().StartsWith(DirectiveString)) {
 						HandlePreproc(line, directives, ref ifCount, ifFlag, breakOnError);
 						if (newLinesForComments) {
 							sb.AppendLine();
@@ -383,82 +380,86 @@ namespace Merthsoft.TokenIDE {
 			_program.Archived = archivedCheckBox.Checked;
 		}
 
-		private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
-			if (string.IsNullOrWhiteSpace(line)) {
-				return;
-			}
+        private void HandlePreproc(string line, Dictionary<string, string> directives, ref int ifCount, Stack<bool> ifFlag, bool breakOnError) {
+            if (string.IsNullOrWhiteSpace(line)) {
+                return;
+            }
 
-			Dictionary<string, string> reverseLookup = null;
-			string[] directive = line.Split(new[] { ' ' });
-			string replaceString = null;
-			if (directive.Length >= 3) {
-				replaceString = string.Join(" ", directive.SubArray(2, directive.Length - 2)).Trim();
-			} else if (directive.Length == 1 && directive[0] == DirectiveString + "define") {
-				return;
-			}
+            Dictionary<string, string> reverseLookup = null;
+            string[] directive = line.Split(new[] { ' ' });
+            string replaceString = null;
+            if (directive.Length >= 3) {
+                replaceString = string.Join(" ", directive.SubArray(2, directive.Length - 2)).Trim();
+            } else if (directive.Length == 1 && directive[0] == DirectiveString + "define") {
+                return;
+            }
 
-			switch (directive[0].Remove(0, DirectiveString.Length)) {
-				case "define":
-					if (directives.ContainsKey(directive[1])) {
-						directives[directive[1]] = replaceString ?? directives[directive[1]];
-					} else {
-						directives.Add(directive[1], replaceString);
-					}
-					if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Add(replaceString, directive[1]); }
-					break;
+            string directiveName = directive[0].Remove(0, DirectiveString.Length);
+            switch (directiveName) {
+            case "define":
+                if (directives.ContainsKey(directive[1])) {
+                    directives[directive[1]] = replaceString ?? directives[directive[1]];
+                } else {
+                    directives.Add(directive[1], replaceString);
+                }
+                if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Add(replaceString, directive[1]); }
+                break;
 
-				case "undefine":
-					directives.Remove(directive[1]);
-					if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Remove(replaceString); }
-					break;
+            case "undefine":
+                directives.Remove(directive[1]);
+                if (reverseLookup != null && !string.IsNullOrWhiteSpace(replaceString)) { reverseLookup.Remove(replaceString); }
+                break;
 
-				case "ifdef":
-					if (directive.Length < 2) { return; }
-					ifCount++;
-					ifFlag.Push(directives.Keys.Contains(directive[1]));
-					break;
+            case "ifdef":
+                if (directive.Length < 2) { return; }
+                ifCount++;
+                ifFlag.Push(directives.Keys.Contains(directive[1]));
+                break;
 
-				case "ifndef":
-					if (directive.Length < 2) { return; }
-					ifCount++;
-					ifFlag.Push(!directives.Keys.Contains(directive[1]));
-					break;
+            case "ifndef":
+                if (directive.Length < 2) { return; }
+                ifCount++;
+                ifFlag.Push(!directives.Keys.Contains(directive[1]));
+                break;
 
-				case "else":
-					if (ifCount == 0 && breakOnError) {
-						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
-					}
-					ifFlag.Push(!ifFlag.Pop());
-					break;
+            case "else":
+                if (ifCount == 0 && breakOnError) {
+                    throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
+                }
+                ifFlag.Push(!ifFlag.Pop());
+                break;
 
-				case "elseifdef":
-					if (ifCount == 0 && breakOnError) {
-						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
-					}
-					if (directive.Length < 2) { return; }
-					ifFlag.Push(directives.Keys.Contains(directive[1]));
-					break;
+            case "elseifdef":
+                if (ifCount == 0 && breakOnError) {
+                    throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
+                }
+                if (directive.Length < 2) { return; }
+                ifFlag.Push(directives.Keys.Contains(directive[1]));
+                break;
 
-				case "elseifndef":
-					if (ifCount == 0 && breakOnError) {
-						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
-					}
-					if (directive.Length < 2) { return; }
-					ifFlag.Push(!directives.Keys.Contains(directive[1]));
-					break;
+            case "elseifndef":
+                if (ifCount == 0 && breakOnError) {
+                    throw new PreprocessorException(string.Format("Mismatched {0}if/{0}else directives.", DirectiveString));
+                }
+                if (directive.Length < 2) { return; }
+                ifFlag.Push(!directives.Keys.Contains(directive[1]));
+                break;
 
-				case "endif":
-					if (ifCount == 0 && breakOnError) {
-						throw new PreprocessorException(string.Format("Mismatched {0}if/{0}end directives.", DirectiveString));
-					} else {
-						ifCount--;
-						ifFlag.Pop();
-					}
-					break;
-			}
-		}
+            case "endif":
+                if (ifCount == 0 && breakOnError) {
+                    throw new PreprocessorException(string.Format("Mismatched {0}if/{0}end directives.", DirectiveString));
+                } else {
+                    ifCount--;
+                    ifFlag.Pop();
+                }
+                break;
 
-		private void liveUpdateCheckBox_CheckedChanged(object sender, EventArgs e) {
+            default:
+                break;
+            }
+        }
+
+        private void liveUpdateCheckBox_CheckedChanged(object sender, EventArgs e) {
 			LiveUpdate = liveUpdateCheckBox.Checked;
 			if (LiveUpdate) {
 				RefreshBytes(false);
@@ -496,10 +497,6 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void ProgramTextBox_DragEnter(object sender, DragEventArgs e) {
-		}
-
-		private void ProgramTextBox_Scroll(object sender, ScrollEventArgs e) {
-			UpdateHighlight(ProgramTextBox.VisibleRange);
 		}
 
 		private void ProgramTextBox_SelectionChangedDelayed(object sender, EventArgs e) {
@@ -578,73 +575,73 @@ namespace Merthsoft.TokenIDE {
 			//ProgramTextBox.Invalidate();
 		}
 
-		private void hightlightLine(List<List<Replacement>> replacements, ref Place place, int lineNumber, List<Merthsoft.Tokens.TokenData.TokenDictionaryEntry> line, string programTextBoxLine, int trimmedOffset) {
-			StringFlag = false;
-			int lastPrepocCount = 0;
-			foreach (var entry in line) {
-				if (lastPrepocCount > 0) {
-					lastPrepocCount--;
-					continue;
-				}
+        private void hightlightLine(List<List<Replacement>> replacements, ref Place place, int lineNumber, List<TokenData.TokenDictionaryEntry> line, string programTextBoxLine, int trimmedOffset) {
+            StringFlag = false;
+            int lastPrepocCount = 0;
+            foreach (var entry in line) {
+                if (lastPrepocCount > 0) {
+                    lastPrepocCount--;
+                    continue;
+                }
 
-				if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
+                if (entry.StringTerminator && StringFlag) { StringFlag = false; } else if (entry.StringStarter) { StringFlag = true; }
 
-				string token = entry.Name;
-				if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
-					if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
-				}
-				string lineText = programTextBoxLine.ClippedSubstring(place.iChar, token.Length);
+                string token = entry.Name;
+                if (place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar] == '\\') {
+                    if (place.iChar != programTextBoxLine.Length) { place = place + 1; }
+                }
+                string lineText = programTextBoxLine.ClippedSubstring(place.iChar, token.Length);
 
-				Replacement replacement = null;
-				if (lineNumber < replacements.Count) {
-					List<Replacement> lineReplacements = replacements[lineNumber];
-					int charLocation = place.iChar;
-					replacement = lineReplacements.FirstOrDefault(r => r.Location - trimmedOffset == charLocation);
-				}
-				if (replacement != null) {
-					token = replacement.OldValue;
-					TokenData.Tokenize(replacement.NewValue, out lastPrepocCount);
-					lastPrepocCount--;
-				} else if (lineText != token) {
-					foreach (string alt in entry.Alts) {
-						lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
-						if (lineText == alt) {
-							if (!PrettyPrint) {
-								token = alt;
-							} else {
-								handlePrettyPrint(place, lineNumber, programTextBoxLine, trimmedOffset, token, alt);
-							}
-							break;
-						}
-					}
-				}
+                Replacement replacement = null;
+                if (lineNumber < replacements.Count) {
+                    List<Replacement> lineReplacements = replacements[lineNumber];
+                    int charLocation = place.iChar;
+                    replacement = lineReplacements.FirstOrDefault(r => r.Location - trimmedOffset == charLocation);
+                }
+                if (replacement != null) {
+                    token = replacement.OldValue;
+                    TokenData.Tokenize(replacement.NewValue, out lastPrepocCount);
+                    lastPrepocCount--;
+                } else if (lineText != token) {
+                    foreach (string alt in entry.Alts) {
+                        lineText = programTextBoxLine.ClippedSubstring(place.iChar, alt.Length);
+                        if (lineText == alt) {
+                            if (!PrettyPrint) {
+                                token = alt;
+                            } else {
+                                handlePrettyPrint(place, lineNumber, programTextBoxLine, trimmedOffset, token, alt);
+                            }
+                            break;
+                        }
+                    }
+                }
 
-				int offset;
-				if (place.iChar != 0 && place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar - 1] == '\\') {
-					offset = -1;
-				} else {
-					offset = 0;
-				}
+                int offset;
+                if (place.iChar != 0 && place.iChar < programTextBoxLine.Length && programTextBoxLine[place.iChar - 1] == '\\') {
+                    offset = -1;
+                } else {
+                    offset = 0;
+                }
 
-				Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
+                Range curRange = ProgramTextBox.GetRange(place + offset + trimmedOffset, place + token.Length + trimmedOffset);
 
-				curRange.ClearStyle(styles.Values.ToArray());
-				string styleKey;
-				if (StringFlag || entry.StringStarter) {
-					styleKey = "String";
-					if (entry.StyleType == "Error") {
-						styleKey = "Error" + styleKey;
-					}
-				} else {
-					styleKey = entry.StyleType ?? "Default";
-				}
-				TokenStyle style = styles[styleKey];
-				curRange.SetStyle(style ?? styles["Default"]);
-				place += token.Length;
-			}
-		}
+                curRange.ClearStyle(styles.Values.ToArray());
+                string styleKey;
+                if (StringFlag || entry.StringStarter) {
+                    styleKey = "String";
+                    if (entry.StyleType == "Error") {
+                        styleKey = "Error" + styleKey;
+                    }
+                } else {
+                    styleKey = entry.StyleType ?? "Default";
+                }
+                TokenStyle style = styles[styleKey];
+                curRange.SetStyle(style ?? styles["Default"]);
+                place += token.Length;
+            }
+        }
 
-		private void handlePrettyPrint(Place place, int i, string programTextBoxLine, int trimmedOffset, string token, string alt) {
+        private void handlePrettyPrint(Place place, int i, string programTextBoxLine, int trimmedOffset, string token, string alt) {
 			ProgramTextBox.Lines[i] = new string(' ', trimmedOffset) + programTextBoxLine.Substring(0, place.iChar) + token + programTextBoxLine.Substring(place.iChar + alt.Length);
 			Dirty = true;
 			if (ProgramTextBox.Selection.Start.iLine == i && ProgramTextBox.Selection.Start == ProgramTextBox.Selection.End && ProgramTextBox.Selection.Start.iChar >= place.iChar + trimmedOffset) {
@@ -661,10 +658,6 @@ namespace Merthsoft.TokenIDE {
 
 		private void UpdateSelectionLabel(int selectionLength, int selectionTokens, int selectionBytes) {
 			selectionLabel.Text = string.Format("Selection: {0} characters, {1} tokens, {2} bytes", selectionLength, selectionTokens, selectionBytes);
-		}
-
-		private void IndentCheckBox_CheckedChanged(object sender, EventArgs e) {
-
 		}
 		
 		public Dictionary<string, Dictionary<string, int>> GetGroupCounts(ref string indentedText) {

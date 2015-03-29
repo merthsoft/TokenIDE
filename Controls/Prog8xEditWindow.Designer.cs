@@ -12,10 +12,24 @@ namespace Merthsoft.TokenIDE {
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
 		protected override void Dispose(bool disposing) {
-			if (disposing && (components != null)) {
-				components.Dispose();
-			}
-			base.Dispose(disposing);
+            if (disposing) {
+                if (components != null) {
+                    components.Dispose();
+                }
+                if (autoCompleteMenu != null) {
+                    autoCompleteMenu.Dispose();
+                    autoCompleteMenu = null;
+                }
+                if (ParentTabPage != null) {
+                    ParentTabPage.Dispose();
+                    ParentTabPage = null;
+                }
+                if (font != null) {
+                    font.Dispose();
+                    font = null;
+                }
+            }
+            base.Dispose(disposing);
 		}
 
 		#region Component Designer generated code

@@ -502,7 +502,6 @@
 			this.hexSpriteEditorToolStripMenuItem.Name = "hexSpriteEditorToolStripMenuItem";
 			this.hexSpriteEditorToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
 			this.hexSpriteEditorToolStripMenuItem.Text = "Hex Sprite Editor";
-			this.hexSpriteEditorToolStripMenuItem.Click += new System.EventHandler(this.hexSpriteEditorToolStripMenuItem_Click);
 			// 
 			// blackAndWhiteToolStripMenuItem
 			// 
