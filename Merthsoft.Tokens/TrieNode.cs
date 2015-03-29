@@ -13,9 +13,5 @@ namespace Merthsoft.Tokens {
 		public TrieNode() {
 			Children = new Dictionary<TKey, TrieNode<TKey, TData>>();
 		}
-
-		public TrieNode(TData data) : this() {
-			Data = data;
-		}
 	}
 }

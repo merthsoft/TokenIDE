@@ -409,9 +409,9 @@ namespace Merthsoft.Tokens {
 			tokens.Add(new List<TokenDictionaryEntry>());
 
 			while (i < rawData.Length) {
-				string foundData;
-				char[] match;
-				bool found;
+				string foundData = "";
+				char[] match = null;
+				bool found = false;
 
 				if (rawData[i] != '\\') {
 					found = StringToBytesTrie.LongestSubstringMatch(rawData, i, out foundData, out match);
@@ -419,8 +419,10 @@ namespace Merthsoft.Tokens {
 					i++;
 					if (i == rawData.Length) { break; }
 
-					match = new[] { rawData[i] };
-					found = StringToBytesTrie.GetData(match, out foundData);
+					if (rawData[i] != '\r') {
+						match = new[] { rawData[i] };
+						found = StringToBytesTrie.GetData(match, out foundData);
+					}
 				}
 
 				if (!found) {

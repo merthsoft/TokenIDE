@@ -97,6 +97,7 @@
 			this.ProjectTab = new System.Windows.Forms.TabPage();
 			this.projectTree = new System.Windows.Forms.TreeView();
 			this.projectIconList = new System.Windows.Forms.ImageList(this.components);
+			this.EditWindows = new Merthsoft.TokenIDE.DraggableTabControl();
 			this.shaunToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.mainMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.externalToolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,7 +113,7 @@
 			this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.newItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.existingItemToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.EditWindows = new Merthsoft.TokenIDE.DraggableTabControl();
+			this.changeProgramNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.bottomStatusStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.mainContainer)).BeginInit();
 			this.mainContainer.Panel1.SuspendLayout();
@@ -146,6 +147,7 @@
             this.toolStripSeparator2,
             this.changeTokenFileToolStripMenuItem,
             this.changeSaveDirectoryToolStripMenuItem,
+            this.changeProgramNameToolStripMenuItem,
             this.toolStripSeparator8,
             this.exitToolStripMenuItem});
 			this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
@@ -158,7 +160,7 @@
             this.newFileToolStripMenuItem,
             this.newProjectToolStripMenuItem});
 			this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-			this.newToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.newToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.newToolStripMenuItem.Text = "New";
 			// 
 			// newFileToolStripMenuItem
@@ -186,7 +188,7 @@
             this.openFileToolStripMenuItem,
             this.openProjectToolStripMenuItem});
 			this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-			this.openToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.openToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.openToolStripMenuItem.Text = "Open";
 			// 
 			// openFileToolStripMenuItem
@@ -211,27 +213,27 @@
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(196, 6);
 			// 
 			// closeToolStripMenuItem
 			// 
 			this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
 			this.closeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-			this.closeToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.closeToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.closeToolStripMenuItem.Text = "Close";
 			this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator3
 			// 
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
-			this.toolStripSeparator3.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator3.Size = new System.Drawing.Size(196, 6);
 			// 
 			// saveToolStripMenuItem
 			// 
 			this.saveToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_save;
 			this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
 			this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-			this.saveToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.saveToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.saveToolStripMenuItem.Text = "Save";
 			this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
 			// 
@@ -240,7 +242,7 @@
 			this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
 			this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.S)));
-			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.saveAsToolStripMenuItem.Text = "Save As";
 			this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
 			// 
@@ -249,25 +251,25 @@
 			this.saveAlltoolStripMenuItem.Name = "saveAlltoolStripMenuItem";
 			this.saveAlltoolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
             | System.Windows.Forms.Keys.S)));
-			this.saveAlltoolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.saveAlltoolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.saveAlltoolStripMenuItem.Text = "Save All";
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(193, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(199, 22);
 			this.toolStripMenuItem1.Text = "Save Project";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(196, 6);
 			// 
 			// changeTokenFileToolStripMenuItem
 			// 
 			this.changeTokenFileToolStripMenuItem.Name = "changeTokenFileToolStripMenuItem";
-			this.changeTokenFileToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.changeTokenFileToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.changeTokenFileToolStripMenuItem.Text = "Change Token File";
 			this.changeTokenFileToolStripMenuItem.Click += new System.EventHandler(this.changeTokenFileToolStripMenuItem_Click);
 			// 
@@ -275,20 +277,20 @@
 			// 
 			this.changeSaveDirectoryToolStripMenuItem.Image = global::Merthsoft.TokenIDE.Properties.Resources.icon_open;
 			this.changeSaveDirectoryToolStripMenuItem.Name = "changeSaveDirectoryToolStripMenuItem";
-			this.changeSaveDirectoryToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.changeSaveDirectoryToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.changeSaveDirectoryToolStripMenuItem.Text = "Change Save Directory";
 			this.changeSaveDirectoryToolStripMenuItem.Click += new System.EventHandler(this.changeSaveDirectoryToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
-			this.toolStripSeparator8.Size = new System.Drawing.Size(190, 6);
+			this.toolStripSeparator8.Size = new System.Drawing.Size(196, 6);
 			// 
 			// exitToolStripMenuItem
 			// 
 			this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
 			this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-			this.exitToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
+			this.exitToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
 			this.exitToolStripMenuItem.Text = "Exit";
 			this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
 			// 
@@ -807,6 +809,21 @@
 			this.projectIconList.Images.SetKeyName(19, "icon_project_pics.png");
 			this.projectIconList.Images.SetKeyName(20, "icon_project_progs.png");
 			// 
+			// EditWindows
+			// 
+			this.EditWindows.AllowDrop = true;
+			this.EditWindows.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.EditWindows.HotTrack = true;
+			this.EditWindows.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+			this.EditWindows.Location = new System.Drawing.Point(0, 0);
+			this.EditWindows.Name = "EditWindows";
+			this.EditWindows.SelectedIndex = 0;
+			this.EditWindows.Size = new System.Drawing.Size(659, 506);
+			this.EditWindows.TabIndex = 5;
+			this.EditWindows.SelectedIndexChanged += new System.EventHandler(this.EditWindows_SelectedIndexChanged);
+			this.EditWindows.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
+			this.EditWindows.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
+			// 
 			// shaunToolStripMenuItem
 			// 
 			this.shaunToolStripMenuItem.Name = "shaunToolStripMenuItem";
@@ -908,20 +925,12 @@
 			this.existingItemToolStripMenuItem.Text = "Existing Item";
 			this.existingItemToolStripMenuItem.Click += new System.EventHandler(this.existingItemToolStripMenuItem_Click);
 			// 
-			// EditWindows
+			// changeProgramNameToolStripMenuItem
 			// 
-			this.EditWindows.AllowDrop = true;
-			this.EditWindows.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.EditWindows.HotTrack = true;
-			this.EditWindows.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-			this.EditWindows.Location = new System.Drawing.Point(0, 0);
-			this.EditWindows.Name = "EditWindows";
-			this.EditWindows.SelectedIndex = 0;
-			this.EditWindows.Size = new System.Drawing.Size(659, 506);
-			this.EditWindows.TabIndex = 5;
-			this.EditWindows.SelectedIndexChanged += new System.EventHandler(this.EditWindows_SelectedIndexChanged);
-			this.EditWindows.DragDrop += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragDrop);
-			this.EditWindows.DragEnter += new System.Windows.Forms.DragEventHandler(this.TokenIDE_DragEnter);
+			this.changeProgramNameToolStripMenuItem.Name = "changeProgramNameToolStripMenuItem";
+			this.changeProgramNameToolStripMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.changeProgramNameToolStripMenuItem.Text = "Change Program Name";
+			this.changeProgramNameToolStripMenuItem.Click += new System.EventHandler(this.changeProgramNameToolStripMenuItem_Click);
 			// 
 			// Tokens
 			// 
@@ -1059,6 +1068,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
 		private System.Windows.Forms.ToolStripMenuItem replaceToolStripMenuItem;
 		private System.Windows.Forms.WebBrowser commentText;
+		private System.Windows.Forms.ToolStripMenuItem changeProgramNameToolStripMenuItem;
 	}
 }
 

@@ -16,6 +16,18 @@ namespace Merthsoft.TokenIDE {
 					components.Dispose();
 				}
 				CelticBrushes.ForEach(b => b.Dispose());
+				if (errorImage != null) {
+					errorImage.Dispose();
+					errorImage = null;
+				}
+				if (currentButton != null) {
+					currentButton.Dispose();
+					currentButton = null;
+				}
+				if (drawCanvas != null) {
+					drawCanvas.Dispose();
+					drawCanvas = null;
+				}
 			}
 			base.Dispose(disposing);
 		}

@@ -107,11 +107,11 @@ namespace Merthsoft.TokenIDE {
 
 		public List<Color> XLibPalette = new List<Color>();
 
-		private List<SolidBrush> CelticBrushes = new List<SolidBrush>();
-		private List<SolidBrush> XLibBrushes = new List<SolidBrush>();
+		private readonly List<SolidBrush> CelticBrushes = new List<SolidBrush>();
+		private readonly List<SolidBrush> XLibBrushes = new List<SolidBrush>();
 
-		private List<Sprite> Sprites = new List<Sprite>();
-		private List<Bitmap> SpriteImages = new List<Bitmap>();
+		private readonly List<Sprite> Sprites = new List<Sprite>();
+		private readonly List<Bitmap> SpriteImages = new List<Bitmap>();
 
 		private string fileName = null;
 		private int picNumber = -1;
@@ -196,7 +196,7 @@ namespace Merthsoft.TokenIDE {
 					toolButton.DisplayStyle = ToolStripItemDisplayStyle.ImageAndText;
 				}
 				toolButton.CheckOnClick = true;
-				toolButton.Click += new EventHandler(toolButton_Click);
+				toolButton.Click += toolButton_Click;
 				toolButton.ImageScaling = ToolStripItemImageScaling.None;
 				toolButton.Tag = t;
 

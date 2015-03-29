@@ -31,7 +31,7 @@ namespace Merthsoft.TokenIDE {
 
 		private Font editorFont;
 		private List<TokensProject> projects;
-        
+		
 		private TokenData TokenData {
 			get { return _tokenData; }
 			set {
@@ -925,6 +925,7 @@ namespace Merthsoft.TokenIDE {
 				if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel) { return; }
 				if (!string.IsNullOrWhiteSpace(sfd.FileName)) {
 					currWindow.FileName = sfd.FileName;
+					currWindow.SaveDirectory = new FileInfo(sfd.FileName).Directory.FullName;
 				} else {
 					statusLabel.Text = "Save failed";
 					return;
@@ -1247,5 +1248,8 @@ namespace Merthsoft.TokenIDE {
 			}
 		}
 
+		private void changeProgramNameToolStripMenuItem_Click(object sender, EventArgs e) {
+			currWindow.OnCalcName = InputBox.Show("Program Name");
+		}
 	}
 }

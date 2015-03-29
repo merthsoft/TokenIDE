@@ -45,7 +45,7 @@ namespace Merthsoft.Tokens {
 
 			data = currentNode.Data;
 
-			return currentNode.Children.Count != 0 && currentNode != head;
+			return currentNode != head;
 		}
 
 		public bool LongestSubstringMatch(TKey[] key, int start, out TData data, out TKey[] matchingKey) {
