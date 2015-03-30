@@ -160,7 +160,6 @@ namespace Merthsoft.TokenIDE {
             this.ProgramTextBox.DelayedTextChangedInterval = 50;
             this.ProgramTextBox.DisabledColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))));
             this.ProgramTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ProgramTextBox.FindEndOfFoldingBlockStrategy = FastColoredTextBoxNS.FindEndOfFoldingBlockStrategy.Strategy2;
             this.ProgramTextBox.Font = new System.Drawing.Font("Consolas", 10F);
             this.ProgramTextBox.Hotkeys = resources.GetString("ProgramTextBox.Hotkeys");
             this.ProgramTextBox.IsReplaceMode = false;
@@ -175,6 +174,7 @@ namespace Merthsoft.TokenIDE {
             this.ProgramTextBox.TextChangedDelayed += new System.EventHandler<FastColoredTextBoxNS.TextChangedEventArgs>(this.ProgramText_TextChanged);
             this.ProgramTextBox.SelectionChangedDelayed += new System.EventHandler(this.ProgramTextBox_SelectionChangedDelayed);
             this.ProgramTextBox.VisibleRangeChangedDelayed += new System.EventHandler(this.ProgramTextBox_VisibleRangeChangedDelayed);
+            this.ProgramTextBox.AutoIndentNeeded += new System.EventHandler<FastColoredTextBoxNS.AutoIndentEventArgs>(this.ProgramTextBox_AutoIndentNeeded);
             this.ProgramTextBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.ProgramTextBox_DragEnter);
             // 
             // Prog8xEditWindow

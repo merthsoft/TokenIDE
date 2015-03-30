@@ -212,13 +212,13 @@ namespace Merthsoft.TokenIDE {
 				autoCompleteMenu.SearchPattern = @"[\S\.]";
 
 #endif
-				//Range range = ProgramTextBox.Range;
-				//range.ClearFoldingMarkers();
-				//range.SetFoldingMarkers("For", "End");
-				//range.SetFoldingMarkers("Then", "End");
-				//range.SetFoldingMarkers("While ", "End");
-				//range.SetFoldingMarkers("Repeat", "End");
-			}
+                //Range range = ProgramTextBox.Range;
+                //range.ClearFoldingMarkers();
+                //range.SetFoldingMarkers("For", "End");
+                //range.SetFoldingMarkers("Then", "End");
+                //range.SetFoldingMarkers("While ", "End");
+                //range.SetFoldingMarkers("Repeat", "End");
+            }
 		}
 
 		private string CommentString { get { return TokenData.CommentString; } }
@@ -722,5 +722,11 @@ namespace Merthsoft.TokenIDE {
 		public void Replace() {
 			ProgramTextBox.ShowReplaceDialog();
 		}
-	}
+
+        private void ProgramTextBox_AutoIndentNeeded(object sender, AutoIndentEventArgs e) {
+            //if (e.LineText.Contains("Then")) {
+            //    e.ShiftNextLines += e.TabLength;
+            //}
+        }
+    }
 }
