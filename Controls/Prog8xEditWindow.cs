@@ -544,14 +544,15 @@ namespace Merthsoft.TokenIDE {
 				HandlePreproc(ProgramTextBox.Lines[i].TrimStart(), directives, ref ifCount, ifFlag, false);
 				//PreProcForward = PreProcForward.OrderByDescending(v => v.Key.Length).ToDictionary(v => v.Key, v => v.Value);
 			}
-			List<AutocompleteItem> items = new List<AutocompleteItem>();
+#if DEBUG
+            List<AutocompleteItem> items = new List<AutocompleteItem>();
 			items.AddRange(autoCompleteItems);
 			foreach (var d in directives) {
 				items.Add(new AutocompleteItem() { Text = d.Key, ToolTipText = d.Value });
 			}
 			autoCompleteMenu.Items.SetAutocompleteItems(items);
-
-			Place place = new Place(0, range.Start.iLine);
+#endif
+            Place place = new Place(0, range.Start.iLine);
 			for (int i = range.Start.iLine; i <= range.End.iLine; i++) {
 				if (i < 0 || i > ProgramTextBox.Lines.Count - 1) { continue; }
 				var line = tokens[i];
