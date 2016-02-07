@@ -1050,6 +1050,14 @@ namespace Merthsoft.TokenIDE {
                 if (quitWithoutSavePrompt == System.Windows.Forms.DialogResult.No) {
                     e.Cancel = true;
                 }
+                else
+                {
+                    EditWindows.TabPages.Clear();
+                }
+            }
+            else
+            {
+                EditWindows.TabPages.Clear();
             }
         }
 
