@@ -1,0 +1,13 @@
+version: 1.0.{build}
+configuration: Release
+install:
+- cmd: git submodule update --init --recursive
+before_build:
+- ps: nuget restore
+build:
+  project: TokenIDE.csproj
+  verbosity: minimal
+after_build:
+- ps: 7z a Tokens.zip .\bin\Release\TokenIDE.exe .\bin\Release\TokenIDE.ini .\bin\Release\Tokens ".\bin\Release\TI-83P Font.ttf" README.docx README.txt
+artifacts:
+- path: Tokens.zip
