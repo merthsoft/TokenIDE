@@ -57,13 +57,13 @@
     <Compile Include="TI\Var8x.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
-      <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
-      <Name>Merthsoft.Extensions</Name>
-    </ProjectReference>
+    <Folder Include="g3\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="g3\" />
+    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+      <Project>{98d91010-0405-48cb-82d8-fd707b22779c}</Project>
+      <Name>Merthsoft.Extensions</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,0 +1,6 @@
+[submodule "DynamicConfig"]
+	path = DynamicConfig
+	url = https://bitbucket.org/merthsoft/dynamicconfig.git
+[submodule "Merthsoft.Extensions"]
+	path = Merthsoft.Extensions
+	url = https://bitbucket.org/merthsoft/extensions.git
