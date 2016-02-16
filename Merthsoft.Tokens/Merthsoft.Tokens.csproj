@@ -55,12 +55,16 @@
     <Compile Include="TrieNode.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
+      <Project>{762e8292-3e30-41ce-b874-bb6d9d0319dc}</Project>
+      <Name>Merthsoft.DynamicConfig</Name>
+    </ProjectReference>
     <ProjectReference Include="..\FastColoredTextBox\FastColoredTextBox.csproj">
       <Project>{6DD14A85-CCFC-4774-BD26-0F5772512319}</Project>
       <Name>FastColoredTextBox</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
-      <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
+    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+      <Project>{98d91010-0405-48cb-82d8-fd707b22779c}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>
   </ItemGroup>

@@ -15,6 +15,8 @@
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -68,6 +70,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Tokens.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Merthsoft.TokenIDE.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -244,6 +249,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Project.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -358,8 +364,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
-      <Project>{762E8292-3E30-41CE-B874-BB6D9D0319DC}</Project>
+    <ProjectReference Include="DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
+      <Project>{762e8292-3e30-41ce-b874-bb6d9d0319dc}</Project>
       <Name>Merthsoft.DynamicConfig</Name>
     </ProjectReference>
     <ProjectReference Include="FastColoredTextBox\FastColoredTextBox.csproj">
@@ -370,8 +376,8 @@
       <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
       <Name>Merthsoft.CalcData</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
-      <Project>{98D91010-0405-48CB-82D8-FD707B22779C}</Project>
+    <ProjectReference Include="Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+      <Project>{98d91010-0405-48cb-82d8-fd707b22779c}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>
     <ProjectReference Include="Merthsoft.Tokens\Merthsoft.Tokens.DCSGUI\Merthsoft.Tokens.DCSGUI.csproj">
@@ -384,23 +390,41 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Release (
-  rename TokenIDE.exe Tokens.exe
-  "C:\ILRepack.exe" /attr:Tokens.exe /parallel /targetplatform:v4 /out:TokenIDE.exe Tokens.exe FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
-  del *.pdb
-  del *.manifest
-  del *.application
-  del *.config
-  del *.dll
-  del Tokens.exe
-)</PostBuildEvent>
-  </PropertyGroup>
+  <Import Project="packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets" Condition="Exists('packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\ILRepack.MSBuild.Task.1.0.9\build\ILRepack.MSBuild.Task.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
+    <ItemGroup>
+      <InputAssemblies Include="$(OutputPath)\TokenIDE.exe" />
+      <InputAssemblies Include="$(OutputPath)\FastColoredTextBox.dll" />
+      <InputAssemblies Include="$(OutputPath)\Merthsoft.CalcData.dll" />
+      <InputAssemblies Include="$(OutputPath)\Merthsoft.DynamicConfig.dll" />
+      <InputAssemblies Include="$(OutputPath)\Merthsoft.Extensions.dll" />
+      <InputAssemblies Include="$(OutputPath)\Merthsoft.Tokens.DCSGUI.dll" />
+      <InputAssemblies Include="$(OutputPath)\Merthsoft.Tokens.dll" />
+    </ItemGroup>
+    <!--
+    C:\ILRepack.exe" /attr:Tokens.exe /parallel /targetplatform:v4 /out:TokenIDE.exe Tokens.exe
+        FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll
+        Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
+    -->
+    <ILRepack
+     AttributeFile="$(OutputPath)\TokenIDE.exe"
+     Parallel="true"
+     TargetPlatformVersion="v4"
+     OutputFile="$(OutputPath)\TokenIDE.exe"
+     InputAssemblies="@(InputAssemblies)"
+     TargetKind="WinExe"
+     Internalize="true"
+   />
+  </Target>
 </Project>
