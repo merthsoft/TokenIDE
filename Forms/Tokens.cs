@@ -23,6 +23,7 @@ namespace Merthsoft.TokenIDE {
 		private string referenceCommentEnd;
 
 		private bool prettyPrint;
+        private bool IsMono;
 		private TokenData _tokenData;
 		private dynamic config;
 		private IEditWindow currWindow;
@@ -111,7 +112,14 @@ namespace Merthsoft.TokenIDE {
 				t.Click += new EventHandler(launchExternalTool);
 
 				externalToolsToolStripMenuItem.DropDownItems.Add(t);
-			}
+
+                IsMono = Type.GetType("Mono.Runtime") != null;
+
+                if (IsMono) {
+                    splitContainer2.Panel2.Controls.Remove(commentText);
+                    commentText = null;
+                }
+            }
 		}
 
 		void EditWindows_TabClose(object sender, TabCloseEventArgs e) {
@@ -1122,7 +1130,10 @@ namespace Merthsoft.TokenIDE {
 		private void setReferenceComment(string comment) {
 			comment = HttpUtility.HtmlEncode(comment);
 			comment = markdown.Transform(comment);
-			commentText.DocumentText = string.Concat(referenceCommentStart, comment, referenceCommentEnd);
+            if (!IsMono && commentText != null)
+            {
+                commentText.DocumentText = string.Concat(referenceCommentStart, comment, referenceCommentEnd);
+            }
 		}
 
 		private void TokensTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
