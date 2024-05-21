@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Merthsoft.TokenIDE</RootNamespace>
     <AssemblyName>TokenIDE</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -43,6 +43,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -52,6 +53,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>36D5C5DEB49B520EECCAFD2B251C479DB2C43AA9</ManifestCertificateThumbprint>
@@ -364,7 +366,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
+    <ProjectReference Include="..\DynamicConfig\Merthsoft.DynamicConfig\Merthsoft.DynamicConfig.csproj">
       <Project>{762e8292-3e30-41ce-b874-bb6d9d0319dc}</Project>
       <Name>Merthsoft.DynamicConfig</Name>
     </ProjectReference>
@@ -376,7 +378,7 @@
       <Project>{50B8CC0D-B7CA-430A-8CCC-A59CC7E53B9E}</Project>
       <Name>Merthsoft.CalcData</Name>
     </ProjectReference>
-    <ProjectReference Include="Merthsoft.Extensions\Merthsoft.Extensions.csproj">
+    <ProjectReference Include="..\Merthsoft.Extensions\Merthsoft.Extensions.csproj">
       <Project>{98d91010-0405-48cb-82d8-fd707b22779c}</Project>
       <Name>Merthsoft.Extensions</Name>
     </ProjectReference>
@@ -417,14 +419,6 @@
         FastColoredTextBox.dll Merthsoft.CalcData.dll Merthsoft.DynamicConfig.dll Merthsoft.Extensions.dll
         Merthsoft.Tokens.DCSGUI.dll Merthsoft.Tokens.dll
     -->
-    <ILRepack
-     AttributeFile="$(OutputPath)\TokenIDE.exe"
-     Parallel="true"
-     TargetPlatformVersion="v4"
-     OutputFile="$(OutputPath)\TokenIDE.exe"
-     InputAssemblies="@(InputAssemblies)"
-     TargetKind="WinExe"
-     Internalize="true"
-   />
+    <ILRepack AttributeFile="$(OutputPath)\TokenIDE.exe" Parallel="true" TargetPlatformVersion="v4" OutputFile="$(OutputPath)\TokenIDE.exe" InputAssemblies="@(InputAssemblies)" TargetKind="WinExe" Internalize="true" />
   </Target>
 </Project>

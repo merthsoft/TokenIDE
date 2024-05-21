@@ -72,7 +72,6 @@ namespace Merthsoft.CalcData {
 		protected byte[] lenArray;
 		// Data section
 		protected byte[] dataLenArray;
-		protected byte[] flag1;
 		protected byte[] varIDArray;
 		protected byte[] varNameArray;
 		protected byte version;
@@ -115,7 +114,6 @@ namespace Merthsoft.CalcData {
 			} else {
 				fsigArray = new byte[3] { 0x1A, 0x0C, 0x00 };
 			}
-			flag1 = new byte[2] { 0x0D, 0x00 };
 			comment = "Merthsoft TokenIDE";
 			commentArray = new byte[42];
 			this.name = name;
@@ -144,7 +142,7 @@ namespace Merthsoft.CalcData {
 			#endregion
 			#region Data
 			// Data section
-			flag1 = b.ReadBytes(2);
+			var lenHeader = b.ReadBytes(2);
 			dataLenArray = b.ReadBytes(2);
 			dataLength = (ushort)(BitConverter.ToInt16(dataLenArray, 0) - 2);
 			varIDArray = b.ReadBytes(1);
@@ -155,10 +153,10 @@ namespace Merthsoft.CalcData {
 				if (varID == (VarType)0x12) {
 					varID = VarType.Program;
 				}
-				varNameArray = b.ReadBytes(BitConverter.ToInt16(flag1, 0));
+				varNameArray = b.ReadBytes(BitConverter.ToInt16(lenHeader, 0));
 			}
 			name = ASCIIEncoding.ASCII.GetString(varNameArray);
-			if (Calc == CalcType.Calc8x) {
+			if (Calc == CalcType.Calc8x && lenHeader[0] > 11) {
 				version = b.ReadByte();
 				archFlag = b.ReadByte();
 			}
@@ -188,8 +186,12 @@ namespace Merthsoft.CalcData {
 			// Data section
 			short nameLength = (short)Name.Length;
 			if (Calc != CalcType.Calc85) {
-				dataBuffer.AddRange(flag1);
-			} else {
+				if (Calc == CalcType.Calc83)
+                    dataBuffer.Add(0x0B);
+                else
+                    dataBuffer.Add(0x0D);
+                dataBuffer.Add(0x00);
+            } else {
 				dataBuffer.AddRange(((short)(nameLength + 4)).ToByteArray());
 			}
 			dataBuffer.AddRange(((short)(DataLength)).GetBytes());
