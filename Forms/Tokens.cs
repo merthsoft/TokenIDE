@@ -298,10 +298,6 @@ namespace Merthsoft.TokenIDE {
 			buildFile(null, null);
 		}
 
-		private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e) {
-			hexSprite(false);
-		}
-
 		private void blockCountsToolStripMenuItem_Click(object sender, EventArgs e) {
 			Prog8xEditWindow editWindow = currWindow as Prog8xEditWindow;
 			if (currWindow == null) { return; }
@@ -378,11 +374,16 @@ namespace Merthsoft.TokenIDE {
 			CloseTab();
 		}
 
-		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) {
-			hexSprite(true);
-		}
+		private void colorSpritesToolStripMenuItem_Click(object sender, EventArgs e) 
+			=> hexSprite(HexSprite.Palette.xLIBC);
 
-		private void CompileToolStripMenuItem_Click(object sender, EventArgs e) {
+        private void basicColorSpritesHexEditorMenuItem_Click(object sender, EventArgs e) 
+			=> hexSprite(HexSprite.Palette.BasicColors);
+
+        private void blackAndWhiteToolStripMenuItem_Click(object sender, EventArgs e)
+			=> hexSprite(HexSprite.Palette.BlackAndWhite);
+
+        private void CompileToolStripMenuItem_Click(object sender, EventArgs e) {
 			Var8x.VarType varType = Var8x.VarType.Program;
 			Var8x.CalcType calcType = Var8x.CalcType.Calc8x;
 			buildFile(varType, calcType);
@@ -466,7 +467,7 @@ namespace Merthsoft.TokenIDE {
 			return GetProject(node.Parent);
 		}
 
-		private void hexSprite(bool color) {
+		private void hexSprite(HexSprite.Palette palette) {
 			Prog8xEditWindow ew = currWindow as Prog8xEditWindow;
 
 #if !DEBUG
@@ -474,13 +475,19 @@ namespace Merthsoft.TokenIDE {
 #endif
 			HexSprite hexSprite = new HexSprite();
 
-			if (color) {
-				hexSprite.SpriteHeight = hexSprite.SpriteWidth = 32;
-				hexSprite.SelectedPalette = HexSprite.Palette.BasicColors;
-			} else {
-				hexSprite.SpriteHeight = hexSprite.SpriteWidth = 8;
-				hexSprite.SelectedPalette = HexSprite.Palette.BlackAndWhite;
-			}
+			hexSprite.SelectedPalette = palette;
+			switch (palette) {
+				case HexSprite.Palette.BasicColors:
+					hexSprite.SpriteHeight = hexSprite.SpriteWidth = 32;
+					break;
+				case HexSprite.Palette.BlackAndWhite:
+					hexSprite.SpriteHeight = hexSprite.SpriteWidth = 8;
+					break;
+				case HexSprite.Palette.xLIBC:
+					hexSprite.SpriteHeight = hexSprite.SpriteWidth = 8;
+					break;
+            }
+			hexSprite.PixelSize = 4;
 
 			if (ew != null && ew.SelectedText != "") {
 				string hexString = ew.SelectedText.Trim().Replace("\"", "").Replace("(", "").Replace(")", "").Replace(",", "");
@@ -1240,5 +1247,5 @@ namespace Merthsoft.TokenIDE {
 		private void changeProgramNameToolStripMenuItem_Click(object sender, EventArgs e) {
 			currWindow.OnCalcName = InputBox.Show("Program Name", currWindow.OnCalcName) ?? currWindow.OnCalcName;
 		}
-	}
+    }
 }

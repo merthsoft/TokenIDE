@@ -1,0 +1,9 @@
+<Solution>
+  <Project Path="../DynamicConfig/Merthsoft.DynamicConfig/Merthsoft.DynamicConfig.csproj" Id="762e8292-3e30-41ce-b874-bb6d9d0319dc" />
+  <Project Path="../Merthsoft.Extensions/Merthsoft.Extensions.csproj" Id="98d91010-0405-48cb-82d8-fd707b22779c" />
+  <Project Path="FastColoredTextBox/FastColoredTextBox.csproj" Id="6dd14a85-ccfc-4774-bd26-0f5772512319" />
+  <Project Path="Merthsoft.CalcData/Merthsoft.CalcData.csproj" Id="50b8cc0d-b7ca-430a-8ccc-a59cc7e53b9e" />
+  <Project Path="Merthsoft.Tokens/Merthsoft.Tokens.csproj" Id="e48e4413-1396-4271-b095-07c46a7ee212"/>
+  <Project Path="Merthsoft.Tokens/Merthsoft.Tokens.DCSGUI/Merthsoft.Tokens.DCSGUI.csproj" Id="009e5f29-42b3-4fc4-acbe-38b72b2e33af" />
+  <Project Path="TokenIDE.csproj" Id="b4597c80-3f38-4708-9077-8377b0957b64"/>
+</Solution>

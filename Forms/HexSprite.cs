@@ -83,7 +83,16 @@ namespace Merthsoft.TokenIDE {
             }
         }
 
-        private int pixelSize = 2;
+        public int PixelSize
+        {
+            get => (int)pixelSizeBox.Value;
+            set
+            {
+                pixelSizeBox.Value = (int)value;
+                spriteBox.Invalidate();
+            }
+        }
+
         private bool performResizeFlag = true;
         public string OutString = "";
 
@@ -263,7 +272,6 @@ namespace Merthsoft.TokenIDE {
                     break;
 
                 case Palette.xLIBC:
-                    if (!MapMode) { goto default; }
                     newSprite = new Sprite(hex, SpriteWidth, out height, 8);
                     break;
 
@@ -322,7 +330,7 @@ namespace Merthsoft.TokenIDE {
         }
 
         private void spriteBox_Paint(object sender, PaintEventArgs e) {
-            int realPixelSize = pixelSize;
+            int realPixelSize = PixelSize;
             if (MapMode) {
                 realPixelSize *= 8;
             }
@@ -468,8 +476,8 @@ namespace Merthsoft.TokenIDE {
             button = e.Button;
             mouseXOld = mouseX;
             mouseYOld = mouseY;
-            mouseX = e.X / pixelSize;
-            mouseY = e.Y / pixelSize;
+            mouseX = e.X / PixelSize;
+            mouseY = e.Y / PixelSize;
 
             if (MapMode) {
                 mouseX /= 8;
@@ -672,8 +680,8 @@ namespace Merthsoft.TokenIDE {
                 // Very special things for the pattern tool
                 mouseXOld = mouseX;
                 mouseYOld = mouseY;
-                mouseX = e.X / pixelSize;
-                mouseY = e.Y / pixelSize;
+                mouseX = e.X / PixelSize;
+                mouseY = e.Y / PixelSize;
 
                 if (MapMode) {
                     mouseX /= 8;
@@ -690,7 +698,7 @@ namespace Merthsoft.TokenIDE {
 
         private void setSpriteIndexText(int x, int y) {
             if (SelectedPalette == Palette.xLIBC) {
-                spriteIndexLabel.Text = string.Format("({0}, {1}) - {2} (0x{2:X2})", x / pixelSize, y / pixelSize, 8 * (x / pixelSize / 8) + y / pixelSize / 8);
+                spriteIndexLabel.Text = string.Format("({0}, {1}) - {2} (0x{2:X2})", x / PixelSize, y / PixelSize, 8 * (x / PixelSize / 8) + y / PixelSize / 8);
             }
         }
 
@@ -701,8 +709,8 @@ namespace Merthsoft.TokenIDE {
         private void spriteBox_MouseDown(object sender, MouseEventArgs e) {
             pushHistory();
 
-            mouseX = e.X / pixelSize;
-            mouseY = e.Y / pixelSize;
+            mouseX = e.X / PixelSize;
+            mouseY = e.Y / PixelSize;
             if (MapMode) {
                 mouseX /= 8;
                 mouseY /= 8;
@@ -733,7 +741,7 @@ namespace Merthsoft.TokenIDE {
         }
 
         private void PixelSize_ValueChanged(object sender, EventArgs e) {
-            pixelSize = (int)pixelSizeBox.Value;
+            PixelSize = (int)pixelSizeBox.Value;
             spriteBox.Invalidate();
         }
 
@@ -877,7 +885,7 @@ namespace Merthsoft.TokenIDE {
 
                 case Palette.xLIBC:
                     togglePalette(true);
-                    toggleHexOutput(false);
+                    toggleHexOutput(true);
 
                     setLeftMouseButton(0);
                     setRightMouseButton(0xFF);
