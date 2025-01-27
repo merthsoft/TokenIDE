@@ -507,23 +507,40 @@ namespace Merthsoft.TokenIDE {
 		}
 
 		private void hexViewToolStripMenuItem_Click(object sender, EventArgs e) {
-			Prog8xEditWindow window = currWindow as Prog8xEditWindow;
-			if (window == null) { return; }
-			List<List<TokenData.TokenDictionaryEntry>> tokens;
-			window.GenerateByteData(false, false, out tokens);
-			StringBuilder sb = new StringBuilder();
-			foreach (var line in tokens) {
+            if (!(currWindow is Prog8xEditWindow window)) { return; }
+            window.GenerateByteData(false, false, out var tokens);
+			var mainBuilder = new StringBuilder();
+            var bytesSb = new StringBuilder();
+            var tokensSb = new StringBuilder();
+            foreach (var line in tokens) {
 				foreach (var token in line) {
-					sb.AppendFormat("[{0}:{1}] ", token.Name, token.Bytes);
-				}
-				sb.AppendLine();
-			}
+                    bytesSb.Append($"{token.Bytes:X}|");
+					tokensSb.Append($"{token.Name}|");
+                }
+				if (bytesSb.Length > 0)
+					bytesSb.Length--;
+				if (tokensSb.Length  > 0)
+					tokensSb.Length--;
+                mainBuilder.AppendLine($"{bytesSb} | {tokensSb}");
+                bytesSb.Clear();
+				tokensSb.Clear();
+            }
 
-			TextBox tb = new TextBox() { Dock = DockStyle.Fill, Multiline = true, ScrollBars = ScrollBars.Both, Font = editorFont, WordWrap = false };
-			Text = sb.ToString();
+            var tb = new TextBox() { 
+				Text = mainBuilder.ToString(), 
+				Dock = DockStyle.Fill, 
+				Multiline = true, 
+				ScrollBars = ScrollBars.Both, 
+				Font = editorFont, 
+				WordWrap = false, 
+			};
 
-			Form f = new Form() { Text = "Hex View" };
-			f.Controls.Add(tb);
+			Form f = new Form()
+			{
+				Text = "Hex View",
+				StartPosition = FormStartPosition.CenterParent
+			};
+            f.Controls.Add(tb);
 
 			f.Show();
 		}
